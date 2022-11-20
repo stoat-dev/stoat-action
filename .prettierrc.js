@@ -4,5 +4,8 @@ module.exports = {
   useTabs: false,
   singleQuote: true,
   trailingComma: 'none',
-  bracketSpacing: true
+  bracketSpacing: true,
+  importOrder: ['^schemas/(.*)$', '^[./]'],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true
 };
