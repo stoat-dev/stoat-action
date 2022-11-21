@@ -19,6 +19,7 @@ export type UploadWorkflowOutputRequest = {
   ghRunAttempt: number;
   stoatConfig: object;
   commentTemplateFile: string;
+  ghToken: string;
 };
 
 export type UpdateCommentResponse = {
@@ -27,10 +28,7 @@ export type UpdateCommentResponse = {
 
 export type GetSurgeCredentialRequest = {
   stoatConfigFileId: string;
-  ghSha: string;
-  ghCommitTimestamp: string;
-  ghRunId: string;
-  ghRunNumber: string;
+  ghToken: string;
 };
 
 export type GetSurgeCredentialResponse = {
@@ -48,6 +46,7 @@ export type GithubActionRun = {
   ghRunId: number;
   ghRunNumber: number;
   ghRunAttempt: number;
+  ghToken: string;
 };
 
 export type UploadStaticHostingRequest = {
@@ -55,6 +54,7 @@ export type UploadStaticHostingRequest = {
   pluginId: string;
   stoatConfigFileId: number;
   uploadUrl: string;
+  ghToken: string;
 };
 
 export type UploadStaticHostingResponse = {

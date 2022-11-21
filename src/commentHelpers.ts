@@ -17,7 +17,8 @@ export const uploadWorkflowOutputs = async (
     ghCommitTimestamp,
     ghRunId,
     ghRunNumber,
-    ghRunAttempt
+    ghRunAttempt,
+    ghToken
   }: GithubActionRun
 ): Promise<number> => {
   const params: UploadWorkflowOutputRequest = {
@@ -32,17 +33,16 @@ export const uploadWorkflowOutputs = async (
     ghRunNumber,
     ghRunAttempt,
     stoatConfig,
-    commentTemplateFile
+    commentTemplateFile,
+    ghToken
   };
   const url = `${API_URL_BASE}/api/workflow_outputs`;
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(params)
   });
-  core.info(`Uploaded workflow outputs to ${url}: ${JSON.stringify(params, null, 2)}`);
 
   if (!response.ok) {
-    core.error(await response.json());
     throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
   }
 

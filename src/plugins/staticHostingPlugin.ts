@@ -45,24 +45,23 @@ export const runStaticHostingPlugin = async (
     return;
   }
 
+  const {
+    ghToken,
+    ghRepository: { repo, owner },
+    ghPullRequestNumber,
+    ghSha
+  } = githubActionRun;
+
   // get surge token
   const params: GetSurgeCredentialRequest = {
     stoatConfigFileId: String(stoatConfigFileId),
-    ghSha: githubActionRun.ghSha,
-    ghRunId: String(githubActionRun.ghRunId),
-    ghRunNumber: String(githubActionRun.ghRunNumber),
-    ghCommitTimestamp: githubActionRun.ghCommitTimestamp.toISOString()
+    ghToken
   };
   const surgeApiUrl = `${API_URL_BASE}/api/surge?${Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
     .join('&')}`;
   const surgeResponse = await fetch(surgeApiUrl, { method: 'GET' });
   const { surgeToken } = (await surgeResponse.json()) as GetSurgeCredentialResponse;
-  const {
-    ghRepository: { repo, owner },
-    ghPullRequestNumber,
-    ghSha
-  } = githubActionRun;
 
   // upload directory
   const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId, ghPullRequestNumber);
@@ -82,7 +81,8 @@ export const runStaticHostingPlugin = async (
     ghSha,
     pluginId,
     stoatConfigFileId,
-    uploadUrl: `https://${uploadUrl}`
+    uploadUrl: `https://${uploadUrl}`,
+    ghToken
   };
   const response = await fetch(staticHostingApiUrl, {
     method: 'POST',

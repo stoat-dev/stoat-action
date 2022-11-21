@@ -53,7 +53,8 @@ async function run(stoatConfig: any) {
   const typedStoatConfig = stoatConfig as StoatConfigSchema;
 
   core.info('Initializing Octokit...');
-  const octokit = github.getOctokit(core.getInput('token'));
+  const token = core.getInput('token');
+  const octokit = github.getOctokit(token);
 
   core.info('Fetching current pull request number...');
   const pullRequestNumber = await getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
@@ -108,7 +109,8 @@ async function run(stoatConfig: any) {
     ghCommitTimestamp,
     ghRunId: parseInt(core.getInput('run_id')),
     ghRunNumber: parseInt(core.getInput('run_number')),
-    ghRunAttempt: parseInt(core.getInput('run_attempt'))
+    ghRunAttempt: parseInt(core.getInput('run_attempt')),
+    ghToken: token
   };
   const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
   await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
