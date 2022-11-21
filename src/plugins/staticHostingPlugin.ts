@@ -1,8 +1,7 @@
-import core from '@actions/core';
+import * as core from '@actions/core';
 import exec from '@actions/exec';
 import crypto from 'crypto';
 import fs from 'fs';
-import fetch from 'node-fetch';
 
 import { StaticHostingPlugin } from '../schemas/stoatConfigSchema';
 import { API_URL_BASE } from '../stoatApiHelpers';
@@ -27,8 +26,8 @@ export const getUploadSubdomain = (
   const repoName = `${owner.slice(0, 15)}-${repo.slice(0, 15)}-${repoHash.slice(0, 5)}`;
   const shortSha = ghSha.substring(0, 7);
   const prNumber = ghPullRequestNumber ? `${ghPullRequestNumber}-` : '';
-  const rawUploadUrl = `${repoName}-${prNumber}${shortSha}-${pluginId.slice(0, 10)}.surge.sh`;
-  return rawUploadUrl.replace(/[^_a-zA-Z0-9]/, '-');
+  const rawUploadUrl = `${repoName}-${prNumber}${shortSha}-${pluginId.slice(0, 10)}`;
+  return rawUploadUrl.replace(/[^a-zA-Z0-9]/g, '-');
 };
 
 export const runStaticHostingPlugin = async (

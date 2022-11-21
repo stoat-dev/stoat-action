@@ -1,5 +1,4 @@
-import core from '@actions/core';
-import fetch from 'node-fetch';
+import * as core from '@actions/core';
 
 interface ShaResponse {
   sha: string;
