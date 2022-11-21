@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": false,
   "description": "Supercharge your CI / CD pipelines",
-  "main": "lib/main.js",
+  "main": "lib/app.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write '**/*.{ts,json}'",
