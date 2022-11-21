@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version", "comment_template", "updated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "comment_template": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plugins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["static_hosting"],
+            "properties": {
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "static_hosting": {
+                "type": "object",
+                "required": ["path", "link", "link_md", "status", "status_md", "status_link", "sha", "updated_at"],
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "link": {
+                    "type": "string"
+                  },
+                  "link_md": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "status_md": {
+                    "type": "string"
+                  },
+                  "status_link": {
+                    "type": "string"
+                  },
+                  "sha": {
+                    "type": "string"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

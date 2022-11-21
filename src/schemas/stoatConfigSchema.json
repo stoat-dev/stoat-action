@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version", "comment_template"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "comment_template": {
+      "type": "string"
+    },
+    "plugins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }]
+      }
+    }
+  },
+  "definitions": {
+    "static_hosting_plugin": {
+      "type": "object",
+      "required": ["static_hosting"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "static_hosting": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,27 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Stoat'
+description: 'Supercharge your CI / CD pipelines'
+author: 'Stoat Dev'
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  token:
+    description: 'GITHUB_TOKEN or a repo scoped PAT.'
+    default: ${{ github.token }}
+  # This parameter is for development of the action to figure out the API URL base.
+  # When the action is ready to ship, the API base should always be the production one.
+  pr_branch_name:
+    default: ${{ github.head_ref || github.ref_name }}
+    description: github pull request branch name
+  actual_sha:
+    default: ${{ github.event.pull_request.head.sha || github.sha }}
+    description: the commit pushed, not the commit post merge like github.sha
+  run_id:
+    default: ${{ github.run_id }}
+    description: A unique number for each workflow run within a repository. This number does not change if you re-run the workflow run.
+  run_number:
+    default: ${{ github.run_number }}
+    description: A unique number for each run of a particular workflow in a repository. This number begins at 1 for the workflow's first run, and increments with each new run. This number does not change if you re-run the workflow run.
+  run_attempt:
+    default: ${{ github.run_attempt }}
+    description: A unique number for each attempt of a particular workflow run in a repository. This number begins at 1 for the workflow run's first attempt, and increments with each re-run.
 runs:
   using: 'node16'
   main: 'dist/index.js'
