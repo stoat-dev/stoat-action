@@ -39,8 +39,10 @@ export const uploadWorkflowOutputs = async (
     method: 'POST',
     body: JSON.stringify(params)
   });
+  core.info(`Uploaded workflow outputs to ${url}: ${JSON.stringify(params, null, 2)}`);
 
   if (!response.ok) {
+    core.error(await response.json());
     throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
   }
 
