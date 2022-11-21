@@ -3907,6 +3907,7 @@ function waitForShaToMatch(repoSha) {
         while (!shaMatches) {
             const response = yield node_ponyfill_default()(url);
             if (!response.ok) {
+                core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
                 throw Error('Request to get server sha failed!');
             }
             const data = (yield response.json());
