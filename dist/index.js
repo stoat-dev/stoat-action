@@ -9,7 +9,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
+var lib_core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
 var github_default = /*#__PURE__*/__nccwpck_require__.n(github);
@@ -3887,25 +3887,14 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
-/**
- * The API URL base is dynamic because we need to use Vercel preview URLs for development.
- * Once the action is ready to ship, it should always use the production URL.
- */
-const getApiUrlBase = () => {
-    core.info(`Github ref: ${core.getInput('pr_branch_name')}`);
-    const subdomain = core.getInput('pr_branch_name').replace('/', '-');
-    const apiUrlBase = `https://stoat-git-${subdomain}-distinct.vercel.app`;
-    core.info(`Using API URL base: ${apiUrlBase}`);
-    return apiUrlBase;
-};
-const API_URL_BASE = getApiUrlBase();
+const API_URL_BASE = 'https://www.stoat.dev';
 function waitForShaToMatch(repoSha) {
     return __awaiter(this, void 0, void 0, function* () {
         const url = `${API_URL_BASE}/api/debug/sha`;
         let shaMatches = false;
         let waits = 0;
         while (!shaMatches) {
-            const response = yield node_ponyfill_default()(url);
+            const response = yield fetch(url);
             if (!response.ok) {
                 core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
                 throw Error('Request to get server sha failed!');
@@ -3964,7 +3953,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         throw Error('Request to update comment failed!');
     }
     const { stoatConfigFileId } = (yield response.json());
-    core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
+    lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
     return stoatConfigFileId;
 });
 
@@ -4000,10 +3989,10 @@ const getUploadSubdomain = (owner, repo, ghSha, pluginId, ghPullRequestNumber) =
     return rawUploadUrl.replace(/[^a-zA-Z0-9]/g, '-');
 };
 const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatConfigFileId) => staticHostingPlugin_awaiter(void 0, void 0, void 0, function* () {
-    core.info(`[${pluginId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    lib_core.info(`[${pluginId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const pathToUpload = pluginConfig.static_hosting.path;
     if (!external_fs_default().existsSync(pathToUpload)) {
-        core.warning(`[${pluginId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
+        lib_core.warning(`[${pluginId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
         return;
     }
     // get surge token
@@ -4024,12 +4013,12 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatCo
     const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId, ghPullRequestNumber);
     const uploadUrl = `${uploadSubdomain}.${domain}`;
     const installExitCode = yield exec_default().exec('npm', ['install', '--global', 'surge'], { silent: false });
-    core.info(`[${pluginId}] Install surge (exit code ${installExitCode})`);
-    core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
+    lib_core.info(`[${pluginId}] Install surge (exit code ${installExitCode})`);
+    lib_core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
     const uploadExitCode = yield exec_default().exec('surge', [pathToUpload, uploadUrl, '--token', surgeToken], {
         silent: false
     });
-    core.info(`[${pluginId}] Upload ${pathToUpload} to ${uploadUrl} (exit code ${uploadExitCode})`);
+    lib_core.info(`[${pluginId}] Upload ${pathToUpload} to ${uploadUrl} (exit code ${uploadExitCode})`);
     // submit partial config
     const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
     const requestBody = {
@@ -4043,11 +4032,11 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatCo
         body: JSON.stringify(requestBody)
     });
     if (!response.ok) {
-        core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
+        lib_core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
         return;
     }
     const { partialConfigId } = (yield response.json());
-    core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
+    lib_core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
 });
 
 ;// CONCATENATED MODULE: ./lib/plugins/pluginRunner.js
@@ -4068,7 +4057,7 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield runStaticHostingPlugin(pluginId, pluginConfig, githubActionRun, stoatConfigFileId);
         }
         else {
-            core.warning(`Unknown plugin: ${pluginId}`);
+            lib_core.warning(`Unknown plugin: ${pluginId}`);
         }
     }
 });
@@ -4154,7 +4143,6 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-
 const app_ajv = new (ajv_default())();
 function getGhCommitTimestamp(octokit, repository, repoSha) {
     var _a;
@@ -4170,9 +4158,9 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
                 throw Error('Date string retrieved was empty!');
             }
             else {
-                core.info(`Retrieved date string: ${dateStr}`);
+                lib_core.info(`Retrieved date string: ${dateStr}`);
                 const parsedDate = new Date(dateStr);
-                core.info(`Parsed date as: ${parsedDate}`);
+                lib_core.info(`Parsed date as: ${parsedDate}`);
                 return parsedDate;
             }
         }
@@ -4184,27 +4172,27 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
 function run(stoatConfig) {
     var _a;
     return app_awaiter(this, void 0, void 0, function* () {
-        core.info('Validating Stoat config file...');
+        lib_core.info('Validating Stoat config file...');
         const validate = app_ajv.compile(stoatConfigSchema_namespaceObject);
         const valid = validate(stoatConfig);
         if (!valid) {
-            core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
+            lib_core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
             throw new Error('Failed to validate Stoat config file!');
         }
         const typedStoatConfig = stoatConfig;
-        core.info('Initializing Octokit...');
-        const octokit = github.getOctokit(core.getInput('token'));
-        core.info('Fetching current pull request number...');
+        lib_core.info('Initializing Octokit...');
+        const octokit = github.getOctokit(lib_core.getInput('token'));
+        lib_core.info('Fetching current pull request number...');
         const pullRequestNumber = yield getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
         if (pullRequestNumber === null) {
-            core.info(`Build not associated with a pull request.`);
+            lib_core.info(`Build not associated with a pull request.`);
         }
         else {
-            core.info(`Detected pull request number: ${pullRequestNumber}`);
+            lib_core.info(`Detected pull request number: ${pullRequestNumber}`);
         }
-        core.info(`Fetching repo's sha (not the build's merge commit sha)...`);
-        const repoSha = core.getInput('actual_sha');
-        core.info('Checking if prior steps succeeded...');
+        lib_core.info(`Fetching repo's sha (not the build's merge commit sha)...`);
+        const repoSha = lib_core.getInput('actual_sha');
+        lib_core.info('Checking if prior steps succeeded...');
         let stepsSucceeded = true;
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
@@ -4215,33 +4203,31 @@ function run(stoatConfig) {
         // with matrix jobs and such this can be difficult to determine
         // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
         for (const job of jobListResponse.data.jobs) {
-            core.info(`Inspecting job name: ${job.name}`);
+            lib_core.info(`Inspecting job name: ${job.name}`);
             for (const step of job.steps || []) {
-                core.info(`Step "${step.name}" has conclusion: ${step.conclusion}`);
+                lib_core.info(`Step "${step.name}" has conclusion: ${step.conclusion}`);
                 if (step.conclusion !== null && step.conclusion !== 'skipped') {
                     stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
                 }
             }
         }
-        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-        core.info('Waiting for api server to be deployed...');
-        yield waitForShaToMatch(repoSha);
-        core.info(`Fetching commit timestamp...`);
+        lib_core.info(`Prior steps succeeded: ${stepsSucceeded}`);
+        lib_core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        core.info('Loading template...');
+        lib_core.info('Loading template...');
         const commentTemplateFileBuffer = (0,external_fs_.readFileSync)(typedStoatConfig.comment_template);
         const commentTemplateFile = commentTemplateFileBuffer.toString();
-        core.info('Uploading workflow outputs...');
+        lib_core.info('Uploading workflow outputs...');
         const githubActionRun = {
             ghRepository: github.context.repo,
-            ghBranch: core.getInput('pr_branch_name'),
+            ghBranch: lib_core.getInput('pr_branch_name'),
             ghPullRequestNumber: pullRequestNumber,
             ghWorkflow: github.context.workflow,
             ghSha: repoSha,
             ghCommitTimestamp,
-            ghRunId: parseInt(core.getInput('run_id')),
-            ghRunNumber: parseInt(core.getInput('run_number')),
-            ghRunAttempt: parseInt(core.getInput('run_attempt'))
+            ghRunId: parseInt(lib_core.getInput('run_id')),
+            ghRunNumber: parseInt(lib_core.getInput('run_number')),
+            ghRunAttempt: parseInt(lib_core.getInput('run_attempt'))
         };
         const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
         yield runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
@@ -4249,19 +4235,19 @@ function run(stoatConfig) {
 }
 (() => app_awaiter(void 0, void 0, void 0, function* () {
     try {
-        core.info('Reading stoat config...');
+        lib_core.info('Reading stoat config...');
         const stoatConfigFileBuffer = (0,external_fs_.readFileSync)('.stoat/config.yaml');
         const stoatConfig = js_yaml.load(stoatConfigFileBuffer.toString());
         if ('enabled' in stoatConfig && !stoatConfig.enabled) {
-            core.info('Stoat is disabled! skipping...');
+            lib_core.info('Stoat is disabled! skipping...');
         }
         else {
             yield run(stoatConfig);
         }
     }
     catch (error) {
-        core.error('Stoat failed!');
-        core.setFailed(error.message);
+        lib_core.error('Stoat failed!');
+        lib_core.setFailed(error.message);
     }
 }))();
 
