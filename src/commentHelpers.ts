@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import fetch from 'cross-fetch';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
@@ -16,7 +17,8 @@ export const uploadWorkflowOutputs = async (
     ghCommitTimestamp,
     ghRunId,
     ghRunNumber,
-    ghRunAttempt
+    ghRunAttempt,
+    ghToken
   }: GithubActionRun
 ): Promise<number> => {
   const params: UploadWorkflowOutputRequest = {
@@ -31,7 +33,8 @@ export const uploadWorkflowOutputs = async (
     ghRunNumber,
     ghRunAttempt,
     stoatConfig,
-    commentTemplateFile
+    commentTemplateFile,
+    ghToken
   };
   const url = `${API_URL_BASE}/api/workflow_outputs`;
   const response = await fetch(url, {
@@ -40,7 +43,7 @@ export const uploadWorkflowOutputs = async (
   });
 
   if (!response.ok) {
-    throw Error('Request to update comment failed!');
+    throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
   }
 
   const { stoatConfigFileId } = (await response.json()) as UpdateCommentResponse;

@@ -10,7 +10,7 @@
     "format-check": "prettier --check '**/*.{ts,json}'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
+    "test": "jest --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
     "prepare": "husky install"
   },
@@ -31,8 +31,8 @@
     "@actions/exec": "^1.1.1",
     "@actions/github": "^5.1.1",
     "ajv": "^8.11.2",
-    "handlebars": "^4.7.7",
-    "node-fetch": "^3.3.0"
+    "cross-fetch": "^3.1.5",
+    "handlebars": "^4.7.7"
   },
   "devDependencies": {
     "@octokit/openapi-types": "^14.0.0",

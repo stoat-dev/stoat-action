@@ -10,7 +10,6 @@ import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
-import { waitForShaToMatch } from './stoatApiHelpers';
 import { GithubActionRun, Repository } from './types';
 
 const ajv = new Ajv();
@@ -54,7 +53,8 @@ async function run(stoatConfig: any) {
   const typedStoatConfig = stoatConfig as StoatConfigSchema;
 
   core.info('Initializing Octokit...');
-  const octokit = github.getOctokit(core.getInput('token'));
+  const token = core.getInput('token');
+  const octokit = github.getOctokit(token);
 
   core.info('Fetching current pull request number...');
   const pullRequestNumber = await getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
@@ -92,9 +92,6 @@ async function run(stoatConfig: any) {
 
   core.info(`Prior steps succeeded: ${stepsSucceeded}`);
 
-  core.info('Waiting for api server to be deployed...');
-  await waitForShaToMatch(repoSha);
-
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
@@ -112,7 +109,8 @@ async function run(stoatConfig: any) {
     ghCommitTimestamp,
     ghRunId: parseInt(core.getInput('run_id')),
     ghRunNumber: parseInt(core.getInput('run_number')),
-    ghRunAttempt: parseInt(core.getInput('run_attempt'))
+    ghRunAttempt: parseInt(core.getInput('run_attempt')),
+    ghToken: token
   };
   const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
   await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);

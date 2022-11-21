@@ -1,0 +1,40 @@
+name: Test Action
+on:
+  pull_request:
+    branches:
+      - main
+      - 'releases/*'
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Build and test stoat action
+        run: |
+          npm run all
+      - name: Compare expected vs actual dist directories
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+      - name: Upload actual dist if it is different
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        with:
+          name: dist
+          path: dist/
+      - name: Run stoat action
+        uses: ./
+        if: always()

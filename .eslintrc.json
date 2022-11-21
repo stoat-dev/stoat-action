@@ -16,7 +16,7 @@
     "no-unused-vars": "off",
     "sort-imports": "off",
     "filenames/match-regex": "off",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "no-public" }],
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/array-type": "error",

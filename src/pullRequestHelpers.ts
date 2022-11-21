@@ -1,4 +1,4 @@
-import github from '@actions/github';
+import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 import { components } from '@octokit/openapi-types';
 

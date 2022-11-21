@@ -1,0 +1,10 @@
+---
+version: 1
+enabled: true
+comment_template: ".stoat/template.hbs"
+plugins:
+  jest-coverage:
+    metadata:
+      name: Jest Coverage
+    static_hosting:
+      path: coverage/lcov-report
