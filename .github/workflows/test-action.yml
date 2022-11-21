@@ -1,0 +1,23 @@
+name: Test Action
+on:
+  pull_request:
+    branches:
+      - main
+      - 'releases/*'
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          npm install
+      - run: |
+          npm run all
+      - name: Run stoat action
+        uses: ./
+        if: always()
