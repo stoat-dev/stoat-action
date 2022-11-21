@@ -30,6 +30,7 @@ export async function waitForShaToMatch(repoSha: string) {
     const response = await fetch(url);
 
     if (!response.ok) {
+      core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
       throw Error('Request to get server sha failed!');
     }
 
