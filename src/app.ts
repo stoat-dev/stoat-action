@@ -92,9 +92,6 @@ async function run(stoatConfig: any) {
 
   core.info(`Prior steps succeeded: ${stepsSucceeded}`);
 
-  core.info('Waiting for api server to be deployed...');
-  await waitForShaToMatch(repoSha);
-
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
