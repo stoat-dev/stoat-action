@@ -3928,7 +3928,7 @@ var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thi
 
 
 
-const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
+const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
     const params = {
         ghOwner: ghRepository.owner,
         ghRepo: ghRepository.repo,
@@ -3941,16 +3941,15 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         ghRunNumber,
         ghRunAttempt,
         stoatConfig,
-        commentTemplateFile
+        commentTemplateFile,
+        ghToken
     };
     const url = `${API_URL_BASE}/api/workflow_outputs`;
     const response = yield node_ponyfill_default()(url, {
         method: 'POST',
         body: JSON.stringify(params)
     });
-    lib_core.info(`Uploaded workflow outputs to ${url}: ${JSON.stringify(params, null, 2)}`);
     if (!response.ok) {
-        lib_core.error(yield response.json());
         throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
     }
     const { stoatConfigFileId } = (yield response.json());
@@ -3996,20 +3995,17 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatCo
         lib_core.warning(`[${pluginId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
         return;
     }
+    const { ghToken, ghRepository: { repo, owner }, ghPullRequestNumber, ghSha } = githubActionRun;
     // get surge token
     const params = {
         stoatConfigFileId: String(stoatConfigFileId),
-        ghSha: githubActionRun.ghSha,
-        ghRunId: String(githubActionRun.ghRunId),
-        ghRunNumber: String(githubActionRun.ghRunNumber),
-        ghCommitTimestamp: githubActionRun.ghCommitTimestamp.toISOString()
+        ghToken
     };
     const surgeApiUrl = `${API_URL_BASE}/api/surge?${Object.entries(params)
         .map(([key, value]) => `${key}=${value}`)
         .join('&')}`;
     const surgeResponse = yield node_ponyfill_default()(surgeApiUrl, { method: 'GET' });
     const { surgeToken } = (yield surgeResponse.json());
-    const { ghRepository: { repo, owner }, ghPullRequestNumber, ghSha } = githubActionRun;
     // upload directory
     const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId, ghPullRequestNumber);
     const uploadUrl = `${uploadSubdomain}.${domain}`;
@@ -4026,7 +4022,8 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatCo
         ghSha,
         pluginId,
         stoatConfigFileId,
-        uploadUrl: `https://${uploadUrl}`
+        uploadUrl: `https://${uploadUrl}`,
+        ghToken
     };
     const response = yield node_ponyfill_default()(staticHostingApiUrl, {
         method: 'POST',
@@ -4182,7 +4179,8 @@ function run(stoatConfig) {
         }
         const typedStoatConfig = stoatConfig;
         lib_core.info('Initializing Octokit...');
-        const octokit = github.getOctokit(lib_core.getInput('token'));
+        const token = lib_core.getInput('token');
+        const octokit = github.getOctokit(token);
         lib_core.info('Fetching current pull request number...');
         const pullRequestNumber = yield getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
         if (pullRequestNumber === null) {
@@ -4228,7 +4226,8 @@ function run(stoatConfig) {
             ghCommitTimestamp,
             ghRunId: parseInt(lib_core.getInput('run_id')),
             ghRunNumber: parseInt(lib_core.getInput('run_number')),
-            ghRunAttempt: parseInt(lib_core.getInput('run_attempt'))
+            ghRunAttempt: parseInt(lib_core.getInput('run_attempt')),
+            ghToken: token
         };
         const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
         yield runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
