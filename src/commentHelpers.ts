@@ -41,7 +41,7 @@ export const uploadWorkflowOutputs = async (
   });
 
   if (!response.ok) {
-    throw Error('Request to update comment failed!');
+    throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
   }
 
   const { stoatConfigFileId } = (await response.json()) as UpdateCommentResponse;

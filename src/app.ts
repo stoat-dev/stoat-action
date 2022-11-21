@@ -10,7 +10,6 @@ import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
-import { waitForShaToMatch } from './stoatApiHelpers';
 import { GithubActionRun, Repository } from './types';
 
 const ajv = new Ajv();
