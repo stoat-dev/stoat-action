@@ -55,7 +55,7 @@
     "typescript": "^4.4.4"
   },
   "lint-staged": {
-    "*.{ts,json}": [
+    "*.{ts,js,json}": [
       "npm run format"
     ]
   }
