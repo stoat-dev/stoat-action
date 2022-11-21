@@ -3896,8 +3896,7 @@ function waitForShaToMatch(repoSha) {
         while (!shaMatches) {
             const response = yield fetch(url);
             if (!response.ok) {
-                core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-                throw Error('Request to get server sha failed!');
+                throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
             }
             const data = (yield response.json());
             const serverSha = data.sha;
@@ -3950,7 +3949,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         body: JSON.stringify(params)
     });
     if (!response.ok) {
-        throw Error('Request to update comment failed!');
+        throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
     }
     const { stoatConfigFileId } = (yield response.json());
     lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
