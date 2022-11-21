@@ -5,8 +5,6 @@ inputs:
   token:
     description: 'GITHUB_TOKEN or a repo scoped PAT.'
     default: ${{ github.token }}
-  # This parameter is for development of the action to figure out the API URL base.
-  # When the action is ready to ship, the API base should always be the production one.
   pr_branch_name:
     default: ${{ github.head_ref || github.ref_name }}
     description: github pull request branch name
