@@ -12,7 +12,6 @@ __nccwpck_require__.r(__webpack_exports__);
 var lib_core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
-var github_default = /*#__PURE__*/__nccwpck_require__.n(github);
 // EXTERNAL MODULE: ./node_modules/ajv/dist/ajv.js
 var ajv = __nccwpck_require__(2426);
 var ajv_default = /*#__PURE__*/__nccwpck_require__.n(ajv);
@@ -3959,7 +3958,6 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
 
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
-var exec_default = /*#__PURE__*/__nccwpck_require__.n(exec);
 // EXTERNAL MODULE: external "crypto"
 var external_crypto_ = __nccwpck_require__(6113);
 var external_crypto_default = /*#__PURE__*/__nccwpck_require__.n(external_crypto_);
@@ -4009,10 +4007,10 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, githubActionRun, stoatCo
     // upload directory
     const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId, ghPullRequestNumber);
     const uploadUrl = `${uploadSubdomain}.${domain}`;
-    const installExitCode = yield exec_default().exec('npm', ['install', '--global', 'surge'], { silent: false });
+    const installExitCode = yield exec.exec('npm', ['install', '--global', 'surge'], { silent: false });
     lib_core.info(`[${pluginId}] Install surge (exit code ${installExitCode})`);
     lib_core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
-    const uploadExitCode = yield exec_default().exec('surge', [pathToUpload, uploadUrl, '--token', surgeToken], {
+    const uploadExitCode = yield exec.exec('surge', [pathToUpload, uploadUrl, '--token', surgeToken], {
         silent: false
     });
     lib_core.info(`[${pluginId}] Upload ${pathToUpload} to ${uploadUrl} (exit code ${uploadExitCode})`);
@@ -4100,7 +4098,7 @@ function getLastPullRequest(pullRequests, sha) {
 }
 function getPullRequestNumberFromContext() {
     try {
-        return (github_default()).context.issue.number || null;
+        return github.context.issue.number || null;
     }
     catch (e) {
         return null;
