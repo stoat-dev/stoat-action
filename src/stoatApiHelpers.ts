@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import fetch from 'cross-fetch';
 
 interface ShaResponse {
   sha: string;

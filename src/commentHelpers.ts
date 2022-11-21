@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import fetch from 'cross-fetch';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
