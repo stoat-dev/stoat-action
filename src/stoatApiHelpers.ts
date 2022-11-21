@@ -5,19 +5,7 @@ interface ShaResponse {
   sha: string;
 }
 
-/**
- * The API URL base is dynamic because we need to use Vercel preview URLs for development.
- * Once the action is ready to ship, it should always use the production URL.
- */
-const getApiUrlBase = () => {
-  core.info(`Github ref: ${core.getInput('pr_branch_name')}`);
-  const subdomain = core.getInput('pr_branch_name').replace('/', '-');
-  const apiUrlBase = `https://stoat-git-${subdomain}-distinct.vercel.app`;
-  core.info(`Using API URL base: ${apiUrlBase}`);
-  return apiUrlBase;
-};
-
-export const API_URL_BASE = getApiUrlBase();
+export const API_URL_BASE = 'https://www.stoat.dev';
 
 export async function waitForShaToMatch(repoSha: string) {
   const url = `${API_URL_BASE}/api/debug/sha`;
