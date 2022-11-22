@@ -4279,7 +4279,7 @@ function run(stoatConfig) {
         for (const job of jobListResponse.data.jobs) {
             lib_core.info(`Inspecting job name: ${job.name}`);
             for (const step of job.steps || []) {
-                lib_core.info(`Step "${step.name}" has conclusion: ${step.conclusion}`);
+                lib_core.info(`-- Step "${step.name}" has conclusion: ${step.conclusion}`);
                 if (step.conclusion !== null && step.conclusion !== 'skipped') {
                     stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
                 }

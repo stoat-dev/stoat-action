@@ -83,7 +83,7 @@ async function run(stoatConfig: any) {
   for (const job of jobListResponse.data.jobs) {
     core.info(`Inspecting job name: ${job.name}`);
     for (const step of job.steps || []) {
-      core.info(`Step "${step.name}" has conclusion: ${step.conclusion}`);
+      core.info(`-- Step "${step.name}" has conclusion: ${step.conclusion}`);
       if (step.conclusion !== null && step.conclusion !== 'skipped') {
         stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
       }
