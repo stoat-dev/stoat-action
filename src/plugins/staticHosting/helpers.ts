@@ -3,7 +3,7 @@ import * as bluebird from 'bluebird';
 import fetch from 'cross-fetch';
 import FormData from 'form-data';
 import fs from 'fs';
-import * as mime from 'mime-types';
+import mime from 'mime-types';
 import { posix, resolve } from 'path';
 
 import { API_URL_BASE } from '../../stoatApiHelpers';
@@ -19,6 +19,7 @@ export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<
     method: 'POST',
     body: JSON.stringify(request)
   });
+  core.info(`Signed URL response: ${JSON.stringify(response)}`);
   if (!response.ok) {
     throw new Error(response.statusText);
   }

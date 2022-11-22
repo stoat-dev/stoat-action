@@ -3988,6 +3988,7 @@ const createSignedUrl = (request) => helpers_awaiter(void 0, void 0, void 0, fun
         method: 'POST',
         body: JSON.stringify(request)
     });
+    lib_core.info(`Signed URL response: ${JSON.stringify(response)}`);
     if (!response.ok) {
         throw new Error(response.statusText);
     }
