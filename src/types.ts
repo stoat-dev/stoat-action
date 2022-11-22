@@ -26,14 +26,19 @@ export type UpdateCommentResponse = {
   stoatConfigFileId: number;
 };
 
-export type GetSurgeCredentialRequest = {
-  stoatConfigFileId: string;
+export type CreateSignedUrlRequest = {
+  ghOwner: string;
+  ghRepo: string;
+  ghSha: string;
   ghToken: string;
+  pluginId: string;
 };
 
-export type GetSurgeCredentialResponse = {
-  surgeLogin: string;
-  surgeToken: string;
+export type CreateSignedUrlResponse = {
+  signedUrl: string;
+  fields: Record<string, string>;
+  objectPath: string;
+  hostingUrl: string;
 };
 
 export type GithubActionRun = {
@@ -53,7 +58,7 @@ export type UploadStaticHostingRequest = {
   ghSha: string;
   pluginId: string;
   stoatConfigFileId: number;
-  uploadUrl: string;
+  hostingUrl: string;
   ghToken: string;
 };
 

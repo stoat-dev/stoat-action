@@ -1,36 +1,130 @@
-import crypto from 'crypto';
+import * as core from '@actions/core';
+import * as bluebird from 'bluebird';
+import fetch from 'cross-fetch';
+import FormData from 'form-data';
+import fs from 'fs';
+import * as mime from 'mime-types';
+import { posix, resolve } from 'path';
 
-export const getHash = (input: string): string => {
-  if (input === '') {
-    return '-';
+import { API_URL_BASE } from '../../stoatApiHelpers';
+import {
+  CreateSignedUrlRequest,
+  CreateSignedUrlResponse,
+  UploadStaticHostingRequest,
+  UploadStaticHostingResponse
+} from '../../types';
+
+export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
+  const response = await fetch(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
+    method: 'POST',
+    body: JSON.stringify(request)
+  });
+  if (!response.ok) {
+    throw new Error(response.statusText);
   }
-  return crypto.createHash('md5').update(input).digest('hex');
+  return response.json();
 };
 
-export const getUniqueToken = (input: string, totalLength: number, maxHashLength: number): string => {
-  if (maxHashLength + 1 >= totalLength) {
-    throw new Error('maxHashLength must be less than totalLength - 1');
+export const uploadFileWithSignedUrl = async (
+  signedUrl: string,
+  fields: Record<string, string>,
+  objectKey: string,
+  localFilePath: string,
+  dryRun: boolean = false
+) => {
+  core.info(`File upload: ${localFilePath} -> ${objectKey}`);
+  if (dryRun) {
+    return;
   }
-  const token = input
-    .replace(/[^a-zA-Z0-9]/g, '-')
-    // merge multiple dashes because double-dash is used as path separators
-    .replace(/-{2,}/g, '-')
-    // remove leading and trailing dashes
-    .replace(/^-+/g, '')
-    .replace(/-+$/, '')
-    .toLowerCase();
-  if (token.length <= totalLength) {
-    return token;
+
+  const form = new FormData();
+  for (const key of Object.keys(fields)) {
+    if (key !== 'key') {
+      form.append(key, fields[key]);
+    }
   }
-  const hash = getHash(token).slice(0, maxHashLength);
-  // merge multiple dashes after truncation
-  return `${token.slice(0, totalLength - hash.length - 1)}-${hash}`.replace(/-{2,}/g, '-');
+  form.append('key', objectKey);
+  form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
+  form.append('file', fs.readFileSync(localFilePath));
+
+  const response = await fetch(signedUrl, {
+    method: 'POST',
+    body: form as any
+  });
+
+  core.info(`File upload ${objectKey}: ${response.status} - ${response.statusText}`);
 };
 
-export const getUploadSubdomain = (owner: string, repo: string, ghSha: string, pluginId: string): string => {
-  const ownerToken = getUniqueToken(owner, 15, 5);
-  const repoToken = getUniqueToken(repo, 15, 5);
-  const shaToken = ghSha.slice(0, 7);
-  const pluginIdToken = getUniqueToken(pluginId, 10, 4);
-  return `${ownerToken}--${repoToken}--${shaToken}--${pluginIdToken}`;
+// Reference:
+// https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
+export const uploadDirectory = async (
+  signedUrl: string,
+  fields: Record<string, string>,
+  localPathToUpload: string,
+  targetDirectory: string = '',
+  dryRun: boolean = false
+) => {
+  const dirPath = resolve(localPathToUpload);
+  const dirStats = await fs.promises.stat(dirPath);
+  const objectPrefix = targetDirectory ?? '';
+
+  if (!dirStats.isDirectory()) {
+    throw new Error(`Path is not a directory: ${dirPath}`);
+  }
+
+  try {
+    const files = await fs.promises.readdir(dirPath);
+
+    if (!Array.isArray(files)) {
+      core.debug(`Empty directory is ignored: ${dirPath}`);
+      return;
+    }
+
+    await bluebird.Promise.map(
+      files,
+      async (filename: string) => {
+        const absoluteLocalPath = posix.join(dirPath, filename);
+        const fileStats = await fs.promises.stat(absoluteLocalPath);
+        const objectKey = posix.join(objectPrefix, filename);
+
+        if (fileStats.isFile()) {
+          await uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
+        } else if (fileStats.isDirectory()) {
+          await uploadDirectory(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
+        }
+      },
+      {
+        concurrency: 10
+      }
+    );
+  } catch (e) {
+    throw new Error(`File upload failed: ${e}`);
+  }
+};
+
+export const submitPartialConfig = async (
+  pluginId: string,
+  ghSha: string,
+  ghToken: string,
+  hostingUrl: string,
+  stoatConfigFileId: number
+) => {
+  const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
+  const requestBody: UploadStaticHostingRequest = {
+    ghSha,
+    pluginId,
+    stoatConfigFileId,
+    hostingUrl,
+    ghToken
+  };
+  const response = await fetch(staticHostingApiUrl, {
+    method: 'POST',
+    body: JSON.stringify(requestBody)
+  });
+  if (!response.ok) {
+    core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
+    return;
+  }
+  const { partialConfigId } = (await response.json()) as UploadStaticHostingResponse;
+  core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
 };

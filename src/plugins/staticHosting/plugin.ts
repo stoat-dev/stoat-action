@@ -1,28 +1,18 @@
 import * as core from '@actions/core';
-import * as exec from '@actions/exec';
-import fetch from 'cross-fetch';
 import fs from 'fs';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
-import { API_URL_BASE } from '../../stoatApiHelpers';
-import {
-  GetSurgeCredentialRequest,
-  GetSurgeCredentialResponse,
-  GithubActionRun,
-  UploadStaticHostingRequest,
-  UploadStaticHostingResponse
-} from '../../types';
-import { getUploadSubdomain } from './helpers';
-
-const domain = 'surge.sh';
+import { GithubActionRun } from '../../types';
+import { createSignedUrl, submitPartialConfig, uploadDirectory } from './helpers';
 
 const runStaticHostingPlugin = async (
   pluginId: string,
   pluginConfig: StaticHostingPlugin,
-  githubActionRun: GithubActionRun,
+  { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${pluginId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+  core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
 
   const pathToUpload = pluginConfig.static_hosting.path;
   if (!fs.existsSync(pathToUpload)) {
@@ -30,54 +20,21 @@ const runStaticHostingPlugin = async (
     return;
   }
 
-  const {
+  // get signed url
+  const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
+    ghOwner: owner,
+    ghRepo: repo,
+    ghSha,
     ghToken,
-    ghRepository: { repo, owner },
-    ghSha
-  } = githubActionRun;
-
-  // get surge token
-  const params: GetSurgeCredentialRequest = {
-    stoatConfigFileId: String(stoatConfigFileId),
-    ghToken
-  };
-  const surgeApiUrl = `${API_URL_BASE}/api/surge?${Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')}`;
-  const surgeResponse = await fetch(surgeApiUrl, { method: 'GET' });
-  const { surgeToken } = (await surgeResponse.json()) as GetSurgeCredentialResponse;
+    pluginId
+  });
 
   // upload directory
-  const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId);
-  const uploadUrl = `${uploadSubdomain}.${domain}`;
-  const installExitCode = await exec.exec('npm', ['install', '--global', 'surge'], { silent: false });
-  core.info(`[${pluginId}] Install surge (exit code ${installExitCode})`);
-
-  core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
-  const uploadExitCode = await exec.exec('surge', [pathToUpload, uploadUrl, '--token', surgeToken], {
-    silent: false
-  });
-  core.info(`[${pluginId}] Upload ${pathToUpload} to ${uploadUrl} (exit code ${uploadExitCode})`);
+  core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);
+  await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
-  const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
-  const requestBody: UploadStaticHostingRequest = {
-    ghSha,
-    pluginId,
-    stoatConfigFileId,
-    uploadUrl: `https://${uploadUrl}`,
-    ghToken
-  };
-  const response = await fetch(staticHostingApiUrl, {
-    method: 'POST',
-    body: JSON.stringify(requestBody)
-  });
-  if (!response.ok) {
-    core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
-    return;
-  }
-  const { partialConfigId } = (await response.json()) as UploadStaticHostingResponse;
-  core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
+  await submitPartialConfig(pluginId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
 };
 
 export default runStaticHostingPlugin;
