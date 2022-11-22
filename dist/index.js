@@ -4003,20 +4003,19 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     const form = new (form_data_default())();
     for (const key of Object.keys(fields)) {
         if (key !== 'key') {
+            lib_core.info(`Appending form field: ${key} -> ${fields[key]}`);
             form.append(key, fields[key]);
         }
     }
     form.append('key', objectKey);
+    lib_core.info(`Appending form field: Content-Type -> ${mime_types.lookup(localFilePath) || 'application/octet-stream'}`);
     form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
     const response = yield node_ponyfill_default()(signedUrl, {
         method: 'POST',
         body: form
     });
-    if (response.status >= 300) {
-        lib_core.debug(`File upload failed for ${objectKey}: ${JSON.stringify(response)}`);
-    }
-    lib_core.info(`File upload ${objectKey}: ${response.status} - ${response.statusText}`);
+    lib_core.info(`File upload ${objectKey}: ${JSON.stringify(response)}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
@@ -4030,7 +4029,7 @@ const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory =
     try {
         const files = yield external_fs_default().promises.readdir(dirPath);
         if (!Array.isArray(files)) {
-            lib_core.debug(`Empty directory is ignored: ${dirPath}`);
+            lib_core.warning(`Empty directory is ignored: ${dirPath}`);
             return;
         }
         yield bluebird.Promise.map(files, (filename) => helpers_awaiter(void 0, void 0, void 0, function* () {
@@ -4065,7 +4064,7 @@ const submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoatConfigFi
         method: 'POST',
         body: JSON.stringify(requestBody)
     });
-    lib_core.debug(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
+    lib_core.info(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
         lib_core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
         return;

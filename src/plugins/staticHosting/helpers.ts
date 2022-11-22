@@ -42,10 +42,12 @@ export const uploadFileWithSignedUrl = async (
   const form = new FormData();
   for (const key of Object.keys(fields)) {
     if (key !== 'key') {
+      core.info(`Appending form field: ${key} -> ${fields[key]}`);
       form.append(key, fields[key]);
     }
   }
   form.append('key', objectKey);
+  core.info(`Appending form field: Content-Type -> ${mime.lookup(localFilePath) || 'application/octet-stream'}`);
   form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
 
@@ -54,10 +56,7 @@ export const uploadFileWithSignedUrl = async (
     body: form as any
   });
 
-  if (response.status >= 300) {
-    core.debug(`File upload failed for ${objectKey}: ${JSON.stringify(response)}`);
-  }
-  core.info(`File upload ${objectKey}: ${response.status} - ${response.statusText}`);
+  core.info(`File upload ${objectKey}: ${JSON.stringify(response)}`);
 };
 
 // Reference:
@@ -81,7 +80,7 @@ export const uploadDirectory = async (
     const files = await fs.promises.readdir(dirPath);
 
     if (!Array.isArray(files)) {
-      core.debug(`Empty directory is ignored: ${dirPath}`);
+      core.warning(`Empty directory is ignored: ${dirPath}`);
       return;
     }
 
@@ -127,7 +126,7 @@ export const submitPartialConfig = async (
     method: 'POST',
     body: JSON.stringify(requestBody)
   });
-  core.debug(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
+  core.info(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
   if (!response.ok) {
     core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
     return;
