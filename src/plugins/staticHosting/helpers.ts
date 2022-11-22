@@ -52,12 +52,14 @@ export const uploadFileWithSignedUrl = async (
   form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
 
+  core.info(`-- Form: ${JSON.stringify(form)}`);
+
   const response = await fetch(signedUrl, {
     method: 'POST',
     body: form as any
   });
 
-  core.info(`File upload ${objectKey}: ${JSON.stringify(await response.json())}`);
+  core.info(`File upload ${objectKey}: ${await response.text()}`);
 };
 
 // Reference:
@@ -66,7 +68,7 @@ export const uploadDirectory = async (
   signedUrl: string,
   fields: Record<string, string>,
   localPathToUpload: string,
-  targetDirectory: string = '',
+  targetDirectory: string,
   dryRun: boolean = false
 ) => {
   const dirPath = resolve(localPathToUpload);

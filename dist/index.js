@@ -4012,15 +4012,16 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     lib_core.info(`-- Appending form field: Content-Type -> ${mime_types.lookup(localFilePath) || 'application/octet-stream'}`);
     form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
+    lib_core.info(`-- Form: ${JSON.stringify(form)}`);
     const response = yield node_ponyfill_default()(signedUrl, {
         method: 'POST',
         body: form
     });
-    lib_core.info(`File upload ${objectKey}: ${JSON.stringify(yield response.json())}`);
+    lib_core.info(`File upload ${objectKey}: ${yield response.text()}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
-const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory = '', dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
+const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
     const dirPath = (0,external_path_.resolve)(localPathToUpload);
     const dirStats = yield external_fs_default().promises.stat(dirPath);
     const objectPrefix = targetDirectory !== null && targetDirectory !== void 0 ? targetDirectory : '';
