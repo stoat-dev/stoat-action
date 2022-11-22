@@ -3984,40 +3984,37 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 
 const createSignedUrl = (request) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${request.pluginId}] Getting signed url...`);
     const response = yield node_ponyfill_default()(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
         method: 'POST',
         body: JSON.stringify(request)
     });
     const results = (yield response.json());
-    lib_core.info(`Signed URL response: ${JSON.stringify(results)}`);
     if (!response.ok) {
         throw new Error(response.statusText);
     }
+    lib_core.info(`[${request.pluginId}] Hosting URL: ${results.hostingUrl}`);
     return results;
 });
 const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`File upload: ${localFilePath} -> ${objectKey}`);
+    lib_core.info(`-- Uploading file: ${localFilePath} -> ${objectKey}`);
     if (dryRun) {
         return;
     }
     const form = new (form_data_default())();
     for (const key of Object.keys(fields)) {
         if (key !== 'key') {
-            lib_core.info(`-- Appending form field: ${key} -> ${fields[key]}`);
             form.append(key, fields[key]);
         }
     }
-    lib_core.info(`-- Appending form field: key -> ${objectKey}`);
     form.append('key', objectKey);
-    lib_core.info(`-- Appending form field: Content-Type -> ${mime_types.lookup(localFilePath) || 'application/octet-stream'}`);
     form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
-    lib_core.info(`-- Form: ${JSON.stringify(form)}`);
     const response = yield node_ponyfill_default()(signedUrl, {
         method: 'POST',
         body: form
     });
-    lib_core.info(`File upload ${objectKey}: ${yield response.text()}`);
+    lib_core.info(`-- Upload ${objectKey}: ${response.status} - ${response.statusText}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
@@ -4097,7 +4094,6 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository:
         return;
     }
     // get signed url
-    lib_core.info(`[${pluginId}] Getting signed url...`);
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner: owner,
         ghRepo: repo,
@@ -4105,7 +4101,6 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository:
         ghToken,
         pluginId
     });
-    lib_core.info(`[${pluginId}] Hosting URL: ${hostingUrl}`);
     // upload directory
     lib_core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);

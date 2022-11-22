@@ -15,15 +15,18 @@ import {
 } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
+  core.info(`[${request.pluginId}] Getting signed url...`);
   const response = await fetch(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
     method: 'POST',
     body: JSON.stringify(request)
   });
+
   const results = (await response.json()) as CreateSignedUrlResponse;
-  core.info(`Signed URL response: ${JSON.stringify(results)}`);
   if (!response.ok) {
     throw new Error(response.statusText);
   }
+
+  core.info(`[${request.pluginId}] Hosting URL: ${results.hostingUrl}`);
   return results;
 };
 
@@ -34,7 +37,7 @@ export const uploadFileWithSignedUrl = async (
   localFilePath: string,
   dryRun: boolean = false
 ) => {
-  core.info(`File upload: ${localFilePath} -> ${objectKey}`);
+  core.info(`-- Uploading file: ${localFilePath} -> ${objectKey}`);
   if (dryRun) {
     return;
   }
@@ -42,24 +45,19 @@ export const uploadFileWithSignedUrl = async (
   const form = new FormData();
   for (const key of Object.keys(fields)) {
     if (key !== 'key') {
-      core.info(`-- Appending form field: ${key} -> ${fields[key]}`);
       form.append(key, fields[key]);
     }
   }
-  core.info(`-- Appending form field: key -> ${objectKey}`);
   form.append('key', objectKey);
-  core.info(`-- Appending form field: Content-Type -> ${mime.lookup(localFilePath) || 'application/octet-stream'}`);
   form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
-
-  core.info(`-- Form: ${JSON.stringify(form)}`);
 
   const response = await fetch(signedUrl, {
     method: 'POST',
     body: form as any
   });
 
-  core.info(`File upload ${objectKey}: ${await response.text()}`);
+  core.info(`-- Upload ${objectKey}: ${response.status} - ${response.statusText}`);
 };
 
 // Reference:
