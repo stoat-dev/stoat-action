@@ -3988,11 +3988,12 @@ const createSignedUrl = (request) => helpers_awaiter(void 0, void 0, void 0, fun
         method: 'POST',
         body: JSON.stringify(request)
     });
-    lib_core.info(`Signed URL response: ${JSON.stringify(response)}`);
+    const results = (yield response.json());
+    lib_core.info(`Signed URL response: ${JSON.stringify(results)}`);
     if (!response.ok) {
         throw new Error(response.statusText);
     }
-    return response.json();
+    return results;
 });
 const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`File upload: ${localFilePath} -> ${objectKey}`);
@@ -4012,6 +4013,9 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
         method: 'POST',
         body: form
     });
+    if (response.status >= 300) {
+        lib_core.debug(`File upload failed for ${objectKey}: ${JSON.stringify(response)}`);
+    }
     lib_core.info(`File upload ${objectKey}: ${response.status} - ${response.statusText}`);
 });
 // Reference:
