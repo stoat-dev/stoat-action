@@ -4003,19 +4003,20 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     const form = new (form_data_default())();
     for (const key of Object.keys(fields)) {
         if (key !== 'key') {
-            lib_core.info(`Appending form field: ${key} -> ${fields[key]}`);
+            lib_core.info(`-- Appending form field: ${key} -> ${fields[key]}`);
             form.append(key, fields[key]);
         }
     }
+    lib_core.info(`-- Appending form field: key -> ${objectKey}`);
     form.append('key', objectKey);
-    lib_core.info(`Appending form field: Content-Type -> ${mime_types.lookup(localFilePath) || 'application/octet-stream'}`);
+    lib_core.info(`-- Appending form field: Content-Type -> ${mime_types.lookup(localFilePath) || 'application/octet-stream'}`);
     form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
     const response = yield node_ponyfill_default()(signedUrl, {
         method: 'POST',
         body: form
     });
-    lib_core.info(`File upload ${objectKey}: ${JSON.stringify(response)}`);
+    lib_core.info(`File upload ${objectKey}: ${JSON.stringify(yield response.json())}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255

@@ -42,12 +42,13 @@ export const uploadFileWithSignedUrl = async (
   const form = new FormData();
   for (const key of Object.keys(fields)) {
     if (key !== 'key') {
-      core.info(`Appending form field: ${key} -> ${fields[key]}`);
+      core.info(`-- Appending form field: ${key} -> ${fields[key]}`);
       form.append(key, fields[key]);
     }
   }
+  core.info(`-- Appending form field: key -> ${objectKey}`);
   form.append('key', objectKey);
-  core.info(`Appending form field: Content-Type -> ${mime.lookup(localFilePath) || 'application/octet-stream'}`);
+  core.info(`-- Appending form field: Content-Type -> ${mime.lookup(localFilePath) || 'application/octet-stream'}`);
   form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
 
@@ -56,7 +57,7 @@ export const uploadFileWithSignedUrl = async (
     body: form as any
   });
 
-  core.info(`File upload ${objectKey}: ${JSON.stringify(response)}`);
+  core.info(`File upload ${objectKey}: ${JSON.stringify(await response.json())}`);
 };
 
 // Reference:
