@@ -19,11 +19,12 @@ export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<
     method: 'POST',
     body: JSON.stringify(request)
   });
-  core.info(`Signed URL response: ${JSON.stringify(response)}`);
+  const results = (await response.json()) as CreateSignedUrlResponse;
+  core.info(`Signed URL response: ${JSON.stringify(results)}`);
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  return response.json();
+  return results;
 };
 
 export const uploadFileWithSignedUrl = async (
@@ -53,6 +54,9 @@ export const uploadFileWithSignedUrl = async (
     body: form as any
   });
 
+  if (response.status >= 300) {
+    core.debug(`File upload failed for ${objectKey}: ${JSON.stringify(response)}`);
+  }
   core.info(`File upload ${objectKey}: ${response.status} - ${response.statusText}`);
 };
 
