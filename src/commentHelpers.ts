@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
-import { GithubActionRun, UpdateCommentResponse, UploadWorkflowOutputRequest } from './types';
+import { GithubActionRun, UpdateWorkflowOutputResponse, UploadWorkflowOutputRequest } from './types';
 
 export const uploadWorkflowOutputs = async (
   stoatConfig: StoatConfigSchema,
@@ -46,7 +46,7 @@ export const uploadWorkflowOutputs = async (
     throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
   }
 
-  const { stoatConfigFileId } = (await response.json()) as UpdateCommentResponse;
+  const { stoatConfigFileId } = (await response.json()) as UpdateWorkflowOutputResponse;
   core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
   return stoatConfigFileId;
 };

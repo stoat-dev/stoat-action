@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 
 import { StoatConfigSchema } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
-import { runStaticHostingPlugin } from './staticHostingPlugin';
+import { runStaticHostingPlugin } from './staticHosting';
 
 export const runPlugins = async (
   stoatConfig: StoatConfigSchema,

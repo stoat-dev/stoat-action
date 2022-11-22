@@ -1,11 +1,23 @@
-// These types are copied from site/src/api/types.ts. In the future, they should be moved to a package.
-
 // this doesn't use the gh prefix since it's used to interact with the github context
 export interface Repository {
   owner: string;
   repo: string;
 }
 
+export type GithubActionRun = {
+  ghRepository: Repository;
+  ghBranch: string;
+  ghPullRequestNumber: number | null;
+  ghWorkflow: string;
+  ghSha: string;
+  ghCommitTimestamp: Date;
+  ghRunId: number;
+  ghRunNumber: number;
+  ghRunAttempt: number;
+  ghToken: string;
+};
+
+// These types are copied from site/src/api/types.ts. In the future, they should be moved to a package.
 export type UploadWorkflowOutputRequest = {
   ghOwner: string;
   ghRepo: string;
@@ -22,38 +34,30 @@ export type UploadWorkflowOutputRequest = {
   ghToken: string;
 };
 
-export type UpdateCommentResponse = {
+export type UpdateWorkflowOutputResponse = {
   stoatConfigFileId: number;
 };
 
-export type GetSurgeCredentialRequest = {
-  stoatConfigFileId: string;
-  ghToken: string;
-};
-
-export type GetSurgeCredentialResponse = {
-  surgeLogin: string;
-  surgeToken: string;
-};
-
-export type GithubActionRun = {
-  ghRepository: Repository;
-  ghBranch: string;
-  ghPullRequestNumber: number | null;
-  ghWorkflow: string;
+export type CreateSignedUrlRequest = {
+  ghOwner: string;
+  ghRepo: string;
   ghSha: string;
-  ghCommitTimestamp: Date;
-  ghRunId: number;
-  ghRunNumber: number;
-  ghRunAttempt: number;
   ghToken: string;
+  pluginId: string;
+};
+
+export type CreateSignedUrlResponse = {
+  signedUrl: string;
+  fields: Record<string, string>;
+  objectPath: string;
+  hostingUrl: string;
 };
 
 export type UploadStaticHostingRequest = {
   ghSha: string;
   pluginId: string;
   stoatConfigFileId: number;
-  uploadUrl: string;
+  hostingUrl: string;
   ghToken: string;
 };
 
