@@ -1,37 +1,22 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import fetch from 'cross-fetch';
-import crypto from 'crypto';
 import fs from 'fs';
 
-import { StaticHostingPlugin } from '../schemas/stoatConfigSchema';
-import { API_URL_BASE } from '../stoatApiHelpers';
+import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
+import { API_URL_BASE } from '../../stoatApiHelpers';
 import {
   GetSurgeCredentialRequest,
   GetSurgeCredentialResponse,
   GithubActionRun,
   UploadStaticHostingRequest,
   UploadStaticHostingResponse
-} from '../types';
+} from '../../types';
+import { getUploadSubdomain } from './helpers';
 
 const domain = 'surge.sh';
 
-export const getUploadSubdomain = (
-  owner: string,
-  repo: string,
-  ghSha: string,
-  pluginId: string,
-  ghPullRequestNumber: number | null
-): string => {
-  const repoHash = crypto.createHash('md5').update(`${owner}-${repo}`).digest('hex');
-  const repoName = `${owner.slice(0, 15)}-${repo.slice(0, 15)}-${repoHash.slice(0, 5)}`;
-  const shortSha = ghSha.substring(0, 7);
-  const prNumber = ghPullRequestNumber ? `${ghPullRequestNumber}-` : '';
-  const rawUploadUrl = `${repoName}-${prNumber}${shortSha}-${pluginId.slice(0, 10)}`;
-  return rawUploadUrl.replace(/[^a-zA-Z0-9]/g, '-');
-};
-
-export const runStaticHostingPlugin = async (
+const runStaticHostingPlugin = async (
   pluginId: string,
   pluginConfig: StaticHostingPlugin,
   githubActionRun: GithubActionRun,
@@ -48,7 +33,6 @@ export const runStaticHostingPlugin = async (
   const {
     ghToken,
     ghRepository: { repo, owner },
-    ghPullRequestNumber,
     ghSha
   } = githubActionRun;
 
@@ -64,7 +48,7 @@ export const runStaticHostingPlugin = async (
   const { surgeToken } = (await surgeResponse.json()) as GetSurgeCredentialResponse;
 
   // upload directory
-  const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId, ghPullRequestNumber);
+  const uploadSubdomain = getUploadSubdomain(owner, repo, ghSha, pluginId);
   const uploadUrl = `${uploadSubdomain}.${domain}`;
   const installExitCode = await exec.exec('npm', ['install', '--global', 'surge'], { silent: false });
   core.info(`[${pluginId}] Install surge (exit code ${installExitCode})`);
@@ -95,3 +79,5 @@ export const runStaticHostingPlugin = async (
   const { partialConfigId } = (await response.json()) as UploadStaticHostingResponse;
   core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
 };
+
+export default runStaticHostingPlugin;
