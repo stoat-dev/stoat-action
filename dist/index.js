@@ -3886,7 +3886,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
-const API_URL_BASE = 'https://stoat-git-liren-update-static-hosting-stoat-dev.vercel.app/';
+const API_URL_BASE = 'https://www.stoat.dev';
 function waitForShaToMatch(repoSha) {
     return __awaiter(this, void 0, void 0, function* () {
         const url = `${API_URL_BASE}/api/debug/sha`;

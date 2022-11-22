@@ -5,7 +5,7 @@ interface ShaResponse {
   sha: string;
 }
 
-export const API_URL_BASE = 'https://stoat-git-liren-update-static-hosting-stoat-dev.vercel.app/';
+export const API_URL_BASE = 'https://www.stoat.dev';
 
 export async function waitForShaToMatch(repoSha: string) {
   const url = `${API_URL_BASE}/api/debug/sha`;
