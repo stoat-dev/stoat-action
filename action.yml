@@ -1,6 +1,9 @@
-name: 'Stoat'
+name: 'Stoat Action'
 description: 'Supercharge your CI / CD pipelines'
 author: 'Stoat Dev'
+branding:
+  icon: 'sun'
+  color: 'white'
 inputs:
   token:
     description: 'GITHUB_TOKEN or a repo scoped PAT.'
