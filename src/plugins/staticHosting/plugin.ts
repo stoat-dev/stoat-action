@@ -21,6 +21,7 @@ const runStaticHostingPlugin = async (
   }
 
   // get signed url
+  core.info(`[${pluginId}] Getting signed url...`);
   const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
     ghOwner: owner,
     ghRepo: repo,
@@ -28,6 +29,7 @@ const runStaticHostingPlugin = async (
     ghToken,
     pluginId
   });
+  core.info(`[${pluginId}] Hosting URL: ${hostingUrl}`);
 
   // upload directory
   core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);

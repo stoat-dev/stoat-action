@@ -4047,6 +4047,7 @@ const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory =
     }
 });
 const submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoatConfigFileId) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${pluginId}] Submitting partial config...`);
     const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
     const requestBody = {
         ghSha,
@@ -4059,6 +4060,7 @@ const submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoatConfigFi
         method: 'POST',
         body: JSON.stringify(requestBody)
     });
+    lib_core.debug(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
         lib_core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
         return;
@@ -4089,6 +4091,7 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository:
         return;
     }
     // get signed url
+    lib_core.info(`[${pluginId}] Getting signed url...`);
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner: owner,
         ghRepo: repo,
@@ -4096,6 +4099,7 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository:
         ghToken,
         pluginId
     });
+    lib_core.info(`[${pluginId}] Hosting URL: ${hostingUrl}`);
     // upload directory
     lib_core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);

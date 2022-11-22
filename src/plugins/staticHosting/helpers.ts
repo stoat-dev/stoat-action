@@ -109,6 +109,7 @@ export const submitPartialConfig = async (
   hostingUrl: string,
   stoatConfigFileId: number
 ) => {
+  core.info(`[${pluginId}] Submitting partial config...`);
   const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
   const requestBody: UploadStaticHostingRequest = {
     ghSha,
@@ -121,6 +122,7 @@ export const submitPartialConfig = async (
     method: 'POST',
     body: JSON.stringify(requestBody)
   });
+  core.debug(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
   if (!response.ok) {
     core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
     return;
