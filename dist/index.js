@@ -4005,6 +4005,7 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 
+const MAX_CHARACTERS = 1024;
 const runJsonPlugin = (pluginId, pluginConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${pluginId}] Running json plugin (stoat config ${stoatConfigFileId})`);
     lib_core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
@@ -4013,9 +4014,15 @@ const runJsonPlugin = (pluginId, pluginConfig, { ghToken, ghRepository: { repo, 
         lib_core.warning(`[${pluginId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
         return;
     }
+    const jsonString = (0,external_fs_.readFileSync)(jsonToUpload).toString();
+    if (jsonString.length > MAX_CHARACTERS) {
+        const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
+        lib_core.error(message);
+        throw Error(message);
+    }
     let value;
     try {
-        value = JSON.parse((0,external_fs_.readFileSync)(jsonToUpload).toString());
+        value = JSON.parse(jsonString);
     }
     catch (e) {
         const message = `JSON file to upload does not have valid JSON contents: ${jsonToUpload}`;
