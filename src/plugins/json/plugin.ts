@@ -5,6 +5,8 @@ import { JsonPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from './helpers';
 
+const MAX_CHARACTERS = 1024;
+
 const runJsonPlugin = async (
   pluginId: string,
   pluginConfig: JsonPlugin,
@@ -22,10 +24,18 @@ const runJsonPlugin = async (
     return;
   }
 
+  const jsonString = readFileSync(jsonToUpload).toString();
+
+  if (jsonString.length > MAX_CHARACTERS) {
+    const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
+    core.error(message);
+    throw Error(message);
+  }
+
   let value;
 
   try {
-    value = JSON.parse(readFileSync(jsonToUpload).toString());
+    value = JSON.parse(jsonString);
   } catch (e) {
     const message = `JSON file to upload does not have valid JSON contents: ${jsonToUpload}`;
     core.error(message);
