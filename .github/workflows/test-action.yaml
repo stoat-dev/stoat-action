@@ -4,10 +4,14 @@ on:
     branches:
       - main
       - 'releases/*'
+    paths:
+      - '!docs/**'
   push:
     branches:
       - main
       - 'releases/*'
+    paths:
+      - '!docs/**'
 
 jobs:
   build:
