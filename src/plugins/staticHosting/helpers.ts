@@ -38,7 +38,7 @@ export const uploadFileWithSignedUrl = async (
   dryRun: boolean = false
 ) => {
   if (dryRun) {
-    core.info(`-- File to upload: ${localFilePath} -> ${objectKey}`);
+    core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
     return;
   }
 
