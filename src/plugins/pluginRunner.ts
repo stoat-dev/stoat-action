@@ -14,7 +14,6 @@ export const runPlugins = async (
     if ('static_hosting' in pluginConfig) {
       await runStaticHostingPlugin(pluginId, pluginConfig as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
     } else if ('json' in pluginConfig) {
-      // todo
       await runJsonPlugin(pluginId, pluginConfig as JsonPlugin, githubActionRun, stoatConfigFileId);
     } else {
       core.warning(`Unknown plugin: ${pluginId}`);
