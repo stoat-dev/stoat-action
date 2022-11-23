@@ -1,0 +1,36 @@
+name: Docs
+
+# why isn't this just on: push: ?
+# because we want to test different build patterns, that's why
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Build
+        run: |
+          cd docs
+          npm install
+          npm run build
+
+      - name: Run Stoat Action
+        uses: ./
+        if: always()

@@ -35,6 +35,6 @@ jobs:
         with:
           name: dist
           path: dist/
-      - name: Run stoat action
+      - name: Run Stoat Action
         uses: ./
         if: always()
