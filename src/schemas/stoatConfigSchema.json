@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "required": ["version", "comment_template"],
-  "additionalProperties": false,
+  "additionalProperties": true,
   "properties": {
     "version": {
       "type": "integer"
@@ -17,7 +17,7 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }]
+        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
       }
     }
   },
@@ -31,6 +31,25 @@
           "additionalProperties": true
         },
         "static_hosting": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "json_plugin": {
+      "type": "object",
+      "required": ["json"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "json": {
           "type": "object",
           "required": ["path"],
           "properties": {

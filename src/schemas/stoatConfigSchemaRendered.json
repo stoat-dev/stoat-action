@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "required": ["version", "comment_template", "updated_at"],
-  "additionalProperties": false,
+  "additionalProperties": true,
   "properties": {
     "version": {
       "type": "integer"
@@ -58,6 +58,29 @@
                   "updated_at": {
                     "type": "string",
                     "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["json"],
+            "properties": {
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "json": {
+                "type": "object",
+                "required": ["path", "value"],
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "object",
+                    "additionalProperties": true
                   }
                 }
               }
