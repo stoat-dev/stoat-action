@@ -4078,8 +4078,8 @@ const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 
     return results;
 });
 const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`-- Uploading file: ${localFilePath} -> ${objectKey}`);
     if (dryRun) {
+        lib_core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
         return;
     }
     const form = new (form_data_default())();
@@ -4095,7 +4095,7 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
         method: 'POST',
         body: form
     });
-    lib_core.info(`-- Upload ${objectKey}: ${response.status} - ${response.statusText}`);
+    lib_core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
@@ -4349,7 +4349,7 @@ function run(stoatConfig) {
         else {
             lib_core.info(`Detected pull request number: ${pullRequestNumber}`);
         }
-        lib_core.info(`Fetching repo's sha (not the build's merge commit sha)...`);
+        lib_core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
         const repoSha = lib_core.getInput('actual_sha');
         lib_core.info('Checking if prior steps succeeded...');
         let stepsSucceeded = true;
@@ -4362,9 +4362,9 @@ function run(stoatConfig) {
         // with matrix jobs and such this can be difficult to determine
         // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
         for (const job of jobListResponse.data.jobs) {
-            lib_core.info(`Inspecting job name: ${job.name}`);
+            lib_core.info(`Inspecting job "${job.name}"`);
             for (const step of job.steps || []) {
-                lib_core.info(`-- Step "${step.name}" has conclusion: ${step.conclusion}`);
+                lib_core.info(`-- Step "${step.name}": ${step.conclusion}`);
                 if (step.conclusion !== null && step.conclusion !== 'skipped') {
                     stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
                 }
