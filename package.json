@@ -5,11 +5,12 @@
   "description": "Supercharge your CI / CD pipelines",
   "main": "lib/app.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run gen_types && tsc",
     "format": "prettier --write '**/*.{ts,json}'",
     "format-check": "prettier --check '**/*.{ts,json}'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
+    "gen_types": "json2ts -i 'src/schemas/**/*.json' -o src/schemas",
     "test": "jest --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
     "prepare": "husky install"

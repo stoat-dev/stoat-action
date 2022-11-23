@@ -127,7 +127,7 @@ export const submitPartialConfig = async (
     method: 'POST',
     body: JSON.stringify(requestBody)
   });
-  core.info(`[${pluginId}] Submitting partial config: ${response.status} - ${response.statusText}`);
+  core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
   if (!response.ok) {
     core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
     return;

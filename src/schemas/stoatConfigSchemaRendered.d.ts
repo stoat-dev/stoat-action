@@ -11,22 +11,37 @@ export interface StoatConfigSchemaRendered {
   comment_template: string;
   updated_at: string;
   plugins?: {
-    [k: string]: {
-      metadata?: {
-        [k: string]: unknown;
-      };
-      static_hosting: {
-        path: string;
-        link: string;
-        link_md: string;
-        status: string;
-        status_md: string;
-        status_link: string;
-        sha: string;
-        updated_at: string;
-        [k: string]: unknown;
-      };
-      [k: string]: unknown;
-    };
+    [k: string]:
+      | {
+          metadata?: {
+            [k: string]: unknown;
+          };
+          static_hosting: {
+            path: string;
+            link: string;
+            link_md: string;
+            status: string;
+            status_md: string;
+            status_link: string;
+            sha: string;
+            updated_at: string;
+            [k: string]: unknown;
+          };
+          [k: string]: unknown;
+        }
+      | {
+          metadata?: {
+            [k: string]: unknown;
+          };
+          json: {
+            path: string;
+            value: {
+              [k: string]: unknown;
+            };
+            [k: string]: unknown;
+          };
+          [k: string]: unknown;
+        };
   };
+  [k: string]: unknown;
 }

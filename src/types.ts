@@ -64,3 +64,15 @@ export type UploadStaticHostingRequest = {
 export type UploadStaticHostingResponse = {
   partialConfigId: number;
 };
+
+export type UploadJsonRequest = {
+  ghSha: string;
+  pluginId: string;
+  stoatConfigFileId: number;
+  value: object;
+  ghToken: string;
+};
+
+export type UploadJsonResponse = {
+  partialConfigId: number;
+};
