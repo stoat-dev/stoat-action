@@ -2,6 +2,6 @@
 | :--- | :--- | :--: | :-----: |
 {{#each plugins}}
 {{#if this.static_hosting}}
-| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | {{{ this.static_hosting.link_md }}} | {{ this.static_hosting.sha }} | {{#if this.static_hosting.status_md}}{{{ this.static_hosting.status_md }}}{{else}}🔄{{/if}} |
+{{#if this.static_hosting.status_md ~}}| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | {{{ this.static_hosting.link_md }}} | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status_md }}} |{{/if ~}}
 {{/if}}
 {{/each}}
