@@ -8,3 +8,6 @@ plugins:
       name: Jest Coverage
     static_hosting:
       path: coverage/lcov-report
+  docs:
+    static_hosting:
+      path: docs/build
