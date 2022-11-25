@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
+import { StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
 import { runJsonPlugin } from './json';
 import { runStaticHostingPlugin } from './staticHosting';

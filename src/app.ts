@@ -65,7 +65,7 @@ async function run(stoatConfig: any) {
     core.info(`Detected pull request number: ${pullRequestNumber}`);
   }
 
-  core.info(`Fetching repo's sha (not the build's merge commit sha)...`);
+  core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
   const repoSha = core.getInput('actual_sha');
 
   core.info('Checking if prior steps succeeded...');
@@ -81,9 +81,9 @@ async function run(stoatConfig: any) {
   // with matrix jobs and such this can be difficult to determine
   // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
   for (const job of jobListResponse.data.jobs) {
-    core.info(`Inspecting job name: ${job.name}`);
+    core.info(`Inspecting job "${job.name}"`);
     for (const step of job.steps || []) {
-      core.info(`-- Step "${step.name}" has conclusion: ${step.conclusion}`);
+      core.info(`-- Step "${step.name}": ${step.conclusion}`);
       if (step.conclusion !== null && step.conclusion !== 'skipped') {
         stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
       }
