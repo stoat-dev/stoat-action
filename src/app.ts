@@ -10,6 +10,7 @@ import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
+import { getTemplate } from './templates';
 import { GithubActionRun, Repository } from './types';
 
 const ajv = new Ajv();
@@ -96,8 +97,7 @@ async function run(stoatConfig: any) {
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
   core.info('Loading template...');
-  const commentTemplateFileBuffer = readFileSync(typedStoatConfig.comment_template);
-  const commentTemplateFile = commentTemplateFileBuffer.toString();
+  const commentTemplateFile = getTemplate(typedStoatConfig);
 
   core.info('Uploading workflow outputs...');
   const githubActionRun: GithubActionRun = {
