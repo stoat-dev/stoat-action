@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 5178:
+/***/ 830:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -3927,7 +3927,7 @@ var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thi
 
 
 
-const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
+const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
     const params = {
         ghOwner: ghRepository.owner,
         ghRepo: ghRepository.repo,
@@ -3940,7 +3940,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         ghRunNumber,
         ghRunAttempt,
         stoatConfig,
-        commentTemplateFile,
+        commentTemplate: commentTemplate.template,
         ghToken
     };
     const url = `${API_URL_BASE}/api/workflow_outputs`;
@@ -4281,7 +4281,103 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
 }
 
 ;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version","comment_template"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template":{"type":"string"},"plugins":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template":{"type":"string"},"plugins":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
+;// CONCATENATED MODULE: ./lib/types.js
+// These types are copied from src/common/types.ts.
+var PluginType;
+(function (PluginType) {
+    PluginType["StaticHosting"] = "static_hosting";
+    PluginType["Json"] = "json";
+})(PluginType || (PluginType = {}));
+var TemplateFormat;
+(function (TemplateFormat) {
+    TemplateFormat["Handlebars"] = "hbs";
+    TemplateFormat["Jinja2"] = "jinja2";
+})(TemplateFormat || (TemplateFormat = {}));
+
+;// CONCATENATED MODULE: ./lib/templateHelpers.js
+var templateHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+const getTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpers_awaiter(void 0, void 0, void 0, function* () {
+    const { comment_template } = stoatConfig;
+    if (comment_template === undefined || comment_template === '') {
+        return getRemoteDefaultTemplate(ghOwner, ghRepo, stoatConfig);
+    }
+    return getLocalTemplate(comment_template);
+});
+const getLocalTemplate = (commentTemplatePath) => {
+    const template = (0,external_fs_.readFileSync)(commentTemplatePath).toString().trim();
+    const format = getTemplateFormat(commentTemplatePath);
+    return { template, format };
+};
+const getTemplateFormat = (commentTemplatePath) => {
+    const pathTokens = commentTemplatePath.split('.');
+    const extension = pathTokens[pathTokens.length - 1];
+    for (const format of Object.values(TemplateFormat)) {
+        if (format === extension) {
+            return format;
+        }
+    }
+    throw new Error(`Unknown template format: ${commentTemplatePath}`);
+};
+const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpers_awaiter(void 0, void 0, void 0, function* () {
+    const params = {
+        ghOwner,
+        ghRepo,
+        stoatConfigVersion: String(stoatConfig.version),
+        pluginTypes: getPluginTypes(stoatConfig)
+    };
+    const urlParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+        if (Array.isArray(value)) {
+            for (const item of value) {
+                urlParams.append(key, item);
+            }
+        }
+        else {
+            urlParams.append(key, value);
+        }
+    }
+    const url = `${API_URL_BASE}/api/templates?${urlParams.toString()}`;
+    lib_core.info(`Fetching default template from ${url}`);
+    const response = yield node_ponyfill_default()(url, {
+        method: 'GET'
+    });
+    if (!response.ok) {
+        throw Error(`Failed to get default template: ${response.status} - ${response.statusText}`);
+    }
+    const { template, format } = (yield response.json());
+    lib_core.info(`Got default template (format ${format}):\n${template}`);
+    return { template, format };
+});
+const getPluginTypes = (stoatConfig) => {
+    if (!stoatConfig.plugins) {
+        return [];
+    }
+    const pluginTypes = new Set();
+    for (const plugin of Object.values(stoatConfig.plugins)) {
+        if ('static_hosting' in plugin) {
+            pluginTypes.add(PluginType.StaticHosting);
+        }
+        if ('json' in plugin) {
+            pluginTypes.add(PluginType.Json);
+        }
+    }
+    return Array.from(pluginTypes);
+};
+
 ;// CONCATENATED MODULE: ./lib/app.js
 var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4292,6 +4388,7 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -4373,10 +4470,6 @@ function run(stoatConfig) {
         lib_core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         lib_core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        lib_core.info('Loading template...');
-        const commentTemplateFileBuffer = (0,external_fs_.readFileSync)(typedStoatConfig.comment_template);
-        const commentTemplateFile = commentTemplateFileBuffer.toString();
-        lib_core.info('Uploading workflow outputs...');
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),
@@ -4389,7 +4482,11 @@ function run(stoatConfig) {
             ghRunAttempt: parseInt(lib_core.getInput('run_attempt')),
             ghToken: token
         };
-        const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
+        lib_core.info('Loading template...');
+        const { owner, repo } = githubActionRun.ghRepository;
+        const commentTemplate = yield getTemplate(owner, repo, typedStoatConfig);
+        lib_core.info('Uploading workflow outputs...');
+        const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
         yield runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
     });
 }
@@ -30663,7 +30760,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(5178);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(830);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
