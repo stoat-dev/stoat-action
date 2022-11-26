@@ -10,7 +10,7 @@ import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
-import { getTemplate } from './templates';
+import { getTemplate } from './templateHelpers';
 import { GithubActionRun, Repository } from './types';
 
 const ajv = new Ajv();

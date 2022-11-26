@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals';
 
-import { getTemplate } from '../../src/templates';
+import { getTemplate } from '../src/templateHelpers';
 
 test('getTemplate read version 1', () => {
   expect(

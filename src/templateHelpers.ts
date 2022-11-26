@@ -1,9 +1,12 @@
 import { readFileSync } from 'fs';
 
-import { StoatConfigSchema } from '../schemas/stoatConfigSchema';
+import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 
 export const getTemplate = (stoatConfig: StoatConfigSchema): string => {
   const { comment_template } = stoatConfig;
+  if (comment_template === undefined) {
+  }
+
   if (comment_template === '') {
     throw new Error(`Comment template is missing in the stoat config`);
   }
