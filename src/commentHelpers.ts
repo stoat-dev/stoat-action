@@ -43,7 +43,8 @@ export const uploadWorkflowOutputs = async (
   });
 
   if (!response.ok) {
-    throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
+    core.error(`Failed to upload workflow outputs: ${response.status} - (${response.statusText})`);
+    throw Error(`Failed to update comment: ${JSON.stringify(response)}`);
   }
 
   const { stoatConfigFileId } = (await response.json()) as UpdateWorkflowOutputResponse;
