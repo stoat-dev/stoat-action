@@ -100,6 +100,7 @@ describe('Read remote default template', () => {
 test('getTemplateFormat', () => {
   expect(getTemplateFormat(template1Path)).toEqual(TemplateFormat.Handlebars);
   expect(getTemplateFormat(template2Path)).toEqual(TemplateFormat.Jinja2);
+  expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 
 describe('getPluginTypes', () => {
