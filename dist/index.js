@@ -3949,7 +3949,8 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         body: JSON.stringify(params)
     });
     if (!response.ok) {
-        throw Error(`Failed to update comment: ${JSON.stringify(response, null, 2)}`);
+        lib_core.error(`Failed to upload workflow outputs: ${response.status} - (${response.statusText})`);
+        throw Error(`Failed to update comment: ${JSON.stringify(response)}`);
     }
     const { stoatConfigFileId } = (yield response.json());
     lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
@@ -3985,7 +3986,7 @@ const submitPartialConfig = (pluginId, ghSha, ghToken, value, stoatConfigFileId)
     });
     lib_core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
-        lib_core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
+        lib_core.error('Failed to run json plugin');
         return;
     }
     const { partialConfigId } = (yield response.json());
@@ -4146,7 +4147,7 @@ const helpers_submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoat
     });
     lib_core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
-        lib_core.error(`Failed to run static hosting plugin: ${response.statusText} (${response.status})`);
+        lib_core.error('Failed to run static hosting plugin');
         return;
     }
     const { partialConfigId } = (yield response.json());
