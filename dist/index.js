@@ -3949,8 +3949,8 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplateFile, { ghRepository,
         body: JSON.stringify(params)
     });
     if (!response.ok) {
-        lib_core.error(`Failed to upload workflow outputs: ${response.status} - (${response.statusText})`);
-        throw Error(`Failed to update comment: ${JSON.stringify(response)}`);
+        lib_core.error(`Failed to upload workflow outputs (${response.status} ${response.statusText}): ${yield response.text()}`);
+        throw new Error();
     }
     const { stoatConfigFileId } = (yield response.json());
     lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
