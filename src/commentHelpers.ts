@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
-import { GithubActionRun, Template, UpdateWorkflowOutputResponse, UploadWorkflowOutputRequest } from './types';
+import { GithubActionRun, Template, UpdateWorkflowOutputRequest, UpdateWorkflowOutputResponse } from './types';
 
 export const uploadWorkflowOutputs = async (
   stoatConfig: StoatConfigSchema,
@@ -21,7 +21,7 @@ export const uploadWorkflowOutputs = async (
     ghToken
   }: GithubActionRun
 ): Promise<number> => {
-  const params: UploadWorkflowOutputRequest = {
+  const params: UpdateWorkflowOutputRequest = {
     ghOwner: ghRepository.owner,
     ghRepo: ghRepository.repo,
     ghBranch,
@@ -33,7 +33,7 @@ export const uploadWorkflowOutputs = async (
     ghRunNumber,
     ghRunAttempt,
     stoatConfig,
-    commentTemplate: commentTemplate.template,
+    commentTemplateFile: commentTemplate.template,
     ghToken
   };
   const url = `${API_URL_BASE}/api/workflow_outputs`;

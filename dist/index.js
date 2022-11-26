@@ -3940,7 +3940,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
         ghRunNumber,
         ghRunAttempt,
         stoatConfig,
-        commentTemplate: commentTemplate.template,
+        commentTemplateFile: commentTemplate.template,
         ghToken
     };
     const url = `${API_URL_BASE}/api/workflow_outputs`;

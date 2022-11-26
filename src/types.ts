@@ -34,7 +34,7 @@ export interface Template {
 }
 
 // These types are copied from site/src/api/types.ts.
-export type UploadWorkflowOutputRequest = {
+export type UpdateWorkflowOutputRequest = {
   ghOwner: string;
   ghRepo: string;
   ghBranch: string;
@@ -46,7 +46,7 @@ export type UploadWorkflowOutputRequest = {
   ghRunNumber: number;
   ghRunAttempt: number;
   stoatConfig: object;
-  commentTemplate: string;
+  commentTemplateFile: string;
   ghToken: string;
 };
 
