@@ -3,11 +3,11 @@ import fetch from 'cross-fetch';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
-import { GithubActionRun, UpdateWorkflowOutputResponse, UploadWorkflowOutputRequest } from './types';
+import { GithubActionRun, Template, UpdateWorkflowOutputResponse, UploadWorkflowOutputRequest } from './types';
 
 export const uploadWorkflowOutputs = async (
   stoatConfig: StoatConfigSchema,
-  commentTemplateFile: string,
+  commentTemplate: Template,
   {
     ghRepository,
     ghBranch,
@@ -33,7 +33,7 @@ export const uploadWorkflowOutputs = async (
     ghRunNumber,
     ghRunAttempt,
     stoatConfig,
-    commentTemplateFile,
+    commentTemplate: commentTemplate.template,
     ghToken
   };
   const url = `${API_URL_BASE}/api/workflow_outputs`;

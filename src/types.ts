@@ -17,7 +17,23 @@ export type GithubActionRun = {
   ghToken: string;
 };
 
-// These types are copied from site/src/api/types.ts. In the future, they should be moved to a package.
+// These types are copied from src/common/types.ts.
+export enum PluginType {
+  StaticHosting = 'static_hosting',
+  Json = 'json'
+}
+
+export enum TemplateFormat {
+  Handlebars = 'hbs',
+  Jinja2 = 'jinja2'
+}
+
+export interface Template {
+  format: TemplateFormat;
+  template: string;
+}
+
+// These types are copied from site/src/api/types.ts.
 export type UploadWorkflowOutputRequest = {
   ghOwner: string;
   ghRepo: string;
@@ -30,7 +46,7 @@ export type UploadWorkflowOutputRequest = {
   ghRunNumber: number;
   ghRunAttempt: number;
   stoatConfig: object;
-  commentTemplateFile: string;
+  commentTemplate: string;
   ghToken: string;
 };
 
@@ -75,4 +91,23 @@ export type UploadJsonRequest = {
 
 export type UploadJsonResponse = {
   partialConfigId: number;
+};
+
+export type GetDefaultTemplateRequest = {
+  /* params for API validation */
+  ghOwner: string;
+  ghRepo: string;
+
+  /* params for template retrieval */
+  // the version is sent as a query param,
+  // so it is typed as string instead of number
+  stoatConfigVersion: string;
+  pluginTypes?: PluginType | PluginType[];
+};
+
+export type GetDefaultTemplateResponse = {
+  stoatConfigVersion: number;
+  template: string;
+  format: TemplateFormat;
+  pluginTypes: PluginType[];
 };
