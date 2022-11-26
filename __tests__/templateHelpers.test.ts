@@ -1,5 +1,4 @@
-import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import fetch from 'cross-fetch';
+import { describe, expect, test } from '@jest/globals';
 
 import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
 import {
@@ -35,8 +34,6 @@ const json1: JsonPlugin = {
   }
 };
 
-// jest.mock('cross-fetch');
-
 describe('Read local template', () => {
   test('getTemplate', async () => {
     expect(
@@ -66,6 +63,7 @@ describe('Read local template', () => {
   });
 });
 
+// TODO: mock the fetch call
 describe('Read remote default template', () => {
   const stoatConfigWithoutPlugin: StoatConfigSchema = {
     version: 1
