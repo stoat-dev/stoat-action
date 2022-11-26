@@ -63,7 +63,9 @@ describe('Read local template', () => {
   });
 });
 
-// TODO: mock the fetch call
+/**
+ * This test calls the remote server.
+ */
 describe('Read remote default template', () => {
   const stoatConfigWithoutPlugin: StoatConfigSchema = {
     version: 1
