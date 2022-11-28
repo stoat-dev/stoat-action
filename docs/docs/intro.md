@@ -2,46 +2,34 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# What is Stoat?
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Stoat is a tool that helps users aggregate data from GitHub builds into a single
+GitHub PR comment that is updated as new data becomes available. You can think of this
+static comment as a customizable dashboard for your PR build.
 
-## Getting Started
+With just a couple of minutes configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
 
-Get started by **creating a new site**.
+![Stoat Screenshot](../static/img/example-screenshot.png)
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## How it works
 
-### What you'll need
+Stoat consists of a [GitHub Application](https://github.com/apps/stoat-app) and a [GitHub Action](https://github.com/stoat-dev/stoat-action).
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+The GitHub Action pushes data for a specific build to the Stoat servers. This data might be files produced as side effects of a build, such as
+code coverage reports, frontend component previews, or documentation pages. This data might also be any JSON blob, that may represent
+data such as test runtimes or any other values that are computed as part of the build.
 
-## Generate a new site
+The GitHub Application listens for any changes for a PR and the Stoat servers to render a static comment on every
+PR. We call this a "static comment" because unlike some GitHub tools that create new comments on every change, Stoat creates 
+a single comment and updates it as changes come in. 
+If you've ever used a combination of calls to the [`create-or-update-comment` GitHub action](https://github.com/peter-evans/create-or-update-comment), Stoat
+is likely an easier-to-use replacement.
 
-Generate a new Docusaurus site using the **classic template**.
+## Static hosting
 
-The classic template will automatically be added to your project after you run the command:
+Does your build produce any artifacts that you'd like to be able to access from your PR instantly? Try out our [static hosting tutorial](tutorials/static-hosting)!
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+## Templating
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Want to summarize any data from your builds? Try out our [templating tutorial](tutorials/templating)!

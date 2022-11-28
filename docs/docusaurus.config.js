@@ -11,12 +11,12 @@ const config = {
   url: 'https://docs.stoat.dev/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
   favicon: 'img/favicon.ico',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'stoat-labs', // Usually your GitHub org/username.
+  organizationName: 'stoat-dev', // Usually your GitHub org/username.
   projectName: 'stoat', // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -72,11 +72,11 @@ const config = {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'Tutorial'
+            label: 'Get Started!'
           },
-          { to: '/blog', label: 'Blog', position: 'left' },
+          // { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/stoat-labs',
+            href: 'https://github.com/stoat-dev/stoat-action',
             label: 'GitHub',
             position: 'right'
           },
@@ -94,7 +94,7 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'Get Started!',
                 to: '/docs/intro'
               }
             ]
@@ -104,7 +104,7 @@ const config = {
             items: [
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/stoat_labs'
+                href: 'https://twitter.com/stoat_dev'
               }
             ]
           },
@@ -113,7 +113,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/stoat-labs/'
+                href: 'https://github.com/stoat-dev/'
               },
               {
                 label: 'Built with Docusaurus',
@@ -122,7 +122,7 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Stoat Labs.`
+        copyright: `Copyright © ${new Date().getFullYear()} Stoat Dev.`
       },
       prism: {
         theme: lightCodeTheme,
