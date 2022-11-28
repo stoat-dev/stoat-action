@@ -11,7 +11,7 @@ For Stoat to be useful, the repo used should have at least one GitHub workflow u
 
 :::caution
 
-We currently only recommend using Stoat for **public repos**. Authentication is [on our roadmap](../roadmap), but until it's released,
+We currently only recommend using Stoat for **public repos**. Authentication is [on our roadmap](roadmap), but until it's released,
 know that any files or any other pieces of data you send to Stoat for templating are publicly accessible! 
 
 :::
