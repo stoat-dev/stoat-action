@@ -1,7 +1,7 @@
 ---
 version: 1
 enabled: true
-comment_template: ".stoat/template.hbs"
+comment_template_file: ".stoat/template.hbs"
 plugins:
   jest-coverage:
     metadata:

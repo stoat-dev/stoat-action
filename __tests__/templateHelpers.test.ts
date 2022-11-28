@@ -39,7 +39,7 @@ describe('Read local template', () => {
     expect(
       await getTemplate(ghOwner, ghRepo, {
         version: 1,
-        comment_template: template1Path
+        comment_template_file: template1Path
       })
     ).toEqual({
       format: TemplateFormat.Handlebars,
@@ -49,7 +49,7 @@ describe('Read local template', () => {
     expect(
       await getTemplate(ghOwner, ghRepo, {
         version: 1,
-        comment_template: template2Path
+        comment_template_file: template2Path
       })
     ).toEqual({
       format: TemplateFormat.Jinja2,
