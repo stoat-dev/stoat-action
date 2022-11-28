@@ -8,8 +8,8 @@ on:
       - './*'
       - '.stoat/**'
       - '.github/workflows/test-action.yaml'
-      - '__tests__/**'
       - 'src/**'
+      - '__tests__/**'
   push:
     branches:
       - main
@@ -18,8 +18,8 @@ on:
       - './*'
       - '.stoat/**'
       - '.github/workflows/test-action.yaml'
-      - '__tests__/**'
       - 'src/**'
+      - '__tests__/**'
 
 jobs:
   build:

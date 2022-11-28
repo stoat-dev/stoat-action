@@ -8,10 +8,12 @@ on:
       - main
     paths:
       - 'docs/**'
+      - '.stoat/**'
       - '.github/workflows/docs.yaml'
   pull_request:
     paths:
       - 'docs/**'
+      - '.stoat/**'
       - '.github/workflows/docs.yaml'
 
 jobs:
