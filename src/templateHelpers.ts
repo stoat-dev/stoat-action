@@ -11,11 +11,11 @@ export const getTemplate = async (
   ghRepo: string,
   stoatConfig: StoatConfigSchema
 ): Promise<Template> => {
-  const { comment_template } = stoatConfig;
-  if (comment_template === undefined || comment_template === '') {
+  const { comment_template_file } = stoatConfig;
+  if (comment_template_file === undefined || comment_template_file === '') {
     return getRemoteDefaultTemplate(ghOwner, ghRepo, stoatConfig);
   }
-  return getLocalTemplate(comment_template);
+  return getLocalTemplate(comment_template_file);
 };
 
 export const getLocalTemplate = (commentTemplatePath: string): Template => {

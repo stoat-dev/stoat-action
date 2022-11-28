@@ -4282,7 +4282,7 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
 }
 
 ;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template":{"type":"string"},"plugins":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
 ;// CONCATENATED MODULE: ./lib/types.js
 // These types are copied from src/common/types.ts.
 var PluginType;
@@ -4312,11 +4312,11 @@ var templateHelpers_awaiter = (undefined && undefined.__awaiter) || function (th
 
 
 const getTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpers_awaiter(void 0, void 0, void 0, function* () {
-    const { comment_template } = stoatConfig;
-    if (comment_template === undefined || comment_template === '') {
+    const { comment_template_file } = stoatConfig;
+    if (comment_template_file === undefined || comment_template_file === '') {
         return getRemoteDefaultTemplate(ghOwner, ghRepo, stoatConfig);
     }
-    return getLocalTemplate(comment_template);
+    return getLocalTemplate(comment_template_file);
 });
 const getLocalTemplate = (commentTemplatePath) => {
     const template = (0,external_fs_.readFileSync)(commentTemplatePath).toString().trim();

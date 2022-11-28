@@ -10,7 +10,7 @@
     "enabled": {
       "type": "boolean"
     },
-    "comment_template": {
+    "comment_template_file": {
       "type": "string"
     },
     "plugins": {
