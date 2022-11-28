@@ -9,7 +9,7 @@ If this file is absent, a default template is used. A description of the [curren
 For this tutorial, let's first add a line of text that says "Hello World" at the output of the Stoat PR comment.
 
 Create `.stoat/template.hbs` with the following contents:
-```
+```hbs
 Hello World!
 
 | Name | Link | Commit | Status |
