@@ -9,10 +9,12 @@ Follow these steps to generate Storybook previews for each pull request.
     ```yaml
     # existing step in your repo that generates a static Storybook build
     - name: Build Storybook
-      run: npm run build-storybook
+      run: |
+        npm install
+        npm run build-storybook
 
     - name: Run Stoat Action
-      uses: stoat-dev/stoat-action@latest
+      uses: stoat-dev/stoat-action@v1
       if: always()
     ```
 
@@ -25,7 +27,7 @@ Follow these steps to generate Storybook previews for each pull request.
     plugins:
       storybook:
         metadata:
-          # an arbitrary name for the Storybook preview
+          # an arbitrary name for the Storybook task
           name: "Storybook"
         static_hosting:
           # path to the Storybook build
