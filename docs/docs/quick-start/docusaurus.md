@@ -28,7 +28,7 @@ Follow these steps to generate Docusaurus previews for each pull request.
       docusaurus:
         metadata:
           # an arbitrary name for the Docusaurus task
-          name: "Docusaurus"
+          name: "Documentation"
         static_hosting:
           # path to the Docusaurus build
           path: build
@@ -39,4 +39,4 @@ Follow these steps to generate Docusaurus previews for each pull request.
 That's it. Now, every time you open a pull request, Stoat will host the Docusaurus build and post a comment with a link to the preview. See an example in [this pull request](https://github.com/stoat-dev/examples/pull/1).
 
 
-![screen shot](https://user-images.githubusercontent.com/1933157/204390272-50819944-71bf-4037-b63f-5514c5c04edd.png)
+![screen shot](https://user-images.githubusercontent.com/1933157/204400790-95dcc777-f0eb-4225-af52-3c7424b5dc81.png)
