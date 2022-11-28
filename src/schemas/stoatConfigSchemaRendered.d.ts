@@ -8,7 +8,7 @@
 export interface StoatConfigSchemaRendered {
   version: number;
   enabled?: boolean;
-  comment_template: string;
+  comment_template?: string;
   updated_at: string;
   plugins?: {
     [k: string]:

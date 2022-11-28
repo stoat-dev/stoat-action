@@ -10,6 +10,7 @@ import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
+import { getTemplate } from './templateHelpers';
 import { GithubActionRun, Repository } from './types';
 
 const ajv = new Ajv();
@@ -95,11 +96,6 @@ async function run(stoatConfig: any) {
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
-  core.info('Loading template...');
-  const commentTemplateFileBuffer = readFileSync(typedStoatConfig.comment_template);
-  const commentTemplateFile = commentTemplateFileBuffer.toString();
-
-  core.info('Uploading workflow outputs...');
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
     ghBranch: core.getInput('pr_branch_name'),
@@ -112,7 +108,13 @@ async function run(stoatConfig: any) {
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
     ghToken: token
   };
-  const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplateFile, githubActionRun);
+
+  core.info('Loading template...');
+  const { owner, repo } = githubActionRun.ghRepository;
+  const commentTemplate = await getTemplate(owner, repo, typedStoatConfig);
+
+  core.info('Uploading workflow outputs...');
+  const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
   await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
 }
 
