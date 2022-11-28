@@ -17,13 +17,13 @@ With just a couple of minutes configuration, you can automatically add PR commen
 
 ## Quick Start
 
-Check out some [examples](category/examples) to quickly setup Stoat for these popular applications:
+Check out some [examples](category/quick-start) to quickly setup Stoat for these popular applications:
 
 <ul>
-  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="examples/docusaurus">Docusaurus</a></li>
+  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/docusaurus">Docusaurus</a></li>
   <li>Jcoco Test Coverage</li>
   <li>Jest Test Coverage</li>
-  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="examples/storybook">Storybook</a></li>
+  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="quick-start/storybook">Storybook</a></li>
 </ul>
 
 ## How it works
