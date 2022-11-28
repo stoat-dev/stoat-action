@@ -42,7 +42,7 @@ To allow uploading files to Stoat, you'll need to add the Stoat action after any
 The Stoat action step looks like:
 ```yaml
 - name: Run Stoat Action
-  uses: stoat-dev/stoat-action@latest
+  uses: stoat-dev/stoat-action@v0.0.2
   if: always()
 ```
 
