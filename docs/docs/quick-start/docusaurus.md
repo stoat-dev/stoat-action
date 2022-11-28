@@ -4,7 +4,7 @@ Follow these steps to generate Docusaurus previews for each pull request.
 
 1. Install the [Stoat App](https://github.com/apps/stoat-app).
 
-2. Add the [Stoat Action](https://github.com/stoat-dev/stoat-action). Append the action at the end of the GitHub workflow that generates a Docusaurus build. For example:
+2. Append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the GitHub workflow that generates a Docusaurus build. For example:
 
     ```yaml
     # existing step in your repo that generates a static Docusaurus build
