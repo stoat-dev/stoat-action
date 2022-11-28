@@ -1,7 +1,7 @@
 # Templating
 
 When rendering PR comments, Stoat uses a [Handlebars](https://handlebarsjs.com/) template.
-Which template to use is specified by the optional `comment_template` key/value in the `.stoat/config.yaml` file.
+Which template to use is specified by the optional `comment_template_file` key/value in the `.stoat/config.yaml` file.
 If this file is absent, a default template is used. A description of the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1) is available via our API.
 
 ## Modifying the comment template
@@ -28,10 +28,10 @@ The Stoat config file must be pointed to this new template file. Here's an examp
 ---
 version: 1
 enabled: true
-comment_template: ".stoat/template.hbs"
+comment_template_file: ".stoat/template.hbs"
 ```
 
-Note that the `comment_template` takes the full path from the root of the repo.
+Note that the `comment_template_file` takes the full path from the root of the repo.
 
 Now, if you create a PR with these two new changes, the comment will include `Hello, World!` at the top! 
 
@@ -64,7 +64,7 @@ Modifying the `.stoat/config.yaml` file to include the `json` plugin would look 
 ---
 version: 1
 enabled: true
-comment_template: ".stoat/template.hbs"
+comment_template_file: ".stoat/template.hbs"
 plugins:
   time:
     json:
