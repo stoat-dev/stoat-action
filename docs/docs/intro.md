@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Docusaurus from '../static/img/examples/docusaurus-logo.svg'
+import StorybookLogo from '../static/img/examples/storybook-logo.svg'
+
 # What is Stoat?
 
 Stoat is a tool that helps users aggregate data from GitHub builds into a single
@@ -11,6 +14,17 @@ static comment as a customizable dashboard for your PR build.
 With just a couple of minutes configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
 
 ![Stoat Screenshot](../static/img/example-screenshot.png)
+
+## Quick Start
+
+Check out some [examples](category/examples) to quickly setup Stoat for these popular applications:
+
+<ul>
+  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="examples/docusaurus">Docusaurus</a></li>
+  <li>Jcoco Test Coverage</li>
+  <li>Jest Test Coverage</li>
+  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="examples/storybook">Storybook</a></li>
+</ul>
 
 ## How it works
 
