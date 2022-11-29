@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import { API_URL_BASE } from './stoatApiHelpers';
-import { GetDefaultTemplateRequest, GetDefaultTemplateResponse, PluginType, Template, TemplateFormat } from './types';
+import { GetDefaultTemplateRequest, GetDefaultTemplateResponse, Plugin, Template, TemplateFormat } from './types';
 
 export const getTemplate = async (
   ghOwner: string,
@@ -44,7 +44,7 @@ export const getRemoteDefaultTemplate = async (
     ghOwner,
     ghRepo,
     stoatConfigVersion: String(stoatConfig.version),
-    pluginTypes: getPluginTypes(stoatConfig)
+    plugins: getPlugins(stoatConfig)
   };
   const urlParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -71,18 +71,18 @@ export const getRemoteDefaultTemplate = async (
   return { template, format };
 };
 
-export const getPluginTypes = (stoatConfig: StoatConfigSchema): PluginType[] => {
-  if (!stoatConfig.plugins) {
+export const getPlugins = (stoatConfig: StoatConfigSchema): Plugin[] => {
+  if (!stoatConfig.tasks) {
     return [];
   }
-  const pluginTypes: Set<PluginType> = new Set<PluginType>();
-  for (const plugin of Object.values(stoatConfig.plugins)) {
-    if ('static_hosting' in plugin) {
-      pluginTypes.add(PluginType.StaticHosting);
+  const plugins: Set<Plugin> = new Set<Plugin>();
+  for (const task of Object.values(stoatConfig.tasks)) {
+    if ('static_hosting' in task) {
+      plugins.add(Plugin.StaticHosting);
     }
-    if ('json' in plugin) {
-      pluginTypes.add(PluginType.Json);
+    if ('json' in task) {
+      plugins.add(Plugin.Json);
     }
   }
-  return Array.from(pluginTypes);
+  return Array.from(plugins);
 };

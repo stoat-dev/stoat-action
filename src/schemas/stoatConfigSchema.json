@@ -13,16 +13,16 @@
     "comment_template_file": {
       "type": "string"
     },
-    "plugins": {
+    "tasks": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
+        "oneOf": [{ "$ref": "#/definitions/static_hosting_task" }, { "$ref": "#/definitions/json_task" }]
       }
     }
   },
   "definitions": {
-    "static_hosting_plugin": {
+    "static_hosting_task": {
       "type": "object",
       "required": ["static_hosting"],
       "properties": {
@@ -41,7 +41,7 @@
         }
       }
     },
-    "json_plugin": {
+    "json_task": {
       "type": "object",
       "required": ["json"],
       "properties": {

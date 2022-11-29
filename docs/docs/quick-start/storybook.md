@@ -24,7 +24,7 @@ Follow these steps to generate Storybook previews for each pull request.
     ---
     version: 1
     enabled: true
-    plugins:
+    tasks:
       storybook:
         metadata:
           # an arbitrary name for the Storybook task

@@ -17,7 +17,7 @@
       "type": "string",
       "format": "date-time"
     },
-    "plugins": {
+    "tasks": {
       "type": "object",
       "additionalProperties": {
         "type": "object",

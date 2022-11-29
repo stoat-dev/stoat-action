@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-import { StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
+import { StaticHostingTask, StoatConfigSchema } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
 import { runJsonPlugin } from './json';
 import { runStaticHostingPlugin } from './staticHosting';
@@ -10,13 +10,13 @@ export const runPlugins = async (
   githubActionRun: GithubActionRun,
   stoatConfigFileId: number
 ): Promise<void> => {
-  for (const [pluginId, pluginConfig] of Object.entries(stoatConfig.plugins || {})) {
-    if ('static_hosting' in pluginConfig) {
-      await runStaticHostingPlugin(pluginId, pluginConfig as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
-    } else if ('json' in pluginConfig) {
-      await runJsonPlugin(pluginId, pluginConfig, githubActionRun, stoatConfigFileId);
+  for (const [taskId, taskConfig] of Object.entries(stoatConfig.tasks || {})) {
+    if ('static_hosting' in taskConfig) {
+      await runStaticHostingPlugin(taskId, taskConfig as StaticHostingTask, githubActionRun, stoatConfigFileId);
+    } else if ('json' in taskConfig) {
+      await runJsonPlugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
     } else {
-      core.warning(`Unknown plugin: ${pluginId}`);
+      core.warning(`Unknown plugin: ${taskId}`);
     }
   }
 };

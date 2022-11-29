@@ -1,14 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import { JsonTask, StaticHostingTask, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
 import {
   getLocalTemplate,
-  getPluginTypes,
+  getPlugins,
   getRemoteDefaultTemplate,
   getTemplate,
   getTemplateFormat
 } from '../src/templateHelpers';
-import { PluginType, TemplateFormat } from '../src/types';
+import { Plugin, TemplateFormat } from '../src/types';
 
 const ghOwner = 'test-owner';
 const ghRepo = 'test-repo';
@@ -18,17 +18,17 @@ const template1 = 'template1';
 const template2Path = '__tests__/templates/template2.jinja2';
 const template2 = 'template2';
 
-const staticHosting1: StaticHostingPlugin = {
+const staticHosting1: StaticHostingTask = {
   static_hosting: {
     path: 'path1'
   }
 };
-const staticHosting2: StaticHostingPlugin = {
+const staticHosting2: StaticHostingTask = {
   static_hosting: {
     path: 'path2'
   }
 };
-const json1: JsonPlugin = {
+const json1: JsonTask = {
   json: {
     path: 'path1'
   }
@@ -106,18 +106,18 @@ test('getTemplateFormat', () => {
 describe('getPluginTypes', () => {
   test('Single plugin', () => {
     expect(
-      getPluginTypes({
+      getPlugins({
         version: 1,
         plugins: {
           plugin1: staticHosting1
         }
       })
-    ).toEqual([PluginType.StaticHosting]);
+    ).toEqual([Plugin.StaticHosting]);
   });
 
   test('Multiple plugins', () => {
     expect(
-      getPluginTypes({
+      getPlugins({
         version: 1,
         plugins: {
           plugin1: staticHosting1,
@@ -125,6 +125,6 @@ describe('getPluginTypes', () => {
           plugin3: json1
         }
       }).sort()
-    ).toEqual([PluginType.Json, PluginType.StaticHosting].sort());
+    ).toEqual([Plugin.Json, Plugin.StaticHosting].sort());
   });
 });

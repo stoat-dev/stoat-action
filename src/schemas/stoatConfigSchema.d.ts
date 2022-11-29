@@ -9,12 +9,12 @@ export interface StoatConfigSchema {
   version: number;
   enabled?: boolean;
   comment_template_file?: string;
-  plugins?: {
-    [k: string]: StaticHostingPlugin | JsonPlugin;
+  tasks?: {
+    [k: string]: StaticHostingTask | JsonTask;
   };
   [k: string]: unknown;
 }
-export interface StaticHostingPlugin {
+export interface StaticHostingTask {
   metadata?: {
     [k: string]: unknown;
   };
@@ -24,7 +24,7 @@ export interface StaticHostingPlugin {
   };
   [k: string]: unknown;
 }
-export interface JsonPlugin {
+export interface JsonTask {
   metadata?: {
     [k: string]: unknown;
   };

@@ -31,7 +31,7 @@ Follow these steps to generate Jest coverage report previews for each pull reque
     ---
     version: 1
     enabled: true
-    plugins:
+    tasks:
       jest:
         metadata:
           # an arbitrary name for the Jest task

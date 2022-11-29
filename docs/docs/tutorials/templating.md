@@ -13,7 +13,7 @@ The value of `views.plugins.static_hosting.github.table` is the GitHub markdown 
 ```hbs
 | Name | Link | Commit | Status |
 | :--- | :--- | :--: | :-----: |
-{{#each plugins}}
+{{#each tasks}}
 {{#if this.static_hosting.status ~}}
 | **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.static_hosting.link }}) | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status }}} |
 {{/if ~}}
@@ -27,7 +27,7 @@ The current default template is also available via our API: [https://www.stoat.d
 For this tutorial, let's first add a line of text that says "Hello World" at the output of the Stoat PR comment.
 
 Create `.stoat/template.hbs` with the following contents:
-```hbs
+```hbs title=".stoat/template.hbs"
 Hello World!
 
 {{{ views.plugins.static_hosting.github.table }}}
@@ -36,7 +36,7 @@ Hello World!
 All but the first two lines should be pulled from the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1).
 
 The Stoat config file must be pointed to this new template file. Here's an example of `.stoat/config.yaml`:
-```yaml
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
@@ -60,7 +60,7 @@ What if you want to incorporate your own custom data as input for your template?
 output arbitrary JSON to a file and then use that file for templating. 
 
 For this tutorial, let's say as part of your build, you output the seconds your build takes to a file at the root of your repo called `time.json`:
-```json
+```json title="time.json"
 { "seconds": 55 }
 ```
 
@@ -71,13 +71,13 @@ After the build step that outputs that file, make sure to include the Stoat acti
   if: always()
 ```
 
-Modifying the `.stoat/config.yaml` file to include the `json` plugin would look like this:
-```yaml
+Modifying the `.stoat/config.yaml` file to include a task that uses the `json` plugin would look like this:
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
 comment_template_file: ".stoat/template.hbs"
-plugins:
+tasks:
   time:
     json:
       path: time.json
@@ -85,7 +85,7 @@ plugins:
 
 Then let's edit the `.stoat/template.hbs` template file to only show the build time:
 ```
-Build Time: {{#if plugins.time.json.value }}{{ plugins.time.json.value.seconds }} seconds{{else}}🔄{{/if}}
+Build Time: {{#if tasks.time.json.value }}{{ tasks.time.json.value.seconds }} seconds{{else}}🔄{{/if}}
 ```
 
 Note that we can't depend on the value being available instantly since the template can render before all required build steps complete, so

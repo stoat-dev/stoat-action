@@ -24,7 +24,7 @@ Follow these steps to generate Docusaurus previews for each pull request.
     ---
     version: 1
     enabled: true
-    plugins:
+    tasks:
       docusaurus:
         metadata:
           # an arbitrary name for the Docusaurus task

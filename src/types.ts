@@ -18,7 +18,7 @@ export type GithubActionRun = {
 };
 
 // These types are copied from src/common/types.ts.
-export enum PluginType {
+export enum Plugin {
   StaticHosting = 'static_hosting',
   Json = 'json'
 }
@@ -59,7 +59,7 @@ export type CreateSignedUrlRequest = {
   ghRepo: string;
   ghSha: string;
   ghToken: string;
-  pluginId: string;
+  taskId: string;
 };
 
 export type CreateSignedUrlResponse = {
@@ -71,7 +71,7 @@ export type CreateSignedUrlResponse = {
 
 export type UploadStaticHostingRequest = {
   ghSha: string;
-  pluginId: string;
+  taskId: string;
   stoatConfigFileId: number;
   hostingUrl: string;
   ghToken: string;
@@ -83,7 +83,7 @@ export type UploadStaticHostingResponse = {
 
 export type UploadJsonRequest = {
   ghSha: string;
-  pluginId: string;
+  taskId: string;
   stoatConfigFileId: number;
   value: object;
   ghToken: string;
@@ -102,12 +102,12 @@ export type GetDefaultTemplateRequest = {
   // the version is sent as a query param,
   // so it is typed as string instead of number
   stoatConfigVersion: string;
-  pluginTypes?: PluginType | PluginType[];
+  plugins?: Plugin | Plugin[];
 };
 
 export type GetDefaultTemplateResponse = {
   stoatConfigVersion: number;
   template: string;
   format: TemplateFormat;
-  pluginTypes: PluginType[];
+  plugins: Plugin[];
 };
