@@ -21,7 +21,7 @@ Follow these steps to generate Jest coverage report previews for each pull reque
         npm run jest --coverage
 
     - name: Run Stoat Action
-      uses: stoat-dev/stoat-action@v1
+      uses: stoat-dev/stoat-action@v0
       if: always()
     ```
 

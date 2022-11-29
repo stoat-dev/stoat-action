@@ -67,7 +67,7 @@ For this tutorial, let's say as part of your build, you output the seconds your 
 After the build step that outputs that file, make sure to include the Stoat action:
 ```yaml
 - name: Run Stoat Action
-  uses: stoat-dev/stoat-action@v0.0.2
+  uses: stoat-dev/stoat-action@v0
   if: always()
 ```
 

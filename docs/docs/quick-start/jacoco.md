@@ -25,7 +25,7 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
       run: ./gradlew build jacocoTestReport
 
     - name: Run Stoat Action
-      uses: stoat-dev/stoat-action@v1
+      uses: stoat-dev/stoat-action@v0
       if: always()
     ```
 
