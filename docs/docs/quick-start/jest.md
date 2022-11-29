@@ -4,7 +4,7 @@ Follow these steps to generate Jest coverage report previews for each pull reque
 
 1. Install the [Stoat App](https://github.com/apps/stoat-app).
 
-2. Run Jest with coverage report, and append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the relevant workflow. For example:
+2. Run tests with Jest coverage report, and append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the relevant GitHub workflow. For example:
 
     `jest.config.js`
     ```js
@@ -27,9 +27,9 @@ Follow these steps to generate Jest coverage report previews for each pull reque
       if: always()
     ```
 
-3. Add a Stoat config file at `.stoat/config.yaml`:
+3. Create a `.stoat` directory and add a Stoat config file `config.yaml`:
 
-    ```yaml
+    ```yaml title=".stoat/config.yaml"
     ---
     version: 1
     enabled: true

@@ -4,10 +4,9 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
 
 1. Install the [Stoat App](https://github.com/apps/stoat-app).
 
-2. Append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the GitHub workflow that generates JaCoCo coverage report. For example:
+2. Run tests with JaCoCo coverage report, and append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the relevant GitHub workflow. For example:
 
-    `build.gradle` (documentation [here](https://docs.gradle.org/current/userguide/jacoco_plugin.html#sec:jacoco_getting_started))
-    ```groovy
+    ```gradle title="build.gradle"
     test {
       finalizedBy jacocoTestReport
     }
@@ -20,8 +19,7 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
     }
     ```
 
-    `.github/workflows/build.yaml`
-    ```yaml
+    ```yaml title=".github/workflows/build.yaml"
     # existing step in your repo that generates JaCoCo coverage report
     - name: Build and Test
       run: ./gradlew build jacocoTestReport
@@ -31,9 +29,9 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
       if: always()
     ```
 
-3. Add a Stoat config file at `.stoat/config.yaml`:
+3. Create a `.stoat` directory and add a Stoat config file `config.yaml`:
 
-    ```yaml
+    ```yaml title=".stoat/config.yaml"
     ---
     version: 1
     enabled: true
@@ -47,7 +45,7 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
           path: build/reports/jacoco
     ```
 
-   By default, JaCoCo report is written to the `$buildDir/reports/jacoco` directory, which translates to `build/reports/jacoco` (documentation [here](https://docs.gradle.org/current/userguide/jacoco_plugin.html#sec:configuring_the_jacoco_plugin)). This is the directory to set for the `path` field in the Stoat config file. It should be adjusted according to your configuration.
+   By default, JaCoCo report is written to the `$buildDir/reports/jacoco` directory, which translates to `build/reports/jacoco` (documentation [here](https://docs.gradle.org/current/userguide/jacoco_plugin.html)). This is the directory to set for the `path` field in the Stoat config file. It should be adjusted according to your configuration.
 
 That's it. Now, every time you open a pull request, Stoat will host the JaCoCo test coverage report and post a comment with a link to the report. See an example in [this pull request](https://github.com/stoat-dev/examples/pull/1).
 

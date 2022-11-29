@@ -6,8 +6,7 @@ Follow these steps to generate Docusaurus previews for each pull request.
 
 2. Append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the GitHub workflow that generates a Docusaurus build. For example:
 
-    `.github/workflows/docs.yaml`
-    ```yaml
+    ```yaml title=".github/workflows/docs.yaml"
     # existing step in your repo that generates a static Docusaurus build
     - name: Build Docusaurus
       run: |
@@ -19,9 +18,9 @@ Follow these steps to generate Docusaurus previews for each pull request.
       if: always()
     ```
 
-3. Add a Stoat config file at `.stoat/config.yaml`:
+3. Create a `.stoat` directory and add a Stoat config file `config.yaml`:
 
-    ```yaml
+    ```yaml title=".stoat/config.yaml"
     ---
     version: 1
     enabled: true
