@@ -19,12 +19,8 @@ export interface StoatConfigSchemaRendered {
           static_hosting: {
             path: string;
             link: string;
-            link_md: string;
-            status: string;
-            status_md: string;
-            status_link: string;
             sha: string;
-            updated_at: string;
+            status: string;
             [k: string]: unknown;
           };
           [k: string]: unknown;
@@ -42,6 +38,19 @@ export interface StoatConfigSchemaRendered {
           };
           [k: string]: unknown;
         };
+  };
+  views?: {
+    plugins?: {
+      static_hosting?: {
+        github: {
+          table: string;
+          [k: string]: unknown;
+        };
+        [k: string]: unknown;
+      };
+      [k: string]: unknown;
+    };
+    [k: string]: unknown;
   };
   [k: string]: unknown;
 }

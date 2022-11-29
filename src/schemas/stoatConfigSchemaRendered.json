@@ -32,7 +32,7 @@
               },
               "static_hosting": {
                 "type": "object",
-                "required": ["path", "link", "link_md", "status", "status_md", "status_link", "sha", "updated_at"],
+                "required": ["path", "link", "sha", "status"],
                 "properties": {
                   "path": {
                     "type": "string"
@@ -40,24 +40,11 @@
                   "link": {
                     "type": "string"
                   },
-                  "link_md": {
+                  "sha": {
                     "type": "string"
                   },
                   "status": {
                     "type": "string"
-                  },
-                  "status_md": {
-                    "type": "string"
-                  },
-                  "status_link": {
-                    "type": "string"
-                  },
-                  "sha": {
-                    "type": "string"
-                  },
-                  "updated_at": {
-                    "type": "string",
-                    "format": "date-time"
                   }
                 }
               }
@@ -87,6 +74,35 @@
             }
           }
         ]
+      }
+    },
+    "views": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "plugins": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "static_hosting": {
+              "type": "object",
+              "required": ["github"],
+              "additionalProperties": true,
+              "properties": {
+                "github": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "required": ["table"],
+                  "properties": {
+                    "table": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
