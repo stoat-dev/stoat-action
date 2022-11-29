@@ -3970,12 +3970,12 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 
 
-const submitPartialConfig = (pluginId, ghSha, ghToken, value, stoatConfigFileId) => helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${pluginId}] Submitting partial config...`);
+const submitPartialConfig = (taskId, ghSha, ghToken, value, stoatConfigFileId) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Submitting partial config...`);
     const jsonApiUrl = `${API_URL_BASE}/api/plugins/jsons`;
     const requestBody = {
         ghSha,
-        pluginId,
+        taskId,
         stoatConfigFileId,
         value,
         ghToken
@@ -3984,13 +3984,13 @@ const submitPartialConfig = (pluginId, ghSha, ghToken, value, stoatConfigFileId)
         method: 'POST',
         body: JSON.stringify(requestBody)
     });
-    lib_core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
+    lib_core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
         lib_core.error('Failed to run json plugin');
         return;
     }
     const { partialConfigId } = (yield response.json());
-    lib_core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
+    lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
 
 ;// CONCATENATED MODULE: ./lib/plugins/json/plugin.js
@@ -4007,12 +4007,12 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 const MAX_CHARACTERS = 1024;
-const runJsonPlugin = (pluginId, pluginConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${pluginId}] Running json plugin (stoat config ${stoatConfigFileId})`);
-    lib_core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
-    const jsonToUpload = pluginConfig.json.path;
+const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
+    lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
+    const jsonToUpload = taskConfig.json.path;
     if (!external_fs_default().existsSync(jsonToUpload)) {
-        lib_core.warning(`[${pluginId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
+        lib_core.warning(`[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
         return;
     }
     const jsonString = (0,external_fs_.readFileSync)(jsonToUpload).toString();
@@ -4031,7 +4031,7 @@ const runJsonPlugin = (pluginId, pluginConfig, { ghToken, ghRepository: { repo, 
         throw Error(message);
     }
     // submit partial config
-    yield submitPartialConfig(pluginId, ghSha, ghToken, value, stoatConfigFileId);
+    yield submitPartialConfig(taskId, ghSha, ghToken, value, stoatConfigFileId);
 });
 /* harmony default export */ const json_plugin = (runJsonPlugin);
 
@@ -4066,7 +4066,7 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 
 const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${request.pluginId}] Getting signed url...`);
+    lib_core.info(`[${request.taskId}] Getting signed url...`);
     const response = yield node_ponyfill_default()(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
         method: 'POST',
         body: JSON.stringify(request)
@@ -4075,7 +4075,7 @@ const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 
     if (!response.ok) {
         throw new Error(response.statusText);
     }
-    lib_core.info(`[${request.pluginId}] Hosting URL: ${results.hostingUrl}`);
+    lib_core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
     return results;
 });
 const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
@@ -4131,12 +4131,12 @@ const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, 
         throw new Error(`File upload failed: ${e}`);
     }
 });
-const helpers_submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoatConfigFileId) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${pluginId}] Submitting partial config...`);
+const helpers_submitPartialConfig = (taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Submitting partial config...`);
     const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
     const requestBody = {
         ghSha,
-        pluginId,
+        taskId,
         stoatConfigFileId,
         hostingUrl,
         ghToken
@@ -4145,13 +4145,13 @@ const helpers_submitPartialConfig = (pluginId, ghSha, ghToken, hostingUrl, stoat
         method: 'POST',
         body: JSON.stringify(requestBody)
     });
-    lib_core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
+    lib_core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
         lib_core.error('Failed to run static hosting plugin');
         return;
     }
     const { partialConfigId } = (yield response.json());
-    lib_core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
+    lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
 
 ;// CONCATENATED MODULE: ./lib/plugins/staticHosting/plugin.js
@@ -4167,12 +4167,12 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${pluginId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-    lib_core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
-    const pathToUpload = pluginConfig.static_hosting.path;
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
+    const pathToUpload = taskConfig.static_hosting.path;
     if (!external_fs_default().existsSync(pathToUpload)) {
-        lib_core.warning(`[${pluginId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
+        lib_core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
         return;
     }
     // get signed url
@@ -4181,13 +4181,13 @@ const runStaticHostingPlugin = (pluginId, pluginConfig, { ghToken, ghRepository:
         ghRepo: repo,
         ghSha,
         ghToken,
-        pluginId
+        taskId: taskId
     });
     // upload directory
-    lib_core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);
+    lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
-    yield helpers_submitPartialConfig(pluginId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+    yield helpers_submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
 });
 /* harmony default export */ const staticHosting_plugin = (runStaticHostingPlugin);
 
@@ -4208,15 +4208,15 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
-    for (const [pluginId, pluginConfig] of Object.entries(stoatConfig.plugins || {})) {
-        if ('static_hosting' in pluginConfig) {
-            yield staticHosting_plugin(pluginId, pluginConfig, githubActionRun, stoatConfigFileId);
+    for (const [taskId, taskConfig] of Object.entries(stoatConfig.tasks || {})) {
+        if ('static_hosting' in taskConfig) {
+            yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
-        else if ('json' in pluginConfig) {
-            yield json_plugin(pluginId, pluginConfig, githubActionRun, stoatConfigFileId);
+        else if ('json' in taskConfig) {
+            yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else {
-            lib_core.warning(`Unknown plugin: ${pluginId}`);
+            lib_core.warning(`Unknown plugin: ${taskId}`);
         }
     }
 });
@@ -4282,14 +4282,14 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
 }
 
 ;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_task"},{"$ref":"#/definitions/json_task"}]}}},"definitions":{"static_hosting_task":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_task":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}}}}');
 ;// CONCATENATED MODULE: ./lib/types.js
 // These types are copied from src/common/types.ts.
-var PluginType;
-(function (PluginType) {
-    PluginType["StaticHosting"] = "static_hosting";
-    PluginType["Json"] = "json";
-})(PluginType || (PluginType = {}));
+var Plugin;
+(function (Plugin) {
+    Plugin["StaticHosting"] = "static_hosting";
+    Plugin["Json"] = "json";
+})(Plugin || (Plugin = {}));
 var TemplateFormat;
 (function (TemplateFormat) {
     TemplateFormat["Handlebars"] = "hbs";
@@ -4338,7 +4338,7 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
         ghOwner,
         ghRepo,
         stoatConfigVersion: String(stoatConfig.version),
-        pluginTypes: getPluginTypes(stoatConfig)
+        plugins: getPlugins(stoatConfig)
     };
     const urlParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
@@ -4363,20 +4363,20 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
     lib_core.info(`Got default template (format ${format}):\n${template}`);
     return { template, format };
 });
-const getPluginTypes = (stoatConfig) => {
-    if (!stoatConfig.plugins) {
+const getPlugins = (stoatConfig) => {
+    if (!stoatConfig.tasks) {
         return [];
     }
-    const pluginTypes = new Set();
-    for (const plugin of Object.values(stoatConfig.plugins)) {
-        if ('static_hosting' in plugin) {
-            pluginTypes.add(PluginType.StaticHosting);
+    const plugins = new Set();
+    for (const task of Object.values(stoatConfig.tasks)) {
+        if ('static_hosting' in task) {
+            plugins.add(Plugin.StaticHosting);
         }
-        if ('json' in plugin) {
-            pluginTypes.add(PluginType.Json);
+        if ('json' in task) {
+            plugins.add(Plugin.Json);
         }
     }
-    return Array.from(pluginTypes);
+    return Array.from(plugins);
 };
 
 ;// CONCATENATED MODULE: ./lib/app.js
