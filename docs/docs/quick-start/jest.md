@@ -43,7 +43,7 @@ Follow these steps to generate Jest coverage report previews for each pull reque
           path: coverage/lcov-report
     ```
 
-   By default, Jest test with coverage will generate HTML report in the `coverage/lcov-report` directory (documentation [here](https://jestjs.io/docs/configuration#coveragereporters-arraystring--string-options)). This is the directory to set for the `path` field in the Stoat config file.
+   By default, Jest test with coverage will generate HTML report in the `coverage/lcov-report` directory (documentation [here](https://jestjs.io/docs/configuration#coveragereporters-arraystring--string-options)). This is the directory to set for the `path` field in the Stoat config file. It should be adjusted according to your configuration.
 
 That's it. Now, every time you open a pull request, Stoat will host the Jest test coverage report and post a comment with a link to the report. See an example in [this pull request](https://github.com/stoat-dev/examples/pull/1).
 
