@@ -72,13 +72,13 @@ describe('Read remote default template', () => {
   };
   const stoatConfigWithOnePlugin: StoatConfigSchema = {
     version: 1,
-    plugins: {
+    tasks: {
       plugin1: staticHosting1
     }
   };
   const stoatConfigWithMultiPlugins: StoatConfigSchema = {
     version: 1,
-    plugins: {
+    tasks: {
       plugin1: staticHosting1,
       plugin2: staticHosting2
     }
@@ -103,12 +103,12 @@ test('getTemplateFormat', () => {
   expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 
-describe('getPluginTypes', () => {
+describe('getPlugins', () => {
   test('Single plugin', () => {
     expect(
       getPlugins({
         version: 1,
-        plugins: {
+        tasks: {
           plugin1: staticHosting1
         }
       })
@@ -119,7 +119,7 @@ describe('getPluginTypes', () => {
     expect(
       getPlugins({
         version: 1,
-        plugins: {
+        tasks: {
           plugin1: staticHosting1,
           plugin2: staticHosting2,
           plugin3: json1
