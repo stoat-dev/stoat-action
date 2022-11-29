@@ -6,16 +6,14 @@ Follow these steps to generate Jest coverage report previews for each pull reque
 
 2. Run tests with Jest coverage report, and append the [Stoat Action](https://github.com/stoat-dev/stoat-action) at the end of the relevant GitHub workflow. For example:
 
-    `jest.config.js`
-    ```js
+    ```js title="jest.config.js"
     module.exports = {
       // ...
       collectCoverage: true,
     };
     ```
 
-    `.github/workflows/test.yaml`
-    ```yaml
+    ```yaml title=".github/workflows/test.yaml"
     # existing step in your repo that runs Jest
     - name: Run Tests
       run: |
