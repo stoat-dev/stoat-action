@@ -9,5 +9,7 @@ plugins:
     static_hosting:
       path: coverage/lcov-report
   docs:
+    metadata:
+      name: Documentation
     static_hosting:
       path: docs/build

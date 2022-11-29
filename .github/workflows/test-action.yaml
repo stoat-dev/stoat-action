@@ -4,10 +4,22 @@ on:
     branches:
       - main
       - 'releases/*'
+    paths:
+      - './*'
+      - '.stoat/**'
+      - '.github/workflows/test-action.yaml'
+      - 'src/**'
+      - '__tests__/**'
   push:
     branches:
       - main
       - 'releases/*'
+    paths:
+      - './*'
+      - '.stoat/**'
+      - '.github/workflows/test-action.yaml'
+      - 'src/**'
+      - '__tests__/**'
 
 jobs:
   build:

@@ -6,6 +6,5 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest'
   },
   collectCoverage: true,
-  coverageReporters: ['text', 'lcov'],
   verbose: true
 };
