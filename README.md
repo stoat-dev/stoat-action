@@ -1,11 +1,7 @@
 # Stoat
 
-A GitHub action to supercharge your CI / CD pipelines.
+Turn PR comments into developer dashboards with templating and artifact previews for code coverage reports, frontend components, doc sites, and more! [Visit our docs website to learn more ↗︎](https://docs.stoat.dev/)
 
-## Local development
+---
 
-```bash
-npm install
-npm run build && npm run package
-npm test
-```
+![comment screenshot](docs/static/img/example-screenshot.png)
