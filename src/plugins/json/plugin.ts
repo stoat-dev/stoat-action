@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import fs, { readFileSync } from 'fs';
 
-import { JsonTask } from '../../schemas/stoatConfigSchema';
+import { JsonPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from './helpers';
 
@@ -9,7 +9,7 @@ const MAX_CHARACTERS = 1024;
 
 const runJsonPlugin = async (
   taskId: string,
-  taskConfig: JsonTask,
+  taskConfig: JsonPlugin,
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {

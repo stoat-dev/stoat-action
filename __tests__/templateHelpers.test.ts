@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { JsonTask, StaticHostingTask, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
 import {
   getLocalTemplate,
   getPlugins,
@@ -18,17 +18,17 @@ const template1 = 'template1';
 const template2Path = '__tests__/templates/template2.jinja2';
 const template2 = 'template2';
 
-const staticHosting1: StaticHostingTask = {
+const staticHosting1: StaticHostingPlugin = {
   static_hosting: {
     path: 'path1'
   }
 };
-const staticHosting2: StaticHostingTask = {
+const staticHosting2: StaticHostingPlugin = {
   static_hosting: {
     path: 'path2'
   }
 };
-const json1: JsonTask = {
+const json1: JsonPlugin = {
   json: {
     path: 'path1'
   }

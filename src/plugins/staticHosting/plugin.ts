@@ -1,13 +1,13 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 
-import { StaticHostingTask } from '../../schemas/stoatConfigSchema';
+import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
 import { createSignedUrl, submitPartialConfig, uploadDirectory } from './helpers';
 
 const runStaticHostingPlugin = async (
   taskId: string,
-  taskConfig: StaticHostingTask,
+  taskConfig: StaticHostingPlugin,
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {

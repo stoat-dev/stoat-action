@@ -17,12 +17,12 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_task" }, { "$ref": "#/definitions/json_task" }]
+        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
       }
     }
   },
   "definitions": {
-    "static_hosting_task": {
+    "static_hosting_plugin": {
       "type": "object",
       "required": ["static_hosting"],
       "properties": {
@@ -41,7 +41,7 @@
         }
       }
     },
-    "json_task": {
+    "json_plugin": {
       "type": "object",
       "required": ["json"],
       "properties": {
