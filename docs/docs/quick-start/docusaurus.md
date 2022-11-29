@@ -14,7 +14,7 @@ Follow these steps to generate Docusaurus previews for each pull request.
         npm run build
 
     - name: Run Stoat Action
-      uses: stoat-dev/stoat-action@v1
+      uses: stoat-dev/stoat-action@v0
       if: always()
     ```
 
