@@ -131,4 +131,18 @@ const config = {
     })
 };
 
+// Uses VERCEL_ENV instead of NODE_ENV, so we can exclude previews from analytics collection.
+// see https://vercel.com/docs/concepts/projects/environment-variables#system-environment-variables
+const enableAnalytics = process.env.VERCEL_ENV === 'production';
+
+if (enableAnalytics) {
+  config['scripts'] = [
+    {
+      src: 'https://plausible.io/js/script.js',
+      defer: true,
+      'data-domain': 'docs.stoat.dev'
+    }
+  ];
+}
+
 module.exports = config;
