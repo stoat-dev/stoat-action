@@ -21,7 +21,7 @@ contains example output locations for Gradle JaCoCo html reports (`<gradle-folde
 
 For the purpose of this tutorial, let's host a file checked into the repo instead of something produced by the build itself. 
 Create a file in your repo at the path `hello_world/index.html`:
-```html
+```html title="hello_world/index.html"
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +52,7 @@ To view an example for actual build output, check out our [examples repo](https:
 
 For this tutorial we're using a file that we'll check directly into our repo, not a build output, so we can configure a new GitHub workflow with a Stoat action by 
 creating a file at `.github/worklows/hello-world.yaml`:
-```yaml
+```yaml title=".github/worklows/hello-world.yaml"
 name: Hello World
 
 on:
@@ -74,36 +74,36 @@ jobs:
 ### 3. Add the path to the Stoat config file
 
 From the [installation guide](../installation), you should have a file with the following contents at `.stoat/config.yaml`:
-```yaml
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
 ```
 
 Let's configure Stoat to upload the `hello_world` directory we created in `.stoat/config.yaml`:
-```yaml
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
-plugins:
+tasks:
   hello-world:
     static_hosting:
       path: hello_world
 ```
 
 This tells Stoat that when the Stoat action runs, if the path `hello_world` has contents, those contents should be uploaded to the
-Stoat servers.
+Stoat servers. Here, the key `hello-world` is the id of the task, and the value is the configuration for the `static_hosting` plugin for that task.
 
 ### 4. Create a PR and access the file from the Stoat comment!
 
 If you create a branch, commit the files we've created, push the branch, and create a PR, you'll soon see a link in a PR comment to your "Hello World" directory!
 
 You can repeat this with multiple directories. You can also customize how the name of the directory is shown in the PR in `.stoat/config.yaml`:
-```yaml
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
-plugins:
+tasks:
   hello-world:
     metadata:
       name: Hello World
@@ -111,7 +111,7 @@ plugins:
       path: hello_world
 ```
 
-After committing, pushing, and waiting for the build, the name will now show up as `Hello World` instead of `hello-world`.
+After committing, pushing, and waiting for the build, the name will now show up as `Hello World` instead of the task id `hello-world`.
 
 ### That's it!
 

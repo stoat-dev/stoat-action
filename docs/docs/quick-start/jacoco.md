@@ -35,7 +35,7 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
     ---
     version: 1
     enabled: true
-    plugins:
+    tasks:
       jacoco:
         metadata:
           # an arbitrary name for the JaCoCo task

@@ -6,17 +6,17 @@ import { GithubActionRun } from '../../types';
 import { createSignedUrl, submitPartialConfig, uploadDirectory } from './helpers';
 
 const runStaticHostingPlugin = async (
-  pluginId: string,
-  pluginConfig: StaticHostingPlugin,
+  taskId: string,
+  taskConfig: StaticHostingPlugin,
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
-  core.info(`[${pluginId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-  core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
+  core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+  core.info(`[${taskId}] Current directory: ${process.cwd()}`);
 
-  const pathToUpload = pluginConfig.static_hosting.path;
+  const pathToUpload = taskConfig.static_hosting.path;
   if (!fs.existsSync(pathToUpload)) {
-    core.warning(`[${pluginId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
+    core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
     return;
   }
 
@@ -26,15 +26,15 @@ const runStaticHostingPlugin = async (
     ghRepo: repo,
     ghSha,
     ghToken,
-    pluginId
+    taskId: taskId
   });
 
   // upload directory
-  core.info(`[${pluginId}] Uploading ${pathToUpload} to ${objectPath}...`);
+  core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
   await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
-  await submitPartialConfig(pluginId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+  await submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
 };
 
 export default runStaticHostingPlugin;

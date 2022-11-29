@@ -9,7 +9,7 @@ export interface StoatConfigSchema {
   version: number;
   enabled?: boolean;
   comment_template_file?: string;
-  plugins?: {
+  tasks?: {
     [k: string]: StaticHostingPlugin | JsonPlugin;
   };
   [k: string]: unknown;

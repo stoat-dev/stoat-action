@@ -13,7 +13,7 @@
     "comment_template_file": {
       "type": "string"
     },
-    "plugins": {
+    "tasks": {
       "type": "object",
       "additionalProperties": {
         "type": "object",

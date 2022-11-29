@@ -10,7 +10,7 @@ export interface StoatConfigSchemaRendered {
   enabled?: boolean;
   comment_template_file?: string;
   updated_at: string;
-  plugins?: {
+  tasks?: {
     [k: string]:
       | {
           metadata?: {

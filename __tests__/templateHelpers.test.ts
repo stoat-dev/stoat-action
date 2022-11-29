@@ -3,12 +3,12 @@ import { describe, expect, test } from '@jest/globals';
 import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
 import {
   getLocalTemplate,
-  getPluginTypes,
+  getPlugins,
   getRemoteDefaultTemplate,
   getTemplate,
   getTemplateFormat
 } from '../src/templateHelpers';
-import { PluginType, TemplateFormat } from '../src/types';
+import { Plugin, TemplateFormat } from '../src/types';
 
 const ghOwner = 'test-owner';
 const ghRepo = 'test-repo';
@@ -72,13 +72,13 @@ describe('Read remote default template', () => {
   };
   const stoatConfigWithOnePlugin: StoatConfigSchema = {
     version: 1,
-    plugins: {
+    tasks: {
       plugin1: staticHosting1
     }
   };
   const stoatConfigWithMultiPlugins: StoatConfigSchema = {
     version: 1,
-    plugins: {
+    tasks: {
       plugin1: staticHosting1,
       plugin2: staticHosting2
     }
@@ -103,28 +103,28 @@ test('getTemplateFormat', () => {
   expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 
-describe('getPluginTypes', () => {
+describe('getPlugins', () => {
   test('Single plugin', () => {
     expect(
-      getPluginTypes({
+      getPlugins({
         version: 1,
-        plugins: {
+        tasks: {
           plugin1: staticHosting1
         }
       })
-    ).toEqual([PluginType.StaticHosting]);
+    ).toEqual([Plugin.StaticHosting]);
   });
 
   test('Multiple plugins', () => {
     expect(
-      getPluginTypes({
+      getPlugins({
         version: 1,
-        plugins: {
+        tasks: {
           plugin1: staticHosting1,
           plugin2: staticHosting2,
           plugin3: json1
         }
       }).sort()
-    ).toEqual([PluginType.Json, PluginType.StaticHosting].sort());
+    ).toEqual([Plugin.Json, Plugin.StaticHosting].sort());
   });
 });

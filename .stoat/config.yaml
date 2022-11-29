@@ -1,7 +1,7 @@
 ---
 version: 1
 enabled: true
-plugins:
+tasks:
   jest-coverage:
     metadata:
       name: Jest Coverage

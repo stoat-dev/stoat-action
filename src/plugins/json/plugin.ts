@@ -8,18 +8,18 @@ import { submitPartialConfig } from './helpers';
 const MAX_CHARACTERS = 1024;
 
 const runJsonPlugin = async (
-  pluginId: string,
-  pluginConfig: JsonPlugin,
+  taskId: string,
+  taskConfig: JsonPlugin,
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
-  core.info(`[${pluginId}] Running json plugin (stoat config ${stoatConfigFileId})`);
-  core.info(`[${pluginId}] Current directory: ${process.cwd()}`);
+  core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
+  core.info(`[${taskId}] Current directory: ${process.cwd()}`);
 
-  const jsonToUpload = pluginConfig.json.path;
+  const jsonToUpload = taskConfig.json.path;
   if (!fs.existsSync(jsonToUpload)) {
     core.warning(
-      `[${pluginId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`
+      `[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`
     );
     return;
   }
@@ -43,7 +43,7 @@ const runJsonPlugin = async (
   }
 
   // submit partial config
-  await submitPartialConfig(pluginId, ghSha, ghToken, value, stoatConfigFileId);
+  await submitPartialConfig(taskId, ghSha, ghToken, value, stoatConfigFileId);
 };
 
 export default runJsonPlugin;

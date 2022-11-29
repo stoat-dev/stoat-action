@@ -15,7 +15,7 @@ import {
 } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
-  core.info(`[${request.pluginId}] Getting signed url...`);
+  core.info(`[${request.taskId}] Getting signed url...`);
   const response = await fetch(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
     method: 'POST',
     body: JSON.stringify(request)
@@ -26,7 +26,7 @@ export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<
     throw new Error(response.statusText);
   }
 
-  core.info(`[${request.pluginId}] Hosting URL: ${results.hostingUrl}`);
+  core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
   return results;
 };
 
@@ -108,17 +108,17 @@ export const uploadDirectory = async (
 };
 
 export const submitPartialConfig = async (
-  pluginId: string,
+  taskId: string,
   ghSha: string,
   ghToken: string,
   hostingUrl: string,
   stoatConfigFileId: number
 ) => {
-  core.info(`[${pluginId}] Submitting partial config...`);
+  core.info(`[${taskId}] Submitting partial config...`);
   const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
   const requestBody: UploadStaticHostingRequest = {
     ghSha,
-    pluginId,
+    taskId,
     stoatConfigFileId,
     hostingUrl,
     ghToken
@@ -127,11 +127,11 @@ export const submitPartialConfig = async (
     method: 'POST',
     body: JSON.stringify(requestBody)
   });
-  core.info(`[${pluginId}] Partial config submission response: ${response.status} - ${response.statusText}`);
+  core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
   if (!response.ok) {
     core.error('Failed to run static hosting plugin');
     return;
   }
   const { partialConfigId } = (await response.json()) as UploadStaticHostingResponse;
-  core.info(`[${pluginId}] Created partial config ${partialConfigId}`);
+  core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 };
