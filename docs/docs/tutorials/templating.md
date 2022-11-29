@@ -1,8 +1,26 @@
 # Templating
 
 When rendering PR comments, Stoat uses a [Handlebars](https://handlebarsjs.com/) template.
-Which template to use is specified by the optional `comment_template_file` key/value in the `.stoat/config.yaml` file.
-If this file is absent, a default template is used. A description of the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1) is available via our API.
+Which template file to use is specified by the optional `comment_template_file` key/value in `.stoat/config.yaml`.
+If this file is absent, a default template is used. 
+
+The current default template is set as:
+```hbs
+{{{ views.plugins.static_hosting.github.table }}}
+```
+
+The value of `views.plugins.static_hosting.github.table` is the GitHub markdown for the rendered version of the following template:
+```hbs
+| Name | Link | Commit | Status |
+| :--- | :--- | :--: | :-----: |
+{{#each plugins}}
+{{#if this.static_hosting.status ~}}
+| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.static_hosting.link }}) | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status }}} |
+{{/if ~}}
+{{/each}}
+```
+
+The current default template is also available via our API: [https://www.stoat.dev/api/templates?stoatConfigVersion=1](https://www.stoat.dev/api/templates?stoatConfigVersion=1)
 
 ## Modifying the comment template
 
@@ -12,13 +30,7 @@ Create `.stoat/template.hbs` with the following contents:
 ```hbs
 Hello World!
 
-| Name | Link | Commit | Status |
-| :--- | :--- | :--: | :-----: |
-{{#each plugins}}
-{{#if this.static_hosting}}
-{{#if this.static_hosting.status_md ~}}| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | {{{ this.static_hosting.link_md }}} | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status_md }}} |{{/if ~}}
-{{/if}}
-{{/each}}
+{{{ views.plugins.static_hosting.github.table }}}
 ```
 
 All but the first two lines should be pulled from the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1).
