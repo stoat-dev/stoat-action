@@ -3,7 +3,9 @@ import * as bluebird from 'bluebird';
 import fetch from 'cross-fetch';
 import FormData from 'form-data';
 import fs from 'fs';
-import { lookup } from 'mime-types';
+// TODO: no idea why this import cannot be resolved by eslint
+// eslint-disable-next-line import/no-unresolved
+import mime from 'mime-types';
 import { posix, resolve } from 'path';
 
 import { API_URL_BASE } from '../stoatApiHelpers';
@@ -49,7 +51,7 @@ export const uploadFileWithSignedUrl = async (
     }
   }
   form.append('key', objectKey);
-  form.append('Content-Type', lookup(localFilePath) || 'application/octet-stream');
+  form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
 
   const response = await fetch(signedUrl, {
