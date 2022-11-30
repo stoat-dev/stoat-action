@@ -3,7 +3,7 @@ import fs from 'fs';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
-import { createSignedUrl, submitPartialConfig, uploadDirectory } from './helpers';
+import { processDirectory } from '../../uploading';
 
 const runStaticHostingPlugin = async (
   taskId: string,
@@ -20,21 +20,7 @@ const runStaticHostingPlugin = async (
     return;
   }
 
-  // get signed url
-  const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
-    ghOwner: owner,
-    ghRepo: repo,
-    ghSha,
-    ghToken,
-    taskId
-  });
-
-  // upload directory
-  core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-  await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
-
-  // submit partial config
-  await submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+  await processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, taskId, pathToUpload);
 };
 
 export default runStaticHostingPlugin;

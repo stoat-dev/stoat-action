@@ -3,7 +3,8 @@ import * as exec from '@actions/exec';
 
 import { AutoHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
-import { getRootDirectories } from './helpers';
+import { processDirectory } from '../../uploading';
+import { getRootDirectories, getValidDirectories } from './helpers';
 
 const runAutoHostingPlugin = async (
   taskId: string,
@@ -18,12 +19,24 @@ const runAutoHostingPlugin = async (
     '-c',
     "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"
   ]);
+  if (exitCode !== 0) {
+    core.error(`[${taskId}] Failed to search for index.html files (exit code ${exitCode}): ${stderr}`);
+    return;
+  }
+
   const allDirectories = stdout.split('\n');
   core.info(
     `[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`
   );
-  const directoriesToUpload = getRootDirectories(allDirectories);
-  core.info(`[${taskId}] Directories to upload:\n-- ${directoriesToUpload.join('\n-- ')}`);
+  const rootDirectories = getRootDirectories(allDirectories);
+  core.info(`[${taskId}] Candidate directories:\n-- ${rootDirectories.join('\n-- ')}`);
+
+  const validDirectories = getValidDirectories(rootDirectories);
+
+  for (const directory of validDirectories) {
+    const subTaskId = directory.replace(/\//g, '-');
+    await processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, subTaskId, directory);
+  }
 };
 
 export default runAutoHostingPlugin;
