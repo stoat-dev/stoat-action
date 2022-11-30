@@ -1,6 +1,6 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it, test } from '@jest/globals';
 
-import { getRootDirectories } from '../../../src/plugins/autoHosting/helpers';
+import { getRootDirectories, getSubtaskId } from '../../../src/plugins/autoHosting/plugin';
 
 describe('getRootDirectories', () => {
   it('returns nothing when input is empty', () => {
@@ -42,4 +42,10 @@ describe('getRootDirectories', () => {
       ])
     ).toEqual(['./coverage/lcov-report', './docs/build']);
   });
+});
+
+test('getSubtaskId', () => {
+  expect(getSubtaskId('./')).toEqual('-');
+  expect(getSubtaskId('./a')).toEqual('a');
+  expect(getSubtaskId('./a/b/c')).toEqual('a-b-c');
 });

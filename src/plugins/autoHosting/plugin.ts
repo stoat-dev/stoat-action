@@ -27,6 +27,11 @@ export const getValidDirectories = (inputDirectories: string[]): string[] => {
   });
 };
 
+export const getSubtaskId = (directory: string): string => {
+  const subtaskId = directory.replace(/^\.\//g, '').replace(/\//g, '-');
+  return subtaskId === '' ? '-' : subtaskId;
+};
+
 const runAutoHostingPlugin = async (
   taskId: string,
   taskConfig: AutoHostingPlugin,
@@ -55,8 +60,7 @@ const runAutoHostingPlugin = async (
   const validDirectories = getValidDirectories(rootDirectories);
 
   for (const directory of validDirectories) {
-    const subTaskId = directory.replace(/\//g, '-');
-    await processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, subTaskId, directory);
+    await processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, getSubtaskId(directory), directory);
   }
 };
 
