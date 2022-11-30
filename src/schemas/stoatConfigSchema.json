@@ -17,11 +17,36 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
+        "oneOf": [
+          { "$ref": "#/definitions/auto_hosting_plugin" },
+          { "$ref": "#/definitions/static_hosting_plugin" },
+          { "$ref": "#/definitions/json_plugin" }
+        ]
       }
     }
   },
   "definitions": {
+    "auto_hosting_plugin": {
+      "type": "object",
+      "required": ["auto_hosting"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "auto_hosting": {
+          "type": "object",
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
     "static_hosting_plugin": {
       "type": "object",
       "required": ["static_hosting"],

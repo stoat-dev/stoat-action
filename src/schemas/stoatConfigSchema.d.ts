@@ -10,7 +10,17 @@ export interface StoatConfigSchema {
   enabled?: boolean;
   comment_template_file?: string;
   tasks?: {
-    [k: string]: StaticHostingPlugin | JsonPlugin;
+    [k: string]: AutoHostingPlugin | StaticHostingPlugin | JsonPlugin;
+  };
+  [k: string]: unknown;
+}
+export interface AutoHostingPlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  auto_hosting: {
+    paths?: string[];
+    [k: string]: unknown;
   };
   [k: string]: unknown;
 }
