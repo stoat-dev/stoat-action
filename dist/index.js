@@ -4113,6 +4113,11 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 
+/**
+ * For a list of directories, remove subdirectories and return the root directories.
+ * For example, directories ["./docs/build", "./docs/build/docs", "./docs/build/blog"]
+ * will be reduced to ["./docs/build"].
+ */
 const getRootDirectories = (inputDirectories) => {
     const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
     const rootDirectories = [];
@@ -4124,6 +4129,10 @@ const getRootDirectories = (inputDirectories) => {
     }
     return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
 };
+/**
+ * Some paths returned by the find command may not be valid directories to upload.
+ * This function filters out those invalid paths.
+ */
 const getValidDirectories = (inputDirectories) => {
     return inputDirectories.filter((dir) => plugin_awaiter(void 0, void 0, void 0, function* () {
         const dirPath = (0,external_path_.resolve)(dir);
@@ -4131,6 +4140,11 @@ const getValidDirectories = (inputDirectories) => {
         return dirStats.isDirectory();
     }));
 };
+/**
+ * The auto hosting plugin generates multiple partial configs for a single task.
+ * To reuse the logic of static hosting plugin, a subtask id is auto generated
+ * from each of directories to upload as the pseudo task id of the partial config.
+ */
 const getSubtaskId = (directory) => {
     const subtaskId = directory.replace(/^\.\//g, '').replace(/\//g, '-');
     return subtaskId === '' ? '-' : subtaskId;

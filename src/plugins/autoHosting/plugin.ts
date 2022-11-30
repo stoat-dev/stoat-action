@@ -7,6 +7,11 @@ import { AutoHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
 import { processDirectory } from '../../uploading';
 
+/**
+ * For a list of directories, remove subdirectories and return the root directories.
+ * For example, directories ["./docs/build", "./docs/build/docs", "./docs/build/blog"]
+ * will be reduced to ["./docs/build"].
+ */
 export const getRootDirectories = (inputDirectories: string[]): string[] => {
   const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
   const rootDirectories: string[] = [];
@@ -19,6 +24,10 @@ export const getRootDirectories = (inputDirectories: string[]): string[] => {
   return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
 };
 
+/**
+ * Some paths returned by the find command may not be valid directories to upload.
+ * This function filters out those invalid paths.
+ */
 export const getValidDirectories = (inputDirectories: string[]): string[] => {
   return inputDirectories.filter(async (dir) => {
     const dirPath = resolve(dir);
@@ -27,6 +36,11 @@ export const getValidDirectories = (inputDirectories: string[]): string[] => {
   });
 };
 
+/**
+ * The auto hosting plugin generates multiple partial configs for a single task.
+ * To reuse the logic of static hosting plugin, a subtask id is auto generated
+ * from each of directories to upload as the pseudo task id of the partial config.
+ */
 export const getSubtaskId = (directory: string): string => {
   const subtaskId = directory.replace(/^\.\//g, '').replace(/\//g, '-');
   return subtaskId === '' ? '-' : subtaskId;
