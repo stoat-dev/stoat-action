@@ -3,4 +3,7 @@ version: 1
 enabled: true
 tasks:
   html-hosting:
+    metadata:
+      name: 'HTML Hosting'
     auto_hosting:
+      enabled: true

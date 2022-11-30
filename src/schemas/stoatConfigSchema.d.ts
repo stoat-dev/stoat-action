@@ -19,6 +19,7 @@ export interface AutoHostingPlugin {
     [k: string]: unknown;
   };
   auto_hosting: {
+    enabled: boolean;
     paths?: string[];
     [k: string]: unknown;
   };

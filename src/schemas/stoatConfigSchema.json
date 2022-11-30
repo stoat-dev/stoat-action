@@ -36,7 +36,11 @@
         },
         "auto_hosting": {
           "type": "object",
+          "required": ["enabled"],
           "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
             "paths": {
               "type": "array",
               "items": {
