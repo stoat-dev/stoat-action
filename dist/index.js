@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8320:
+/***/ 495:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -3959,7 +3959,168 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
 
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
+// EXTERNAL MODULE: ./node_modules/bluebird/js/release/bluebird.js
+var bluebird = __nccwpck_require__(8710);
+// EXTERNAL MODULE: ./node_modules/form-data/lib/form_data.js
+var form_data = __nccwpck_require__(4334);
+var form_data_default = /*#__PURE__*/__nccwpck_require__.n(form_data);
+// EXTERNAL MODULE: ./node_modules/mime-types/index.js
+var mime_types = __nccwpck_require__(3583);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+;// CONCATENATED MODULE: ./lib/plugins/staticHosting/helpers.js
+var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+
+
+
+const createSignedUrl = (request) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${request.taskId}] Getting signed url...`);
+    const response = yield node_ponyfill_default()(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
+        method: 'POST',
+        body: JSON.stringify(request)
+    });
+    const results = (yield response.json());
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+    lib_core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
+    return results;
+});
+const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    if (dryRun) {
+        lib_core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
+        return;
+    }
+    const form = new (form_data_default())();
+    for (const key of Object.keys(fields)) {
+        if (key !== 'key') {
+            form.append(key, fields[key]);
+        }
+    }
+    form.append('key', objectKey);
+    form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
+    form.append('file', external_fs_default().readFileSync(localFilePath));
+    const response = yield node_ponyfill_default()(signedUrl, {
+        method: 'POST',
+        body: form
+    });
+    lib_core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
+});
+// Reference:
+// https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
+const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    const dirPath = (0,external_path_.resolve)(localPathToUpload);
+    const dirStats = yield external_fs_default().promises.stat(dirPath);
+    const objectPrefix = targetDirectory !== null && targetDirectory !== void 0 ? targetDirectory : '';
+    if (!dirStats.isDirectory()) {
+        throw new Error(`Path is not a directory: ${dirPath}`);
+    }
+    try {
+        const files = yield external_fs_default().promises.readdir(dirPath);
+        if (!Array.isArray(files)) {
+            lib_core.warning(`Empty directory is ignored: ${dirPath}`);
+            return;
+        }
+        yield bluebird.Promise.map(files, (filename) => helpers_awaiter(void 0, void 0, void 0, function* () {
+            const absoluteLocalPath = external_path_.posix.join(dirPath, filename);
+            const fileStats = yield external_fs_default().promises.stat(absoluteLocalPath);
+            const objectKey = external_path_.posix.join(objectPrefix, filename);
+            if (fileStats.isFile()) {
+                yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
+            }
+            else if (fileStats.isDirectory()) {
+                yield uploadDirectory(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
+            }
+        }), {
+            concurrency: 10
+        });
+    }
+    catch (e) {
+        throw new Error(`File upload failed: ${e}`);
+    }
+});
+const submitPartialConfig = (taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId) => helpers_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Submitting partial config...`);
+    const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
+    const requestBody = {
+        ghSha,
+        taskId,
+        stoatConfigFileId,
+        hostingUrl,
+        ghToken
+    };
+    const response = yield node_ponyfill_default()(staticHostingApiUrl, {
+        method: 'POST',
+        body: JSON.stringify(requestBody)
+    });
+    lib_core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
+    if (!response.ok) {
+        lib_core.error('Failed to run static hosting plugin');
+        return;
+    }
+    const { partialConfigId } = (yield response.json());
+    lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
+});
+
+;// CONCATENATED MODULE: ./lib/uploading/helpers.js
+var uploading_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+/**
+ * Upload a directory for hosting, and submit a partial config.
+ */
+const processDirectory = (ghOwner, ghRepo, ghSha, ghToken, stoatConfigFileId, taskId, pathToUpload) => uploading_helpers_awaiter(void 0, void 0, void 0, function* () {
+    // get signed url
+    const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
+        ghOwner,
+        ghRepo,
+        ghSha,
+        ghToken,
+        taskId
+    });
+    // upload directory
+    lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
+    yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+    // submit partial config
+    yield submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+});
+
+;// CONCATENATED MODULE: ./lib/uploading/index.js
+
+
 ;// CONCATENATED MODULE: ./lib/plugins/autoHosting/helpers.js
+var autoHosting_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
 /**
  * Prune input directories to filter subdirectories that share the same root directory.
  */
@@ -3973,6 +4134,13 @@ const getRootDirectories = (inputDirectories) => {
         }
     }
     return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
+};
+const getValidDirectories = (inputDirectories) => {
+    return inputDirectories.filter((dir) => autoHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
+        const dirPath = (0,external_path_.resolve)(dir);
+        const dirStats = yield external_fs_default().promises.stat(dirPath);
+        return dirStats.isDirectory();
+    }));
 };
 
 ;// CONCATENATED MODULE: ./lib/plugins/autoHosting/plugin.js
@@ -3988,6 +4156,7 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 
+
 const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
     lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
@@ -3995,10 +4164,19 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
         '-c',
         "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"
     ]);
+    if (exitCode !== 0) {
+        lib_core.error(`[${taskId}] Failed to search for index.html files (exit code ${exitCode}): ${stderr}`);
+        return;
+    }
     const allDirectories = stdout.split('\n');
     lib_core.info(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
-    const directoriesToUpload = getRootDirectories(allDirectories);
-    lib_core.info(`[${taskId}] Directories to upload:\n-- ${directoriesToUpload.join('\n-- ')}`);
+    const rootDirectories = getRootDirectories(allDirectories);
+    lib_core.info(`[${taskId}] Candidate directories:\n-- ${rootDirectories.join('\n-- ')}`);
+    const validDirectories = getValidDirectories(rootDirectories);
+    for (const directory of validDirectories) {
+        const subTaskId = directory.replace(/\//g, '-');
+        yield processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, subTaskId, directory);
+    }
 });
 /* harmony default export */ const autoHosting_plugin = (runAutoHostingPlugin);
 
@@ -4006,7 +4184,7 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
 
 
 ;// CONCATENATED MODULE: ./lib/plugins/json/helpers.js
-var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+var json_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -4018,7 +4196,7 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 
 
-const submitPartialConfig = (taskId, ghSha, ghToken, value, stoatConfigFileId) => helpers_awaiter(void 0, void 0, void 0, function* () {
+const helpers_submitPartialConfig = (taskId, ghSha, ghToken, value, stoatConfigFileId) => json_helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Submitting partial config...`);
     const jsonApiUrl = `${API_URL_BASE}/api/plugins/jsons`;
     const requestBody = {
@@ -4079,128 +4257,12 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
         throw Error(message);
     }
     // submit partial config
-    yield submitPartialConfig(taskId, ghSha, ghToken, value, stoatConfigFileId);
+    yield helpers_submitPartialConfig(taskId, ghSha, ghToken, value, stoatConfigFileId);
 });
 /* harmony default export */ const json_plugin = (runJsonPlugin);
 
 ;// CONCATENATED MODULE: ./lib/plugins/json/index.js
 
-
-// EXTERNAL MODULE: ./node_modules/bluebird/js/release/bluebird.js
-var bluebird = __nccwpck_require__(8710);
-// EXTERNAL MODULE: ./node_modules/form-data/lib/form_data.js
-var form_data = __nccwpck_require__(4334);
-var form_data_default = /*#__PURE__*/__nccwpck_require__.n(form_data);
-// EXTERNAL MODULE: ./node_modules/mime-types/index.js
-var mime_types = __nccwpck_require__(3583);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
-;// CONCATENATED MODULE: ./lib/plugins/staticHosting/helpers.js
-var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-
-
-
-
-
-
-
-const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${request.taskId}] Getting signed url...`);
-    const response = yield node_ponyfill_default()(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
-        method: 'POST',
-        body: JSON.stringify(request)
-    });
-    const results = (yield response.json());
-    if (!response.ok) {
-        throw new Error(response.statusText);
-    }
-    lib_core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
-    return results;
-});
-const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    if (dryRun) {
-        lib_core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
-        return;
-    }
-    const form = new (form_data_default())();
-    for (const key of Object.keys(fields)) {
-        if (key !== 'key') {
-            form.append(key, fields[key]);
-        }
-    }
-    form.append('key', objectKey);
-    form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
-    form.append('file', external_fs_default().readFileSync(localFilePath));
-    const response = yield node_ponyfill_default()(signedUrl, {
-        method: 'POST',
-        body: form
-    });
-    lib_core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
-});
-// Reference:
-// https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
-const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    const dirPath = (0,external_path_.resolve)(localPathToUpload);
-    const dirStats = yield external_fs_default().promises.stat(dirPath);
-    const objectPrefix = targetDirectory !== null && targetDirectory !== void 0 ? targetDirectory : '';
-    if (!dirStats.isDirectory()) {
-        throw new Error(`Path is not a directory: ${dirPath}`);
-    }
-    try {
-        const files = yield external_fs_default().promises.readdir(dirPath);
-        if (!Array.isArray(files)) {
-            lib_core.warning(`Empty directory is ignored: ${dirPath}`);
-            return;
-        }
-        yield bluebird.Promise.map(files, (filename) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-            const absoluteLocalPath = external_path_.posix.join(dirPath, filename);
-            const fileStats = yield external_fs_default().promises.stat(absoluteLocalPath);
-            const objectKey = external_path_.posix.join(objectPrefix, filename);
-            if (fileStats.isFile()) {
-                yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
-            }
-            else if (fileStats.isDirectory()) {
-                yield uploadDirectory(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
-            }
-        }), {
-            concurrency: 10
-        });
-    }
-    catch (e) {
-        throw new Error(`File upload failed: ${e}`);
-    }
-});
-const helpers_submitPartialConfig = (taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Submitting partial config...`);
-    const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
-    const requestBody = {
-        ghSha,
-        taskId,
-        stoatConfigFileId,
-        hostingUrl,
-        ghToken
-    };
-    const response = yield node_ponyfill_default()(staticHostingApiUrl, {
-        method: 'POST',
-        body: JSON.stringify(requestBody)
-    });
-    lib_core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
-    if (!response.ok) {
-        lib_core.error('Failed to run static hosting plugin');
-        return;
-    }
-    const { partialConfigId } = (yield response.json());
-    lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
-});
 
 ;// CONCATENATED MODULE: ./lib/plugins/staticHosting/plugin.js
 var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -4223,19 +4285,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         lib_core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
         return;
     }
-    // get signed url
-    const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
-        ghOwner: owner,
-        ghRepo: repo,
-        ghSha,
-        ghToken,
-        taskId
-    });
-    // upload directory
-    lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-    yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
-    // submit partial config
-    yield helpers_submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+    yield processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, taskId, pathToUpload);
 });
 /* harmony default export */ const staticHosting_plugin = (runStaticHostingPlugin);
 
@@ -32104,7 +32154,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(8320);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(495);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
