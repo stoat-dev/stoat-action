@@ -2,12 +2,5 @@
 version: 1
 enabled: true
 tasks:
-  jest-coverage:
-    metadata:
-      name: Jest Coverage
-    static_hosting:
-      path: coverage/lcov-report
-  docs:
-    metadata:
-      name: Documentation
+  html-hosting:
     auto_hosting:
