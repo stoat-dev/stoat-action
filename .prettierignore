@@ -1,3 +1,5 @@
 dist/
 lib/
 node_modules/
+docs/.docusaurus/
+coverage/
