@@ -50,8 +50,8 @@ const runAutoHostingPlugin = async (
     return;
   }
 
-  const allDirectories = stdout.split('\n');
-  core.info(
+  const allDirectories = stdout.split('\n').filter((d) => d.trim() !== '');
+  core.debug(
     `[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`
   );
   const rootDirectories = getRootDirectories(allDirectories);

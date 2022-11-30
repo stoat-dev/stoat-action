@@ -4146,8 +4146,8 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
         lib_core.error(`[${taskId}] Failed to search for index.html files (exit code ${exitCode}): ${stderr}`);
         return;
     }
-    const allDirectories = stdout.split('\n');
-    lib_core.info(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
+    const allDirectories = stdout.split('\n').filter((d) => d.trim() !== '');
+    lib_core.debug(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
     const rootDirectories = getRootDirectories(allDirectories);
     lib_core.info(`[${taskId}] Candidate directories:\n-- ${rootDirectories.join('\n-- ')}`);
     const validDirectories = getValidDirectories(rootDirectories);
