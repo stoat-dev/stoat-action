@@ -3964,7 +3964,7 @@ var exec = __nccwpck_require__(1514);
  * Prune input directories to filter subdirectories that share the same root directory.
  */
 const getRootDirectories = (inputDirectories) => {
-    const sortedDirectories = inputDirectories.sort((d1, d2) => d1.localeCompare(d2));
+    const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
     const rootDirectories = [];
     for (const directory of sortedDirectories) {
         const isSubdirectory = rootDirectories.some((rootDirectory) => directory.startsWith(rootDirectory));

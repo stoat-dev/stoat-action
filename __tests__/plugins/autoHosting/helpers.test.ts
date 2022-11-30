@@ -13,6 +13,10 @@ describe('getRootDirectories', () => {
     expect(getRootDirectories(['./docs/build'])).toEqual(['./docs/build']);
   });
 
+  it('removes empty inputs', () => {
+    expect(getRootDirectories(['  ', './docs', ''])).toEqual(['./docs']);
+  });
+
   it('prunes subdirectories for a single root directory', () => {
     expect(
       getRootDirectories([
