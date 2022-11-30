@@ -1,10 +1,31 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
+import fs from 'fs';
+import { resolve } from 'path';
 
 import { AutoHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../../types';
 import { processDirectory } from '../../uploading';
-import { getRootDirectories, getValidDirectories } from './helpers';
+
+export const getRootDirectories = (inputDirectories: string[]): string[] => {
+  const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
+  const rootDirectories: string[] = [];
+  for (const directory of sortedDirectories) {
+    const isSubdirectory = rootDirectories.some((rootDirectory) => directory.startsWith(rootDirectory));
+    if (!isSubdirectory) {
+      rootDirectories.push(directory);
+    }
+  }
+  return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
+};
+
+export const getValidDirectories = (inputDirectories: string[]): string[] => {
+  return inputDirectories.filter(async (dir) => {
+    const dirPath = resolve(dir);
+    const dirStats = await fs.promises.stat(dirPath);
+    return dirStats.isDirectory();
+  });
+};
 
 const runAutoHostingPlugin = async (
   taskId: string,
