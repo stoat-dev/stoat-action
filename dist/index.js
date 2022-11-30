@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 495:
+/***/ 6996:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -3959,6 +3959,8 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
 
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ./node_modules/bluebird/js/release/bluebird.js
 var bluebird = __nccwpck_require__(8710);
 // EXTERNAL MODULE: ./node_modules/form-data/lib/form_data.js
@@ -3966,9 +3968,7 @@ var form_data = __nccwpck_require__(4334);
 var form_data_default = /*#__PURE__*/__nccwpck_require__.n(form_data);
 // EXTERNAL MODULE: ./node_modules/mime-types/index.js
 var mime_types = __nccwpck_require__(3583);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
-;// CONCATENATED MODULE: ./lib/plugins/staticHosting/helpers.js
+;// CONCATENATED MODULE: ./lib/uploading/helpers.js
 var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -4074,23 +4074,10 @@ const submitPartialConfig = (taskId, ghSha, ghToken, hostingUrl, stoatConfigFile
     const { partialConfigId } = (yield response.json());
     lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
-
-;// CONCATENATED MODULE: ./lib/uploading/helpers.js
-var uploading_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-
 /**
  * Upload a directory for hosting, and submit a partial config.
  */
-const processDirectory = (ghOwner, ghRepo, ghSha, ghToken, stoatConfigFileId, taskId, pathToUpload) => uploading_helpers_awaiter(void 0, void 0, void 0, function* () {
+const processDirectory = (ghOwner, ghRepo, ghSha, ghToken, stoatConfigFileId, taskId, pathToUpload) => helpers_awaiter(void 0, void 0, void 0, function* () {
     // get signed url
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner,
@@ -4109,40 +4096,6 @@ const processDirectory = (ghOwner, ghRepo, ghSha, ghToken, stoatConfigFileId, ta
 ;// CONCATENATED MODULE: ./lib/uploading/index.js
 
 
-;// CONCATENATED MODULE: ./lib/plugins/autoHosting/helpers.js
-var autoHosting_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-
-/**
- * Prune input directories to filter subdirectories that share the same root directory.
- */
-const getRootDirectories = (inputDirectories) => {
-    const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
-    const rootDirectories = [];
-    for (const directory of sortedDirectories) {
-        const isSubdirectory = rootDirectories.some((rootDirectory) => directory.startsWith(rootDirectory));
-        if (!isSubdirectory) {
-            rootDirectories.push(directory);
-        }
-    }
-    return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
-};
-const getValidDirectories = (inputDirectories) => {
-    return inputDirectories.filter((dir) => autoHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-        const dirPath = (0,external_path_.resolve)(dir);
-        const dirStats = yield external_fs_default().promises.stat(dirPath);
-        return dirStats.isDirectory();
-    }));
-};
-
 ;// CONCATENATED MODULE: ./lib/plugins/autoHosting/plugin.js
 var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4157,6 +4110,29 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 
+
+const getRootDirectories = (inputDirectories) => {
+    const sortedDirectories = inputDirectories.filter((d) => d.trim() !== '').sort((d1, d2) => d1.localeCompare(d2));
+    const rootDirectories = [];
+    for (const directory of sortedDirectories) {
+        const isSubdirectory = rootDirectories.some((rootDirectory) => directory.startsWith(rootDirectory));
+        if (!isSubdirectory) {
+            rootDirectories.push(directory);
+        }
+    }
+    return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
+};
+const getValidDirectories = (inputDirectories) => {
+    return inputDirectories.filter((dir) => plugin_awaiter(void 0, void 0, void 0, function* () {
+        const dirPath = (0,external_path_.resolve)(dir);
+        const dirStats = yield external_fs_default().promises.stat(dirPath);
+        return dirStats.isDirectory();
+    }));
+};
+const getSubtaskId = (directory) => {
+    const subtaskId = directory.replace(/^\.\//g, '').replace(/\//g, '-');
+    return subtaskId === '' ? '-' : subtaskId;
+};
 const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
     lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
@@ -4174,8 +4150,7 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
     lib_core.info(`[${taskId}] Candidate directories:\n-- ${rootDirectories.join('\n-- ')}`);
     const validDirectories = getValidDirectories(rootDirectories);
     for (const directory of validDirectories) {
-        const subTaskId = directory.replace(/\//g, '-');
-        yield processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, subTaskId, directory);
+        yield processDirectory(owner, repo, ghSha, ghToken, stoatConfigFileId, getSubtaskId(directory), directory);
     }
 });
 /* harmony default export */ const autoHosting_plugin = (runAutoHostingPlugin);
@@ -32154,7 +32129,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(495);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6996);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
