@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 7691:
+/***/ 8320:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -3959,6 +3959,22 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
 
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
+;// CONCATENATED MODULE: ./lib/plugins/autoHosting/helpers.js
+/**
+ * Prune input directories to filter subdirectories that share the same root directory.
+ */
+const getRootDirectories = (inputDirectories) => {
+    const sortedDirectories = inputDirectories.sort((d1, d2) => d1.localeCompare(d2));
+    const rootDirectories = [];
+    for (const directory of sortedDirectories) {
+        const isSubdirectory = rootDirectories.some((rootDirectory) => directory.startsWith(rootDirectory));
+        if (!isSubdirectory) {
+            rootDirectories.push(directory);
+        }
+    }
+    return rootDirectories.sort((d1, d2) => d1.localeCompare(d2));
+};
+
 ;// CONCATENATED MODULE: ./lib/plugins/autoHosting/plugin.js
 var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -3971,6 +3987,7 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 };
 
 
+
 const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
     lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
@@ -3978,7 +3995,10 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
         '-c',
         "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"
     ]);
-    lib_core.info(`[${taskId}] Candidate directories: ${exitCode}, ${stdout}, ${stderr}`);
+    const allDirectories = stdout.split('\n');
+    lib_core.info(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
+    const directoriesToUpload = getRootDirectories(allDirectories);
+    lib_core.info(`[${taskId}] Directories to upload:\n-- ${directoriesToUpload.join('\n-- ')}`);
 });
 /* harmony default export */ const autoHosting_plugin = (runAutoHostingPlugin);
 
@@ -32084,7 +32104,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(7691);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(8320);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
