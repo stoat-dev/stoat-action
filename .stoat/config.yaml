@@ -10,5 +10,4 @@ tasks:
   docs:
     metadata:
       name: Documentation
-    static_hosting:
-      path: docs/build
+    auto_hosting:

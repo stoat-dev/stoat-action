@@ -26,7 +26,7 @@ const runStaticHostingPlugin = async (
     ghRepo: repo,
     ghSha,
     ghToken,
-    taskId: taskId
+    taskId
   });
 
   // upload directory
