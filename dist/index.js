@@ -4011,7 +4011,7 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
         }
     }
     form.append('key', objectKey);
-    form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
+    form.append('Content-Type', (0,mime_types.lookup)(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
     const response = yield node_ponyfill_default()(signedUrl, {
         method: 'POST',
