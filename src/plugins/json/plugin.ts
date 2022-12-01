@@ -50,7 +50,7 @@ const runJsonPlugin = async (
     ghToken,
     value
   };
-  await submitPartialConfig(taskId, requestBody);
+  await submitPartialConfig<UploadJsonRequest>(taskId, 'jsons', requestBody);
 };
 
 export default runJsonPlugin;

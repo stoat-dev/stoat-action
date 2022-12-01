@@ -4,9 +4,13 @@ import fetch from 'cross-fetch';
 import { API_URL_BASE } from '../stoatApiHelpers';
 import { UploadPartialConfigRequest, UploadPartialConfigResponse } from '../types';
 
-export const submitPartialConfig = async <T extends UploadPartialConfigRequest>(taskId: string, requestBody: T) => {
+export const submitPartialConfig = async <T extends UploadPartialConfigRequest>(
+  taskId: string,
+  apiSuffix: string,
+  requestBody: T
+) => {
   core.info(`[${taskId}] Submitting partial config...`);
-  const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
+  const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/${apiSuffix}`;
   const response = await fetch(staticHostingApiUrl, {
     method: 'POST',
     body: JSON.stringify(requestBody)

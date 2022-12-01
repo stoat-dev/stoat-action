@@ -42,7 +42,7 @@ const runStaticHostingPlugin = async (
     ghToken,
     hostingUrl
   };
-  await submitPartialConfig<UploadStaticHostingRequest>(taskId, requestBody);
+  await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
 };
 
 export default runStaticHostingPlugin;

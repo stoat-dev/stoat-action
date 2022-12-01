@@ -101,6 +101,7 @@ async function run(stoatConfig: any) {
     ghBranch: core.getInput('pr_branch_name'),
     ghPullRequestNumber: pullRequestNumber,
     ghWorkflow: github.context.workflow,
+    ghJobs: jobListResponse.data.jobs,
     ghSha: repoSha,
     ghCommitTimestamp,
     ghRunId: parseInt(core.getInput('run_id')),

@@ -93,6 +93,11 @@ export interface UploadJsonRequest extends UploadPartialConfigRequest {
   value: object;
 }
 
+export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
+  ghJobName: string;
+  runtimeSeconds: number;
+}
+
 export type GetDefaultTemplateRequest = {
   /* params for API validation */
   ghOwner: string;
