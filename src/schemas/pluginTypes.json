@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "string",
+  "enum": ["static_hosting", "json", "job_runtime"],
+  "definitions": {
+    "static_hosting_plugin": {
+      "type": "object",
+      "required": ["static_hosting"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "static_hosting": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "static_hosting_plugin_rendered": {
+      "type": "object",
+      "required": ["static_hosting"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "static_hosting": {
+          "type": "object",
+          "required": ["path", "link", "sha", "status"],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "sha": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "json_plugin": {
+      "type": "object",
+      "required": ["json"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "json": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "json_plugin_rendered": {
+      "type": "object",
+      "required": ["json"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "json": {
+          "type": "object",
+          "required": ["path", "value"],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "job_runtime_plugin": {
+      "type": "object",
+      "required": ["job_runtime"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "job_runtime": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "included_jobs": {
+              "type": "object",
+              "properties": {
+                "workflow": {
+                  "type": "string"
+                },
+                "job": {
+                  "type": "string"
+                }
+              }
+            },
+            "excluded_jobs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "job_runtime_plugin_rendered": {
+      "type": "object",
+      "required": ["job_runtime"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "job_runtime": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "runtime_seconds": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}

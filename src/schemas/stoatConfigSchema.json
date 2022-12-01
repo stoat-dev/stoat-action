@@ -17,47 +17,11 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
-      }
-    }
-  },
-  "definitions": {
-    "static_hosting_plugin": {
-      "type": "object",
-      "required": ["static_hosting"],
-      "properties": {
-        "metadata": {
-          "type": "object",
-          "additionalProperties": true
-        },
-        "static_hosting": {
-          "type": "object",
-          "required": ["path"],
-          "properties": {
-            "path": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "json_plugin": {
-      "type": "object",
-      "required": ["json"],
-      "properties": {
-        "metadata": {
-          "type": "object",
-          "additionalProperties": true
-        },
-        "json": {
-          "type": "object",
-          "required": ["path"],
-          "properties": {
-            "path": {
-              "type": "string"
-            }
-          }
-        }
+        "oneOf": [
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/static_hosting_plugin" },
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/json_plugin" },
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/job_runtime_plugin" }
+        ]
       }
     }
   }

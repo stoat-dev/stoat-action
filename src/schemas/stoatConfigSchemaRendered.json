@@ -22,57 +22,9 @@
       "additionalProperties": {
         "type": "object",
         "oneOf": [
-          {
-            "type": "object",
-            "required": ["static_hosting"],
-            "properties": {
-              "metadata": {
-                "type": "object",
-                "additionalProperties": true
-              },
-              "static_hosting": {
-                "type": "object",
-                "required": ["path", "link", "sha", "status"],
-                "properties": {
-                  "path": {
-                    "type": "string"
-                  },
-                  "link": {
-                    "type": "string"
-                  },
-                  "sha": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": ["json"],
-            "properties": {
-              "metadata": {
-                "type": "object",
-                "additionalProperties": true
-              },
-              "json": {
-                "type": "object",
-                "required": ["path", "value"],
-                "properties": {
-                  "path": {
-                    "type": "string"
-                  },
-                  "value": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                }
-              }
-            }
-          }
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/static_hosting_plugin_rendered" },
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/json_plugin_rendered" },
+          { "$ref": "src/schemas/pluginTypes.json#/definitions/job_runtime_plugin_rendered" }
         ]
       }
     },

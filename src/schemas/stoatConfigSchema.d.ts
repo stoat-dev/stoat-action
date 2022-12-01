@@ -10,7 +10,7 @@ export interface StoatConfigSchema {
   enabled?: boolean;
   comment_template_file?: string;
   tasks?: {
-    [k: string]: StaticHostingPlugin | JsonPlugin;
+    [k: string]: StaticHostingPlugin | JsonPlugin | JobRuntimePlugin;
   };
   [k: string]: unknown;
 }
@@ -30,6 +30,21 @@ export interface JsonPlugin {
   };
   json: {
     path: string;
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+export interface JobRuntimePlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  job_runtime: {
+    included_jobs?: {
+      workflow?: string;
+      job?: string;
+      [k: string]: unknown;
+    };
+    excluded_jobs?: string[];
     [k: string]: unknown;
   };
   [k: string]: unknown;

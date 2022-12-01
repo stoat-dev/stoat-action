@@ -11,33 +11,7 @@ export interface StoatConfigSchemaRendered {
   comment_template_file?: string;
   updated_at: string;
   tasks?: {
-    [k: string]:
-      | {
-          metadata?: {
-            [k: string]: unknown;
-          };
-          static_hosting: {
-            path: string;
-            link: string;
-            sha: string;
-            status: string;
-            [k: string]: unknown;
-          };
-          [k: string]: unknown;
-        }
-      | {
-          metadata?: {
-            [k: string]: unknown;
-          };
-          json: {
-            path: string;
-            value: {
-              [k: string]: unknown;
-            };
-            [k: string]: unknown;
-          };
-          [k: string]: unknown;
-        };
+    [k: string]: StaticHostingPluginRendered | JsonPluginRendered | JobRuntimePluginRendered;
   };
   views?: {
     plugins?: {
@@ -50,6 +24,42 @@ export interface StoatConfigSchemaRendered {
       };
       [k: string]: unknown;
     };
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+export interface StaticHostingPluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  static_hosting: {
+    path: string;
+    link: string;
+    sha: string;
+    status: string;
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+export interface JsonPluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  json: {
+    path: string;
+    value: {
+      [k: string]: unknown;
+    };
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+export interface JobRuntimePluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  job_runtime: {
+    runtime_seconds?: number;
     [k: string]: unknown;
   };
   [k: string]: unknown;
