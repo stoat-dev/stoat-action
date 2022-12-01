@@ -10,8 +10,8 @@ import { API_URL_BASE } from '../../stoatApiHelpers';
 import {
   CreateSignedUrlRequest,
   CreateSignedUrlResponse,
-  UploadStaticHostingRequest,
-  UploadStaticHostingResponse
+  UploadPartialConfigResponse,
+  UploadStaticHostingRequest
 } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
@@ -132,6 +132,6 @@ export const submitPartialConfig = async (
     core.error('Failed to run static hosting plugin');
     return;
   }
-  const { partialConfigId } = (await response.json()) as UploadStaticHostingResponse;
+  const { partialConfigId } = (await response.json()) as UploadPartialConfigResponse;
   core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 };

@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
 import { API_URL_BASE } from '../../stoatApiHelpers';
-import { UploadJsonRequest, UploadJsonResponse } from '../../types';
+import { UploadJsonRequest, UploadPartialConfigResponse } from '../../types';
 
 export const submitPartialConfig = async (
   taskId: string,
@@ -32,7 +32,7 @@ export const submitPartialConfig = async (
     return;
   }
 
-  const { partialConfigId } = (await response.json()) as UploadJsonResponse;
+  const { partialConfigId } = (await response.json()) as UploadPartialConfigResponse;
 
   core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 };
