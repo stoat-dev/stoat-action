@@ -7,12 +7,7 @@ import mime from 'mime-types';
 import { posix, resolve } from 'path';
 
 import { API_URL_BASE } from '../../stoatApiHelpers';
-import {
-  CreateSignedUrlRequest,
-  CreateSignedUrlResponse,
-  UploadPartialConfigResponse,
-  UploadStaticHostingRequest
-} from '../../types';
+import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);
@@ -105,33 +100,4 @@ export const uploadDirectory = async (
   } catch (e) {
     throw new Error(`File upload failed: ${e}`);
   }
-};
-
-export const submitPartialConfig = async (
-  taskId: string,
-  ghSha: string,
-  ghToken: string,
-  hostingUrl: string,
-  stoatConfigFileId: number
-) => {
-  core.info(`[${taskId}] Submitting partial config...`);
-  const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/static_hostings`;
-  const requestBody: UploadStaticHostingRequest = {
-    ghSha,
-    taskId,
-    stoatConfigFileId,
-    hostingUrl,
-    ghToken
-  };
-  const response = await fetch(staticHostingApiUrl, {
-    method: 'POST',
-    body: JSON.stringify(requestBody)
-  });
-  core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
-  if (!response.ok) {
-    core.error('Failed to run static hosting plugin');
-    return;
-  }
-  const { partialConfigId } = (await response.json()) as UploadPartialConfigResponse;
-  core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 };
