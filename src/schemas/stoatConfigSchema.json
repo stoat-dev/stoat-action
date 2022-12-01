@@ -74,7 +74,6 @@
         },
         "job_runtime": {
           "type": "object",
-          "required": ["path"],
           "properties": {
             "included_jobs": {
               "type": "object",
