@@ -18,10 +18,83 @@
       "additionalProperties": {
         "type": "object",
         "oneOf": [
-          { "$ref": "src/schemas/pluginTypes.json#/definitions/static_hosting_plugin" },
-          { "$ref": "src/schemas/pluginTypes.json#/definitions/json_plugin" },
-          { "$ref": "src/schemas/pluginTypes.json#/definitions/job_runtime_plugin" }
+          { "$ref": "#/definitions/static_hosting_plugin" },
+          { "$ref": "#/definitions/json_plugin" },
+          { "$ref": "#/definitions/job_runtime_plugin" }
         ]
+      }
+    }
+  },
+  "definitions": {
+    "static_hosting_plugin": {
+      "type": "object",
+      "required": ["static_hosting"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "static_hosting": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "json_plugin": {
+      "type": "object",
+      "required": ["json"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "json": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "job_runtime_plugin": {
+      "type": "object",
+      "required": ["job_runtime"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "job_runtime": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "included_jobs": {
+              "type": "object",
+              "properties": {
+                "workflow": {
+                  "type": "string"
+                },
+                "job": {
+                  "type": "string"
+                }
+              }
+            },
+            "excluded_jobs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
   }
