@@ -4449,7 +4449,7 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
 function run(stoatConfig) {
     var _a;
     return app_awaiter(this, void 0, void 0, function* () {
-        lib_core.info('Validating Stoat config file...');
+        lib_core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
         const validate = app_ajv.compile(stoatConfigSchema_namespaceObject);
         const valid = validate(stoatConfig);
         if (!valid) {

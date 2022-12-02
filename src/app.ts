@@ -43,7 +43,7 @@ async function getGhCommitTimestamp(
 }
 
 async function run(stoatConfig: any) {
-  core.info('Validating Stoat config file...');
+  core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
   const validate = ajv.compile(stoatSchema);
   const valid = validate(stoatConfig);
 
