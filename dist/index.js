@@ -3957,37 +3957,6 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
     return stoatConfigFileId;
 });
 
-;// CONCATENATED MODULE: ./lib/plugins/jobRuntime/plugin.js
-var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-const runJobRuntimePlugin = (taskId, { ghToken, ghRepository: { repo, owner }, ghSha, ghJobs }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-    for (const ghJob of ghJobs) {
-        lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${JSON.stringify(ghJob)}`);
-        const requestBody = {
-            ghSha,
-            taskId,
-            stoatConfigFileId,
-            ghToken,
-            ghJobName: ghJob.name,
-            runtimeSeconds: 0
-        };
-        // await submitPartialConfig<UploadJobRuntimeRequest>(taskId, 'job_runtimes', requestBody);
-    }
-});
-/* harmony default export */ const jobRuntime_plugin = (runJobRuntimePlugin);
-
-;// CONCATENATED MODULE: ./lib/plugins/jobRuntime/index.js
-
-
 ;// CONCATENATED MODULE: ./lib/plugins/helpers.js
 var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4016,6 +3985,39 @@ const submitPartialConfig = (taskId, apiSuffix, requestBody) => helpers_awaiter(
     const { partialConfigId } = (yield response.json());
     lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
+
+;// CONCATENATED MODULE: ./lib/plugins/jobRuntime/plugin.js
+var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+const runJobRuntimePlugin = (taskId, { ghToken, ghRepository: { repo, owner }, ghSha, ghJobs }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+    lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    for (const ghJob of ghJobs) {
+        const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
+        lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
+        const requestBody = {
+            ghSha,
+            taskId,
+            stoatConfigFileId,
+            ghToken,
+            ghJobName: ghJob.name,
+            runtimeSeconds
+        };
+        yield submitPartialConfig(taskId, 'job_runtimes', requestBody);
+    }
+});
+/* harmony default export */ const jobRuntime_plugin = (runJobRuntimePlugin);
+
+;// CONCATENATED MODULE: ./lib/plugins/jobRuntime/index.js
+
 
 ;// CONCATENATED MODULE: ./lib/plugins/json/plugin.js
 var json_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -4303,7 +4305,7 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
 }
 
 ;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":"object","properties":{"included_jobs":{"type":"object","properties":{"workflow":{"type":"string"},"job":{"type":"string"}}},"excluded_jobs":{"type":"array","items":{"type":"string"}}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":"object","additionalProperties":true,"properties":{"included_jobs":{"type":"object","properties":{"workflow":{"type":"string"},"job":{"type":"string"}}},"excluded_jobs":{"type":"array","items":{"type":"string"}}}}}}}}');
 ;// CONCATENATED MODULE: ./lib/types.js
 // These types are copied from src/common/types.ts.
 var Plugin;
