@@ -3998,21 +3998,20 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 };
 
 
-const runJobRuntimePlugin = (taskId, { ghToken, ghRepository: { repo, owner }, ghSha, ghJobs }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+const runJobRuntimePlugin = (taskId, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-    for (const ghJob of ghJobs) {
-        const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
-        lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
-        const requestBody = {
-            ghSha,
-            taskId,
-            stoatConfigFileId,
-            ghToken,
-            ghJobName: ghJob.name,
-            runtimeSeconds
-        };
-        yield submitPartialConfig(taskId, 'job_runtimes', requestBody);
-    }
+    const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
+    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
+    const requestBody = {
+        ghSha,
+        taskId,
+        stoatConfigFileId,
+        ghToken,
+        ghWorkflow,
+        ghJob: ghJob.name,
+        runtimeSeconds
+    };
+    yield submitPartialConfig(taskId, 'job_runtimes', requestBody);
 });
 /* harmony default export */ const jobRuntime_plugin = (runJobRuntimePlugin);
 
@@ -4494,12 +4493,14 @@ function run(stoatConfig) {
         lib_core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         lib_core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+        const ghJobName = github.context.job;
+        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),
             ghPullRequestNumber: pullRequestNumber,
             ghWorkflow: github.context.workflow,
-            ghJobs: jobListResponse.data.jobs,
+            ghJob,
             ghSha: repoSha,
             ghCommitTimestamp,
             ghRunId: parseInt(lib_core.getInput('run_id')),
