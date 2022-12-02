@@ -11,7 +11,7 @@ import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
 import { getTemplate } from './templateHelpers';
-import { GithubActionRun, Repository } from './types';
+import { GithubActionRun, GithubJob, Repository } from './types';
 
 const ajv = new Ajv();
 
@@ -95,13 +95,15 @@ async function run(stoatConfig: any) {
 
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+  const ghJobName = github.context.job;
+  const ghJob: GithubJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName)!;
 
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
     ghBranch: core.getInput('pr_branch_name'),
     ghPullRequestNumber: pullRequestNumber,
     ghWorkflow: github.context.workflow,
-    ghJobs: jobListResponse.data.jobs,
+    ghJob,
     ghSha: repoSha,
     ghCommitTimestamp,
     ghRunId: parseInt(core.getInput('run_id')),
