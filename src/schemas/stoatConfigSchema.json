@@ -74,6 +74,7 @@
         },
         "job_runtime": {
           "type": "object",
+          "additionalProperties": true,
           "properties": {
             "included_jobs": {
               "type": "object",

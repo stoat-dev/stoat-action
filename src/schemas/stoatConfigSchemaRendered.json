@@ -120,8 +120,12 @@
         },
         "job_runtime": {
           "type": "object",
-          "required": ["path"],
+          "additionalProperties": true,
+          "required": ["job_name", "runtime_seconds"],
           "properties": {
+            "job_name": {
+              "type": "string"
+            },
             "runtime_seconds": {
               "type": "number"
             }
