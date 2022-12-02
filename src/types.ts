@@ -1,4 +1,5 @@
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
+import { ValuesType } from 'utility-types';
 
 // this doesn't use the gh prefix since it's used to interact with the github context
 export interface Repository {
@@ -6,14 +7,15 @@ export interface Repository {
   repo: string;
 }
 
-export type GithubJobs = RestEndpointMethodTypes['actions']['listJobsForWorkflowRun']['response']['data']['jobs'];
+type GithubJobs = RestEndpointMethodTypes['actions']['listJobsForWorkflowRun']['response']['data']['jobs'];
+export type GithubJob = ValuesType<GithubJobs>;
 
 export type GithubActionRun = {
   ghRepository: Repository;
   ghBranch: string;
   ghPullRequestNumber: number | null;
   ghWorkflow: string;
-  ghJobs: GithubJobs;
+  ghJob: GithubJob;
   ghSha: string;
   ghCommitTimestamp: Date;
   ghRunId: number;
@@ -94,7 +96,8 @@ export interface UploadJsonRequest extends UploadPartialConfigRequest {
 }
 
 export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
-  ghJobName: string;
+  ghWorkflow: string;
+  ghJob: string;
   runtimeSeconds: number;
 }
 
