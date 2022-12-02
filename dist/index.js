@@ -4070,6 +4070,8 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
 ;// CONCATENATED MODULE: ./lib/plugins/json/index.js
 
 
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ./node_modules/bluebird/js/release/bluebird.js
 var bluebird = __nccwpck_require__(8710);
 // EXTERNAL MODULE: ./node_modules/form-data/lib/form_data.js
@@ -4077,8 +4079,6 @@ var form_data = __nccwpck_require__(4334);
 var form_data_default = /*#__PURE__*/__nccwpck_require__.n(form_data);
 // EXTERNAL MODULE: ./node_modules/mime-types/index.js
 var mime_types = __nccwpck_require__(3583);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(1017);
 ;// CONCATENATED MODULE: ./lib/plugins/staticHosting/helpers.js
 var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4178,12 +4178,19 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
+
 const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-    lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
-    const pathToUpload = taskConfig.static_hosting.path;
+    const currentDirectory = process.cwd();
+    lib_core.info(`[${taskId}] Current directory: ${currentDirectory}`);
+    const pathToUpload = (0,external_path_.resolve)(taskConfig.static_hosting.path);
+    lib_core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
     if (!external_fs_default().existsSync(pathToUpload)) {
-        lib_core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action: ${pathToUpload}`);
+        lib_core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
+        return;
+    }
+    if (pathToUpload === currentDirectory) {
+        lib_core.error(`[${taskId}] For security reason, the project root directory cannot be uploaded for hosting.`);
         return;
     }
     // get signed url
