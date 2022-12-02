@@ -15,4 +15,4 @@ tasks:
   job_runtime:
     metadata:
       name: Job Runtime
-    job_runtime: {}
+    job_runtime:
