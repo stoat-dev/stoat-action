@@ -121,13 +121,35 @@
         "job_runtime": {
           "type": "object",
           "additionalProperties": true,
-          "required": ["job_name", "runtime_seconds"],
+          "required": ["width", "height", "runtime"],
           "properties": {
-            "job_name": {
-              "type": "string"
+            "width": {
+              "type": "integer"
             },
-            "runtime_seconds": {
-              "type": "number"
+            "height": {
+              "type": "integer"
+            },
+            "runtime": {
+              "type": "array",
+              "item": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": ["workflow", "job", "sha", "runtime_seconds"],
+                "properties": {
+                  "workflow": {
+                    "type": "string"
+                  },
+                  "job": {
+                    "type": "string"
+                  },
+                  "sha": {
+                    "type": "string"
+                  },
+                  "runtime_seconds": {
+                    "type": "number"
+                  }
+                }
+              }
             }
           }
         }

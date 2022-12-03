@@ -76,22 +76,11 @@
           "type": "object",
           "additionalProperties": true,
           "properties": {
-            "included_jobs": {
-              "type": "object",
-              "properties": {
-                "workflow": {
-                  "type": "string"
-                },
-                "job": {
-                  "type": "string"
-                }
-              }
+            "width": {
+              "type": "integer"
             },
-            "excluded_jobs": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+            "height": {
+              "type": "integer"
             }
           }
         }

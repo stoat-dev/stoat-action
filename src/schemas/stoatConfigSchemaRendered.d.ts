@@ -59,8 +59,9 @@ export interface JobRuntimePluginRendered {
     [k: string]: unknown;
   };
   job_runtime: {
-    job_name: string;
-    runtime_seconds: number;
+    width: number;
+    height: number;
+    runtime: unknown[];
     [k: string]: unknown;
   };
   [k: string]: unknown;

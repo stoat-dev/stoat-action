@@ -39,12 +39,8 @@ export interface JobRuntimePlugin {
     [k: string]: unknown;
   };
   job_runtime: {
-    included_jobs?: {
-      workflow?: string;
-      job?: string;
-      [k: string]: unknown;
-    };
-    excluded_jobs?: string[];
+    width?: number;
+    height?: number;
     [k: string]: unknown;
   };
   [k: string]: unknown;
