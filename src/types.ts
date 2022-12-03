@@ -99,6 +99,8 @@ export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
   ghWorkflow: string;
   ghJob: string;
   runtimeSeconds: number;
+  width?: number;
+  height?: number;
 }
 
 export type GetDefaultTemplateRequest = {

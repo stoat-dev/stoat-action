@@ -3998,8 +3998,12 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 };
 
 
-const runJobRuntimePlugin = (taskId, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    if (!ghJob) {
+        lib_core.warning(`[${taskId}] No job information found for job run`);
+        return;
+    }
     const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
     lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
     const requestBody = {
@@ -4242,7 +4246,7 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else if ('job_runtime' in taskConfig) {
-            yield jobRuntime_plugin(taskId, githubActionRun, stoatConfigFileId);
+            yield jobRuntime_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else {
             lib_core.warning(`Unknown plugin: ${taskId}`);
@@ -4502,6 +4506,9 @@ function run(stoatConfig) {
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         const ghJobName = github.context.job;
         const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
+        lib_core.info(`Current job name: ${ghJobName}`);
+        lib_core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
+        lib_core.info(`Current job: ${JSON.stringify(ghJob || {})}`);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),

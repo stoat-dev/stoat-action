@@ -1,10 +1,12 @@
 import * as core from '@actions/core';
 
+import { JobRuntimePlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun, UploadJobRuntimeRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const runJobRuntimePlugin = async (
   taskId: string,
+  taskConfig: JobRuntimePlugin,
   { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }: GithubActionRun,
   stoatConfigFileId: number
 ) => {

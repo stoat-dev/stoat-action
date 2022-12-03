@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
+import { JobRuntimePlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
 import { runJobRuntimePlugin } from './jobRuntime';
 import { runJsonPlugin } from './json';
@@ -17,8 +17,7 @@ export const runPlugins = async (
     } else if ('json' in taskConfig) {
       await runJsonPlugin(taskId, taskConfig as JsonPlugin, githubActionRun, stoatConfigFileId);
     } else if ('job_runtime' in taskConfig) {
-      // TODO: pass in task config for width and height
-      await runJobRuntimePlugin(taskId, githubActionRun, stoatConfigFileId);
+      await runJobRuntimePlugin(taskId, taskConfig as JobRuntimePlugin, githubActionRun, stoatConfigFileId);
     } else {
       core.warning(`Unknown plugin: ${taskId}`);
     }
