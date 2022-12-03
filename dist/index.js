@@ -4004,8 +4004,10 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         lib_core.warning(`[${taskId}] No job information found for job run`);
         return;
     }
-    const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf() / 1000);
-    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
+    const now = new Date();
+    const runtimeSeconds = Math.floor(now.valueOf() - new Date(ghJob.started_at).valueOf() / 1000);
+    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
+        `${runtimeSeconds} (${ghJob.started_at} - ${now.toISOString()})`);
     const requestBody = {
         ghSha,
         taskId,
@@ -4506,9 +4508,6 @@ function run(stoatConfig) {
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         const ghJobName = github.context.job;
         const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
-        lib_core.info(`Current job name: ${ghJobName}`);
-        lib_core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
-        lib_core.info(`Current job: ${JSON.stringify(ghJob || {})}`);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),
