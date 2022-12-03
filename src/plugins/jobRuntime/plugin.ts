@@ -17,11 +17,12 @@ const runJobRuntimePlugin = async (
     return;
   }
 
+  const startedAt = new Date(ghJob.started_at);
   const now = new Date();
-  const runtimeSeconds = Math.floor(now.valueOf() - new Date(ghJob.started_at).valueOf() / 1000);
+  const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
   core.info(
     `[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
-      `${runtimeSeconds} (${ghJob.started_at} - ${now.toISOString()})`
+      `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`
   );
   const requestBody: UploadJobRuntimeRequest = {
     ghSha,
