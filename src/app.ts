@@ -98,6 +98,16 @@ async function run(stoatConfig: any) {
   const ghJobName = github.context.job;
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
 
+  if (ghJob === undefined) {
+    core.warning(
+      `Could not find job information for "${ghJobName}" in the job list: ${JSON.stringify(
+        jobListResponse.data.jobs,
+        null,
+        2
+      )}`
+    );
+  }
+
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
     ghBranch: core.getInput('pr_branch_name'),

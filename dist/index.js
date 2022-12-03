@@ -4509,6 +4509,9 @@ function run(stoatConfig) {
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         const ghJobName = github.context.job;
         const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
+        if (ghJob === undefined) {
+            lib_core.warning(`Could not find job information for "${ghJobName}" in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        }
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),
