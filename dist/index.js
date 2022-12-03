@@ -4004,7 +4004,7 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         lib_core.warning(`[${taskId}] No job information found for job run`);
         return;
     }
-    const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
+    const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf() / 1000);
     lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
     const requestBody = {
         ghSha,
