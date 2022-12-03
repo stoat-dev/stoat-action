@@ -3998,10 +3998,17 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 };
 
 
-const runJobRuntimePlugin = (taskId, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
-    const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
-    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
+    if (!ghJob) {
+        lib_core.warning(`[${taskId}] No job information found for job run`);
+        return;
+    }
+    const startedAt = new Date(ghJob.started_at);
+    const now = new Date();
+    const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
+    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
+        `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`);
     const requestBody = {
         ghSha,
         taskId,
@@ -4242,7 +4249,7 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else if ('job_runtime' in taskConfig) {
-            yield jobRuntime_plugin(taskId, githubActionRun, stoatConfigFileId);
+            yield jobRuntime_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else {
             lib_core.warning(`Unknown plugin: ${taskId}`);
@@ -4500,8 +4507,18 @@ function run(stoatConfig) {
         lib_core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         lib_core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        const ghJobName = github.context.job;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
+        // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
+        // It is different from the job name in the job list response. So we cannot use it to
+        // search for the job information. We use job run id instead.
+        // References:
+        // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
+        // https://docs.github.com/en/actions/learn-github-actions/environment-variables
+        const ghJobId = github.context.job;
+        const ghJobRunId = github.context.runId;
+        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
+        if (ghJob === undefined) {
+            lib_core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        }
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch: lib_core.getInput('pr_branch_name'),

@@ -15,7 +15,7 @@ export type GithubActionRun = {
   ghBranch: string;
   ghPullRequestNumber: number | null;
   ghWorkflow: string;
-  ghJob: GithubJob;
+  ghJob?: GithubJob;
   ghSha: string;
   ghCommitTimestamp: Date;
   ghRunId: number;
@@ -99,6 +99,8 @@ export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
   ghWorkflow: string;
   ghJob: string;
   runtimeSeconds: number;
+  width?: number;
+  height?: number;
 }
 
 export type GetDefaultTemplateRequest = {
