@@ -3,8 +3,9 @@ import fs from 'fs';
 import { resolve } from 'path';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun } from '../../types';
-import { createSignedUrl, submitPartialConfig, uploadDirectory } from './helpers';
+import { GithubActionRun, UploadStaticHostingRequest } from '../../types';
+import { submitPartialConfig } from '../helpers';
+import { createSignedUrl, uploadDirectory } from './helpers';
 
 const runStaticHostingPlugin = async (
   taskId: string,
@@ -34,7 +35,7 @@ const runStaticHostingPlugin = async (
     ghRepo: repo,
     ghSha,
     ghToken,
-    taskId: taskId
+    taskId
   });
 
   // upload directory
@@ -42,7 +43,14 @@ const runStaticHostingPlugin = async (
   await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
-  await submitPartialConfig(taskId, ghSha, ghToken, hostingUrl, stoatConfigFileId);
+  const requestBody: UploadStaticHostingRequest = {
+    ghSha,
+    taskId,
+    stoatConfigFileId,
+    ghToken,
+    hostingUrl
+  };
+  await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
 };
 
 export default runStaticHostingPlugin;

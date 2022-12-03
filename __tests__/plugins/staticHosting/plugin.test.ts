@@ -3,7 +3,7 @@ import { ModuleMocker } from 'jest-mock';
 
 import { runStaticHostingPlugin } from '../../../src/plugins/staticHosting';
 import { StaticHostingPlugin } from '../../../src/schemas/stoatConfigSchema';
-import { GithubActionRun } from '../../../src/types';
+import { GithubActionRun, GithubJob } from '../../../src/types';
 
 describe('static hosting plugin', () => {
   const githubActionRun: GithubActionRun = {
@@ -14,6 +14,7 @@ describe('static hosting plugin', () => {
     ghBranch: 'branch',
     ghPullRequestNumber: 1,
     ghWorkflow: 'workflow',
+    ghJob: {} as GithubJob,
     ghSha: 'sha',
     ghCommitTimestamp: new Date(),
     ghRunId: 1000,
