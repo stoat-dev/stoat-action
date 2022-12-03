@@ -10,6 +10,11 @@ const runJobRuntimePlugin = async (
 ) => {
   core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
 
+  if (!ghJob) {
+    core.warning(`[${taskId}] No job information found for job run`);
+    return;
+  }
+
   const runtimeSeconds = Math.floor(new Date().valueOf() - new Date(ghJob.started_at).valueOf()) / 1000;
   core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ${runtimeSeconds}`);
   const requestBody: UploadJobRuntimeRequest = {

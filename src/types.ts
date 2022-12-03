@@ -15,7 +15,7 @@ export type GithubActionRun = {
   ghBranch: string;
   ghPullRequestNumber: number | null;
   ghWorkflow: string;
-  ghJob: GithubJob;
+  ghJob?: GithubJob;
   ghSha: string;
   ghCommitTimestamp: Date;
   ghRunId: number;

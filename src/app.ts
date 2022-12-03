@@ -96,7 +96,11 @@ async function run(stoatConfig: any) {
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
   const ghJobName = github.context.job;
-  const ghJob: GithubJob = jobListResponse.data.jobs.find((j) => j.name === ghJobName)!;
+  const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.name === ghJobName);
+
+  core.info(`Current job name: ${ghJobName}`);
+  core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
+  core.info(`Current job: ${JSON.stringify(ghJob || {})}`);
 
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,

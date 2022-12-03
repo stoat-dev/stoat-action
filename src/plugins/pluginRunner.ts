@@ -17,6 +17,7 @@ export const runPlugins = async (
     } else if ('json' in taskConfig) {
       await runJsonPlugin(taskId, taskConfig as JsonPlugin, githubActionRun, stoatConfigFileId);
     } else if ('job_runtime' in taskConfig) {
+      // TODO: pass in task config for width and height
       await runJobRuntimePlugin(taskId, githubActionRun, stoatConfigFileId);
     } else {
       core.warning(`Unknown plugin: ${taskId}`);
