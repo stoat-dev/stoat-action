@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { version } from '../../package.json';
+import { version } from '../package.json';
 import { init } from './commands/init';
 import { local } from './commands/local';
 import versionWarningBanner from './lib/versionWarningBanner';
