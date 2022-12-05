@@ -44,7 +44,7 @@
     "inquirer": "^9.1.4",
     "latest-version": "^7.0.0",
     "marked": "^4.2.3",
-    "ncc": "^0.3.6",
+    "@vercel/ncc": "^0.34.0",
     "open": "^8.4.0",
     "path": "^0.12.7",
     "portfinder": "^1.0.32",
