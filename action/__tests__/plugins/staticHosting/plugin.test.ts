@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 
-import { runStaticHostingPlugin } from '../../../src/plugins/staticHosting';
-import { StaticHostingPlugin } from '../../../src/schemas/stoatConfigSchema';
-import { GithubActionRun, GithubJob } from '../../../src/types';
+import { runStaticHostingPlugin } from '../../../../src/plugins/staticHosting';
+import { StaticHostingPlugin } from '../../../../src/schemas/stoatConfigSchema';
+import { GithubActionRun, GithubJob } from '../../../../src/types';
 
 describe('static hosting plugin', () => {
   const githubActionRun: GithubActionRun = {

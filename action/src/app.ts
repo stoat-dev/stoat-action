@@ -1,19 +1,13 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
-import Ajv from 'ajv';
-import { readFileSync } from 'fs';
-import yaml from 'js-yaml';
 
 import { uploadWorkflowOutputs } from './commentHelpers';
+import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
-import { StoatConfigSchema } from './schemas/stoatConfigSchema';
-import stoatSchema from './schemas/stoatConfigSchema.json';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
-
-const ajv = new Ajv();
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -43,15 +37,7 @@ async function getGhCommitTimestamp(
 }
 
 async function run(stoatConfig: any) {
-  core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
-  const validate = ajv.compile(stoatSchema);
-  const valid = validate(stoatConfig);
-
-  if (!valid) {
-    core.error((validate.errors ?? []).map((e) => e.message).join('; '));
-    throw new Error('Failed to validate Stoat config file!');
-  }
-  const typedStoatConfig = stoatConfig as StoatConfigSchema;
+  const typedStoatConfig = await getTypedStoatConfig(stoatConfig);
 
   core.info('Initializing Octokit...');
   const token = core.getInput('token');
@@ -140,9 +126,8 @@ async function run(stoatConfig: any) {
 
 (async () => {
   try {
-    core.info('Reading stoat config...');
-    const stoatConfigFileBuffer = readFileSync('.stoat/config.yaml');
-    const stoatConfig = yaml.load(stoatConfigFileBuffer.toString()) as any;
+    core.info('Reading Stoat config...');
+    const stoatConfig = readStoatConfig();
 
     if ('enabled' in stoatConfig && !stoatConfig.enabled) {
       core.info('Stoat is disabled! skipping...');

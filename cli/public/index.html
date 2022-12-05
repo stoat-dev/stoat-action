@@ -1,0 +1,34 @@
+<html>
+<head>
+    <title>Stoat: Local</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="github-markdown.css">
+    <style>
+        body { background: #f7f6f3; padding: 20px; }
+        #comment { background:#ffffff; padding: 20px; max-width: 800px;  }
+        #outer { max-width: 800px; border-top: 4px solid #da7e8d; padding-top:20px; margin-top:20px; }
+    </style>
+    <script>
+        function fetchDashboard() {
+            fetch('/dashboard')
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('comment');
+                    responseDiv.innerHTML = data.html;
+                });
+        }
+
+        fetchDashboard();
+
+        setInterval(fetchDashboard, 5000);
+    </script>
+</head>
+<body>
+<a href="https://stoat.dev/" target="_blank"><img src="profile-round-64.png" height="48px" width="48px" /></a>
+
+<div id="outer">
+    <div id="comment" class="markdown-body">Loading...</div>
+</div>
+
+</body>
+</html>

@@ -2,11 +2,16 @@
 version: 1
 enabled: true
 tasks:
-  jest-coverage:
+  test-coverage-action:
     metadata:
-      name: Jest Coverage
+      name: Action Test Coverage
     static_hosting:
-      path: coverage/lcov-report
+      path: packages/action/coverage/lcov-report
+  test-coverage-cli:
+    metadata:
+      name: CLI Test Coverage
+    static_hosting:
+      path: packages/cli/coverage/lcov-report
   docs:
     metadata:
       name: Documentation

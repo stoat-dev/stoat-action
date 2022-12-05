@@ -1,14 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from 'action/src/schemas/stoatConfigSchema';
 import {
   getLocalTemplate,
   getPlugins,
   getRemoteDefaultTemplate,
   getTemplate,
   getTemplateFormat
-} from '../src/templateHelpers';
-import { Plugin, TemplateFormat } from '../src/types';
+} from 'action/src/templateHelpers';
+import { Plugin, TemplateFormat } from 'action/src/types';
 
 const ghOwner = 'test-owner';
 const ghRepo = 'test-repo';
