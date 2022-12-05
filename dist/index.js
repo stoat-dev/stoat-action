@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 503:
+/***/ 804:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -12,6 +12,92 @@ __nccwpck_require__.r(__webpack_exports__);
 var lib_core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/cross-fetch/dist/node-ponyfill.js
+var node_ponyfill = __nccwpck_require__(9805);
+var node_ponyfill_default = /*#__PURE__*/__nccwpck_require__.n(node_ponyfill);
+;// CONCATENATED MODULE: ./lib/stoatApiHelpers.js
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+const API_URL_BASE = 'https://www.stoat.dev';
+function waitForShaToMatch(repoSha) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = `${API_URL_BASE}/api/debug/sha`;
+        let shaMatches = false;
+        let waits = 0;
+        while (!shaMatches) {
+            const response = yield fetch(url);
+            if (!response.ok) {
+                throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+            }
+            const data = (yield response.json());
+            const serverSha = data.sha;
+            core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${shaMatches}`);
+            if (serverSha === repoSha) {
+                shaMatches = true;
+            }
+            else {
+                if (waits > 20) {
+                    throw Error('Waited too long fer server, failing!');
+                }
+                yield new Promise((r) => setTimeout(r, 5000));
+                waits++;
+            }
+        }
+    });
+}
+
+;// CONCATENATED MODULE: ./lib/commentHelpers.js
+var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
+    const params = {
+        ghOwner: ghRepository.owner,
+        ghRepo: ghRepository.repo,
+        ghBranch,
+        ghPullRequestNumber,
+        ghWorkflow,
+        ghSha,
+        ghCommitTimestamp: ghCommitTimestamp.toISOString(),
+        ghRunId,
+        ghRunNumber,
+        ghRunAttempt,
+        stoatConfig,
+        commentTemplateFile: commentTemplate.template,
+        ghToken
+    };
+    const url = `${API_URL_BASE}/api/workflow_outputs`;
+    const response = yield node_ponyfill_default()(url, {
+        method: 'POST',
+        body: JSON.stringify(params)
+    });
+    if (!response.ok) {
+        lib_core.error(`Failed to upload workflow outputs (${response.status} ${response.statusText}): ${yield response.text()}`);
+        throw new Error();
+    }
+    const { stoatConfigFileId } = (yield response.json());
+    lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
+    return stoatConfigFileId;
+});
+
 // EXTERNAL MODULE: ./node_modules/ajv/dist/ajv.js
 var ajv = __nccwpck_require__(2426);
 var ajv_default = /*#__PURE__*/__nccwpck_require__.n(ajv);
@@ -3871,11 +3957,10 @@ var jsYaml = {
 /* harmony default export */ const js_yaml = (jsYaml);
 
 
-// EXTERNAL MODULE: ./node_modules/cross-fetch/dist/node-ponyfill.js
-var node_ponyfill = __nccwpck_require__(3121);
-var node_ponyfill_default = /*#__PURE__*/__nccwpck_require__.n(node_ponyfill);
-;// CONCATENATED MODULE: ./lib/stoatApiHelpers.js
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
+;// CONCATENATED MODULE: ./lib/configHelpers.js
+var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3886,76 +3971,27 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
-const API_URL_BASE = 'https://www.stoat.dev';
-function waitForShaToMatch(repoSha) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const url = `${API_URL_BASE}/api/debug/sha`;
-        let shaMatches = false;
-        let waits = 0;
-        while (!shaMatches) {
-            const response = yield fetch(url);
-            if (!response.ok) {
-                throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-            }
-            const data = (yield response.json());
-            const serverSha = data.sha;
-            core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${shaMatches}`);
-            if (serverSha === repoSha) {
-                shaMatches = true;
-            }
-            else {
-                if (waits > 20) {
-                    throw Error('Waited too long fer server, failing!');
-                }
-                yield new Promise((r) => setTimeout(r, 5000));
-                waits++;
-            }
+
+
+
+const configHelpers_ajv = new (ajv_default())();
+function readStoatConfig(configFilePath = '.stoat/config.yaml') {
+    const stoatConfigFileBuffer = (0,external_fs_.readFileSync)(configFilePath);
+    return js_yaml.load(stoatConfigFileBuffer.toString());
+}
+function getTypedStoatConfig(stoatConfig) {
+    var _a;
+    return configHelpers_awaiter(this, void 0, void 0, function* () {
+        lib_core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
+        const validate = configHelpers_ajv.compile(stoatConfigSchema_namespaceObject);
+        const valid = validate(stoatConfig);
+        if (!valid) {
+            lib_core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
+            throw new Error('Failed to validate Stoat config file!');
         }
+        return stoatConfig;
     });
 }
-
-;// CONCATENATED MODULE: ./lib/commentHelpers.js
-var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-
-
-
-const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
-    const params = {
-        ghOwner: ghRepository.owner,
-        ghRepo: ghRepository.repo,
-        ghBranch,
-        ghPullRequestNumber,
-        ghWorkflow,
-        ghSha,
-        ghCommitTimestamp: ghCommitTimestamp.toISOString(),
-        ghRunId,
-        ghRunNumber,
-        ghRunAttempt,
-        stoatConfig,
-        commentTemplateFile: commentTemplate.template,
-        ghToken
-    };
-    const url = `${API_URL_BASE}/api/workflow_outputs`;
-    const response = yield node_ponyfill_default()(url, {
-        method: 'POST',
-        body: JSON.stringify(params)
-    });
-    if (!response.ok) {
-        lib_core.error(`Failed to upload workflow outputs (${response.status} ${response.statusText}): ${yield response.text()}`);
-        throw new Error();
-    }
-    const { stoatConfigFileId } = (yield response.json());
-    lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
-    return stoatConfigFileId;
-});
 
 ;// CONCATENATED MODULE: ./lib/plugins/helpers.js
 var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -4317,8 +4353,6 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
     });
 }
 
-;// CONCATENATED MODULE: ./lib/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
 ;// CONCATENATED MODULE: ./lib/types.js
 // These types are copied from src/common/types.ts.
 var Plugin;
@@ -4432,10 +4466,6 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-
-
-
-const app_ajv = new (ajv_default())();
 function getGhCommitTimestamp(octokit, repository, repoSha) {
     var _a;
     return app_awaiter(this, void 0, void 0, function* () {
@@ -4462,16 +4492,8 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
     });
 }
 function run(stoatConfig) {
-    var _a;
     return app_awaiter(this, void 0, void 0, function* () {
-        lib_core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
-        const validate = app_ajv.compile(stoatConfigSchema_namespaceObject);
-        const valid = validate(stoatConfig);
-        if (!valid) {
-            lib_core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
-            throw new Error('Failed to validate Stoat config file!');
-        }
-        const typedStoatConfig = stoatConfig;
+        const typedStoatConfig = yield getTypedStoatConfig(stoatConfig);
         lib_core.info('Initializing Octokit...');
         const token = lib_core.getInput('token');
         const octokit = github.getOctokit(token);
@@ -4542,9 +4564,8 @@ function run(stoatConfig) {
 }
 (() => app_awaiter(void 0, void 0, void 0, function* () {
     try {
-        lib_core.info('Reading stoat config...');
-        const stoatConfigFileBuffer = (0,external_fs_.readFileSync)('.stoat/config.yaml');
-        const stoatConfig = js_yaml.load(stoatConfigFileBuffer.toString());
+        lib_core.info('Reading Stoat config...');
+        const stoatConfig = readStoatConfig();
         if ('enabled' in stoatConfig && !stoatConfig.enabled) {
             lib_core.info('Stoat is disabled! skipping...');
         }
@@ -15659,7 +15680,7 @@ var DiscrError;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __nccwpck_require__(3707);
-const validation_1 = __nccwpck_require__(9805);
+const validation_1 = __nccwpck_require__(3869);
 const applicator_1 = __nccwpck_require__(3048);
 const format_1 = __nccwpck_require__(9841);
 const metadata_1 = __nccwpck_require__(5799);
@@ -15900,7 +15921,7 @@ exports["default"] = def;
 
 /***/ }),
 
-/***/ 9805:
+/***/ 3869:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -23091,7 +23112,7 @@ CombinedStream.prototype._emitError = function(err) {
 
 /***/ }),
 
-/***/ 3121:
+/***/ 9805:
 /***/ ((module, exports, __nccwpck_require__) => {
 
 const nodeFetch = __nccwpck_require__(3147)
@@ -30810,7 +30831,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(503);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(804);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
