@@ -6,13 +6,12 @@ import { getTemplate } from '../../../../src/templateHelpers';
 import { Template } from '../../../../src/types';
 import { findStoatConfigPath } from '../pathHelpers';
 
-const configFilePath = findStoatConfigPath(process.cwd());
-
 export default class ConfigFileGlobal {
   private static schema: StoatConfigSchema | undefined;
   private static template: Template | undefined;
 
   static async update() {
+    const configFilePath = findStoatConfigPath(process.cwd());
     const stoatConfig = readStoatConfig(configFilePath);
     this.schema = await getTypedStoatConfig(stoatConfig);
     this.template = await getTemplate('', '', this.schema);
@@ -33,7 +32,7 @@ export default class ConfigFileGlobal {
       // do nothing
     }
 
-    fs.watch(configFilePath, async (eventType, filename) => {
+    fs.watch(findStoatConfigPath(process.cwd()), async (eventType, filename) => {
       if (eventType === 'change') {
         try {
           await ConfigFileGlobal.update();

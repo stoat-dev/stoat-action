@@ -11,7 +11,7 @@ const open = require('open');
 const app = express();
 
 export default async (options: any) => {
-  getGitRoot();
+  getGitRoot('Stoat local previews must be run from inside a Git repository!');
 
   await ConfigFileGlobal.initialize();
 

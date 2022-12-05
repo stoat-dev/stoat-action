@@ -22,11 +22,11 @@ export const findStoatConfigPath = (currentDir: string): string => {
   return path.join(gitRoot, '.stoat/config.yaml');
 };
 
-export function getGitRoot() {
+export function getGitRoot(errorMessage: string = 'This was expected to run from inside a Git repository!') {
   try {
     return findGitRoot(process.cwd());
   } catch (e) {
-    console.error(chalk.red('Stoat local previews must be run from inside a Git repository!'));
+    console.error(chalk.red(errorMessage));
     process.exit(1);
   }
 }

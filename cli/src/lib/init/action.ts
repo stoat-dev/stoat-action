@@ -12,7 +12,7 @@ If you have any other questions, please consult our docs: https://docs.stoat.dev
 `.trim();
 
 export default async () => {
-  getGitRoot();
+  getGitRoot('Stoat initialization must be run from inside a Git repository!');
   createConfigFile();
   await promptAddingStoatActions();
   console.log(chalk.green(exitMessage));
