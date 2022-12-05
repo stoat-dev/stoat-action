@@ -10,12 +10,14 @@ const description = `Stoat is a tool that helps developers view and aggregate bu
 This CLI is designed to help users work with config files and provide local previews of Stoat's functionality.
 Please visit https://stoat.dev/ for more information.`;
 
-versionWarningBanner();
+(async () => {
+  await versionWarningBanner();
 
-commander.version(version).description(description).addCommand(init).addCommand(local).parse(process.argv);
+  commander.version(version).description(description).addCommand(init).addCommand(local).parse(process.argv);
 
-if (!process.argv.slice(2).length) {
-  commander.outputHelp();
-}
+  if (!process.argv.slice(2).length) {
+    commander.outputHelp();
+  }
+})();
 
 export {};
