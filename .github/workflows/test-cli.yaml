@@ -5,11 +5,13 @@ on:
       - main
     paths:
       - 'cli/**'
+      - '.stoat/**'
   push:
     branches:
       - main
     paths:
       - 'cli/**'
+      - '.stoat/**'
 
 jobs:
   build:
@@ -26,7 +28,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/cli/node_modules
-          key: ${{ runner.os }}-node-16-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-16-${{ hashFiles('cli/package-lock.json') }}
       - name: Install dependencies
         run: |
           npm install

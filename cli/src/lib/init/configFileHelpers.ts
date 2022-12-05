@@ -17,11 +17,8 @@ enabled: true
 #      name: "Name of artifact you're hosting, such as Code Coverage Report"
 #    static_hosting:
 #      path: path/from/git/root/to/directory/to/host
-#  docs:
-#    metadata:
-#      name: Documentation
-#    static_hosting:
-#      path: docs/build
+#  job-runtime:
+#    job_runtime: {}
 `.trim() + '\n';
 
 export function createConfigFile() {

@@ -67,7 +67,7 @@ function getRelevantJobs(dir: string): GhJob[] {
 
               if (
                 steps.length > 0 &&
-                steps.filter((step) => 'uses' in step && step.uses.includes('stoat-dev/stoat-action')).length === 0
+                !steps.some((step) => 'uses' in step && step.uses.includes('stoat-dev/stoat-action'))
               ) {
                 matchingJobs.push({ name: job, workflowFile: fullPath });
               }
@@ -94,7 +94,7 @@ export async function promptAddingStoatActions() {
         type: 'list',
         name: 'action',
         message: `\nThe following GitHub jobs do not have Stoat actions:\n${jobList}\n\nThe action is necessary to publish build artifacts or metrics to Stoat.\n\nWould you like to add the Stoat GitHub action as the final step to these workflows?`,
-        choices: ['No (to all)', 'Yes (to all)', 'Approve each workflow individually'],
+        choices: ['Yes (to all)', 'Approve each workflow individually', 'No (to all)'],
         filter(val: string) {
           return val.split(' ')[0].toLowerCase();
         }
