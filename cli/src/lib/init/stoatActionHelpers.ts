@@ -6,41 +6,11 @@ import * as yaml from 'js-yaml';
 import path from 'path';
 
 import { gitRoot } from '../pathHelpers';
+import { addStoatActionToYaml } from './configFileHelpers';
 
-interface GhJob {
+export interface GhJob {
   name: string;
   workflowFile: string;
-}
-
-export function addStoatActionToYaml(job: GhJob): string {
-  const yamlStr = fs.readFileSync(job.workflowFile).toString();
-  const parsed = parseWithPointers(yamlStr);
-  const location = getLocationForJsonPath(parsed, ['jobs', job.name, 'steps']);
-
-  let prefix = undefined;
-
-  // the range includes the "steps:" line
-  let firstPossibleListItemRowNumber = location!.range.start.line + 1;
-
-  while (prefix === undefined) {
-    if (yamlStr[firstPossibleListItemRowNumber].trim().startsWith('-')) {
-      prefix = yamlStr[firstPossibleListItemRowNumber].split('-')[0];
-    } else {
-      firstPossibleListItemRowNumber++;
-    }
-  }
-
-  const yamlLines = yamlStr.split('\n');
-  yamlLines.splice(
-    0,
-    0,
-    '\n',
-    `${prefix}- name: Run Stoat Action`,
-    `${prefix} uses: stoat-dev/stoat-action@v0`,
-    `${prefix}  if: always()`
-  );
-
-  return yamlLines.join('\n');
 }
 
 function addStoatAction(jobs: GhJob[]) {

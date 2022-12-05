@@ -1,9 +1,10 @@
+import { getLocationForJsonPath, parseWithPointers } from '@stoplight/yaml';
 import chalk from 'chalk';
 import fs from 'fs';
-import inquirer from 'inquirer';
 import path from 'path';
 
 import { findStoatConfigPath, gitRoot } from '../pathHelpers';
+import { GhJob } from './stoatActionHelpers';
 
 const defaultStoatConfigFile =
   `
@@ -37,4 +38,36 @@ export function createConfigFile() {
     fs.writeFileSync(configFilePath, defaultStoatConfigFile);
     console.log(`Stoat config file created at: ${configFilePath}`);
   }
+}
+
+export function addStoatActionToYaml(job: GhJob): string {
+  const yamlStr = fs.readFileSync(job.workflowFile).toString();
+  const yamlLines = yamlStr.split('\n');
+  const parsed = parseWithPointers(yamlStr);
+  const location = getLocationForJsonPath(parsed, ['jobs', job.name, 'steps']);
+
+  let prefix = undefined;
+
+  // the range includes the "steps:" line
+  let firstPossibleListItemRowNumber = location!.range.start.line + 1;
+
+  while (prefix === undefined) {
+    if (yamlLines[firstPossibleListItemRowNumber].trim().startsWith('-')) {
+      prefix = yamlLines[firstPossibleListItemRowNumber].split('-')[0];
+    } else {
+      firstPossibleListItemRowNumber++;
+    }
+  }
+
+  yamlLines.splice(
+    location!.range.end.line + 1,
+    0,
+    '',
+    `${prefix}- name: Run Stoat Action`,
+    `${prefix}  uses: stoat-dev/stoat-action@v0`,
+    `${prefix}  if: always()`,
+    ''
+  );
+
+  return yamlLines.join('\n');
 }
