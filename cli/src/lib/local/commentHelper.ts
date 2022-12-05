@@ -9,7 +9,7 @@ import path from 'path';
 import portfinder from 'portfinder';
 
 import { StaticHostingPlugin } from '../../../../src/schemas/stoatConfigSchema';
-import { gitRoot } from '../pathHelpers';
+import { getGitRoot } from '../pathHelpers';
 import ConfigFileGlobal from './configFileGlobal';
 
 // map from taskId to static hosting path to the server object
@@ -57,7 +57,7 @@ export async function getDashboard(req: express.Request, res: express.Response) 
           const hostingTask = task as StaticHostingPlugin;
           const localPath = hostingTask.static_hosting.path;
 
-          const absolutePath = path.join(gitRoot, localPath);
+          const absolutePath = path.join(getGitRoot(), localPath);
           const indexPath = path.join(absolutePath, 'index.html');
 
           if (fs.existsSync(indexPath)) {

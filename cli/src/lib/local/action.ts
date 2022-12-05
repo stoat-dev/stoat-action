@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import express from 'express';
 
+import { getGitRoot } from '../pathHelpers';
 import { getDashboard } from './commentHelper';
 import ConfigFileGlobal from './configFileGlobal';
 import { getPort } from './portHelper';
@@ -10,6 +11,8 @@ const open = require('open');
 const app = express();
 
 export default async (options: any) => {
+  getGitRoot();
+
   await ConfigFileGlobal.initialize();
 
   const port = await getPort(options.port);

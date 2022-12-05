@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 import * as yaml from 'js-yaml';
 import path from 'path';
 
-import { gitRoot } from '../pathHelpers';
+import { getGitRoot } from '../pathHelpers';
 import { addStoatActionToYaml } from './configFileHelpers';
 
 export interface GhJob {
@@ -84,7 +84,7 @@ function getRelevantJobs(dir: string): GhJob[] {
 }
 
 export async function promptAddingStoatActions() {
-  const relevantJobs = getRelevantJobs(path.join(gitRoot, '.github'));
+  const relevantJobs = getRelevantJobs(path.join(getGitRoot(), '.github'));
 
   if (relevantJobs.length > 0) {
     const jobList = relevantJobs.map((job) => `   - ${job.workflowFile} (${job.name})`).join('\n');

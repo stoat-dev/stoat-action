@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 
-import { findStoatConfigPath, gitRoot } from '../pathHelpers';
+import { findStoatConfigPath, getGitRoot } from '../pathHelpers';
 import { GhJob } from './stoatActionHelpers';
 
 const defaultStoatConfigFile =
@@ -30,7 +30,7 @@ export function createConfigFile() {
   if (fs.existsSync(configFilePath)) {
     console.warn(chalk.yellow(`Stoat config file already exists: ${configFilePath}`));
   } else {
-    const stoatDirectory = path.join(gitRoot, '.stoat');
+    const stoatDirectory = path.join(getGitRoot(), '.stoat');
     if (!fs.existsSync(stoatDirectory)) {
       fs.mkdirSync(stoatDirectory);
     }
