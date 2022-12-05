@@ -2,8 +2,8 @@ import * as core from '@actions/core';
 import fs, { readFileSync } from 'fs';
 
 import { JsonPlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun } from '../../types';
-import { submitPartialConfig } from './helpers';
+import { GithubActionRun, UploadJsonRequest } from '../../types';
+import { submitPartialConfig } from '../helpers';
 
 const MAX_CHARACTERS = 1024;
 
@@ -43,7 +43,14 @@ const runJsonPlugin = async (
   }
 
   // submit partial config
-  await submitPartialConfig(taskId, ghSha, ghToken, value, stoatConfigFileId);
+  const requestBody: UploadJsonRequest = {
+    ghSha,
+    taskId,
+    stoatConfigFileId,
+    ghToken,
+    value
+  };
+  await submitPartialConfig<UploadJsonRequest>(taskId, 'jsons', requestBody);
 };
 
 export default runJsonPlugin;

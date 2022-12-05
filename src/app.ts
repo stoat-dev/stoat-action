@@ -7,7 +7,7 @@ import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { getTemplate } from './templateHelpers';
-import { GithubActionRun, Repository } from './types';
+import { GithubActionRun, GithubJob, Repository } from './types';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -81,12 +81,32 @@ async function run(stoatConfig: any) {
 
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+  // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
+  // It is different from the job name in the job list response. So we cannot use it to
+  // search for the job information. We use job run id instead.
+  // References:
+  // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
+  // https://docs.github.com/en/actions/learn-github-actions/environment-variables
+  const ghJobId = github.context.job;
+  const ghJobRunId = github.context.runId;
+  const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
+
+  if (ghJob === undefined) {
+    core.warning(
+      `Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(
+        jobListResponse.data.jobs,
+        null,
+        2
+      )}`
+    );
+  }
 
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
     ghBranch: core.getInput('pr_branch_name'),
     ghPullRequestNumber: pullRequestNumber,
     ghWorkflow: github.context.workflow,
+    ghJob,
     ghSha: repoSha,
     ghCommitTimestamp,
     ghRunId: parseInt(core.getInput('run_id')),

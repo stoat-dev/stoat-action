@@ -14,7 +14,7 @@ export function readStoatConfig(configFilePath: string = '.stoat/config.yaml'): 
 }
 
 export async function getTypedStoatConfig(stoatConfig: any): Promise<StoatConfigSchema> {
-  core.info('Validating Stoat config file...');
+  core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
   const validate = ajv.compile(stoatSchema);
   const valid = validate(stoatConfig);
 
@@ -22,5 +22,6 @@ export async function getTypedStoatConfig(stoatConfig: any): Promise<StoatConfig
     core.error((validate.errors ?? []).map((e) => e.message).join('; '));
     throw new Error('Failed to validate Stoat config file!');
   }
+
   return stoatConfig as StoatConfigSchema;
 }

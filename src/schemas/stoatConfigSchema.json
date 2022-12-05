@@ -17,7 +17,11 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "oneOf": [{ "$ref": "#/definitions/static_hosting_plugin" }, { "$ref": "#/definitions/json_plugin" }]
+        "oneOf": [
+          { "$ref": "#/definitions/static_hosting_plugin" },
+          { "$ref": "#/definitions/json_plugin" },
+          { "$ref": "#/definitions/job_runtime_plugin" }
+        ]
       }
     }
   },
@@ -55,6 +59,28 @@
           "properties": {
             "path": {
               "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "job_runtime_plugin": {
+      "type": "object",
+      "required": ["job_runtime"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "job_runtime": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
             }
           }
         }

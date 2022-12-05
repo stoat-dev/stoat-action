@@ -1,14 +1,21 @@
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
+import { ValuesType } from 'utility-types';
+
 // this doesn't use the gh prefix since it's used to interact with the github context
 export interface Repository {
   owner: string;
   repo: string;
 }
 
+type GithubJobs = RestEndpointMethodTypes['actions']['listJobsForWorkflowRun']['response']['data']['jobs'];
+export type GithubJob = ValuesType<GithubJobs>;
+
 export type GithubActionRun = {
   ghRepository: Repository;
   ghBranch: string;
   ghPullRequestNumber: number | null;
   ghWorkflow: string;
+  ghJob?: GithubJob;
   ghSha: string;
   ghCommitTimestamp: Date;
   ghRunId: number;
@@ -69,29 +76,32 @@ export type CreateSignedUrlResponse = {
   hostingUrl: string;
 };
 
-export type UploadStaticHostingRequest = {
+export interface UploadPartialConfigRequest {
   ghSha: string;
   taskId: string;
   stoatConfigFileId: number;
+  ghToken: string;
+}
+
+export interface UploadPartialConfigResponse {
+  partialConfigId: number;
+}
+
+export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
   hostingUrl: string;
-  ghToken: string;
-};
+}
 
-export type UploadStaticHostingResponse = {
-  partialConfigId: number;
-};
-
-export type UploadJsonRequest = {
-  ghSha: string;
-  taskId: string;
-  stoatConfigFileId: number;
+export interface UploadJsonRequest extends UploadPartialConfigRequest {
   value: object;
-  ghToken: string;
-};
+}
 
-export type UploadJsonResponse = {
-  partialConfigId: number;
-};
+export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
+  ghWorkflow: string;
+  ghJob: string;
+  runtimeSeconds: number;
+  width?: number;
+  height?: number;
+}
 
 export type GetDefaultTemplateRequest = {
   /* params for API validation */
