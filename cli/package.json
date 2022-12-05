@@ -15,7 +15,6 @@
     "build": "npm run format && ncc build --source-map --license licenses.txt",
     "local": "npm i -g && stoat",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
-    "prepare": "husky install",
     "test": "jest --coverage"
   },
   "repository": {
