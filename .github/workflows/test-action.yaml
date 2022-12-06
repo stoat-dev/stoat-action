@@ -39,10 +39,10 @@ jobs:
           key: ${{ runner.os }}-node-16-action-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: |
-          npm install
+          yarn install
       - name: Build and test stoat action
         run: |
-          npm run all
+          yarn all
       - name: Compare expected vs actual dist directories
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
