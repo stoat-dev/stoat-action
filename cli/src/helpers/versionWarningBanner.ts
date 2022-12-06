@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { compareVersions } from 'compare-versions';
 import latestVersion from 'latest-version';
 
-import { version } from '../version.json';
+import { version } from '../../package.json';
 
 export default async function () {
   try {

@@ -2,7 +2,7 @@
 import { init } from './commands/init';
 import { local } from './commands/local';
 import versionWarningBanner from './helpers/versionWarningBanner';
-import { version } from './version.json';
+import { version } from '../package.json';
 
 const commander = require('commander');
 
