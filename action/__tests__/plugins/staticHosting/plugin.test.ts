@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 
-import { runStaticHostingPlugin } from '../../../../src/plugins/staticHosting';
-import { StaticHostingPlugin } from '../../../../src/schemas/stoatConfigSchema';
-import { GithubActionRun, GithubJob } from '../../../../src/types';
+import { runStaticHostingPlugin } from '../../../src/plugins/staticHosting';
+import { StaticHostingPlugin } from '../../../src/schemas/stoatConfigSchema';
+import { GithubActionRun, GithubJob } from '../../../src/types';
 
 describe('static hosting plugin', () => {
   const githubActionRun: GithubActionRun = {
@@ -33,7 +33,7 @@ describe('static hosting plugin', () => {
     jest.restoreAllMocks();
   });
 
-  for (const path of ['', '.', './', '__tests__/..', '../stoat-action']) {
+  for (const path of ['', '.', './', '__tests__/..', '../action']) {
     it(`forbids upload of project root directory (path = "${path}")`, async () => {
       const taskConfig: StaticHostingPlugin = {
         static_hosting: {
