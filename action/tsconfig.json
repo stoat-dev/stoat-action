@@ -2,8 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "outDir": "./lib",
-    "noEmit": true
+    "outDir": "./lib"
   },
   "ts-node": {
     "compilerOptions": {
