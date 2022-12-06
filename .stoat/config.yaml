@@ -6,12 +6,12 @@ tasks:
     metadata:
       name: Action Test Coverage
     static_hosting:
-      path: packages/action/coverage/lcov-report
+      path: action/coverage/lcov-report
   test-coverage-cli:
     metadata:
       name: CLI Test Coverage
     static_hosting:
-      path: packages/cli/coverage/lcov-report
+      path: cli/coverage/lcov-report
   docs:
     metadata:
       name: Documentation
