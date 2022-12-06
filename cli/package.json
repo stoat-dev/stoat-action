@@ -3,16 +3,13 @@
   "version": "0.0.4",
   "description": "Stoat CLI",
   "main": "src/index.ts",
-  "bin": {
-    "stoat": "./dist/index.js"
-  },
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "format": "prettier --write '**/*.{ts,json}'",
     "format-check": "prettier --check '**/*.{ts,json}'",
     "lint": "eslint src/**/*.ts",
     "create": "npm run build && npm run test",
-    "build": "ncc build --source-map --license licenses.txt",
+    "build": "tsc -b",
     "local": "yarn build && npm i -g",
     "test": "jest --coverage",
     "prepare": "cd .. && husky install action/.husky"
@@ -33,7 +30,6 @@
     "@stoplight/yaml": "^4.2.3",
     "@types/express": "^4.17.14",
     "@types/inquirer": "^9.0.3",
-    "@vercel/ncc": "^0.34.0",
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
     "compare-versions": "^5.0.1",
