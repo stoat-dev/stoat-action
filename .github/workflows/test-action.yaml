@@ -39,9 +39,11 @@ jobs:
           key: ${{ runner.os }}-node-16-action-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: |
+          cd action
           yarn install
       - name: Build and test stoat action
         run: |
+          cd action
           yarn all
       - name: Compare expected vs actual dist directories
         run: |
