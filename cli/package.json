@@ -63,8 +63,5 @@
     "*.{ts,js,json}": [
       "prettier --write"
     ]
-  },
-  "resolutions": {
-    "dep": "link:../dep"
   }
 }
