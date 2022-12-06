@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./lib",
+    "rootDir": ".."
   },
   "ts-node": {
     "compilerOptions": {
