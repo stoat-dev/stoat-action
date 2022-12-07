@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 import { readFileSync } from 'fs';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
-import { API_URL_BASE } from './stoatApiHelpers';
+import {getApiUrlBase, PROD_API_URL_BASE} from './stoatApiHelpers';
 import { GetDefaultTemplateRequest, GetDefaultTemplateResponse, Plugin, Template, TemplateFormat } from './types';
 
 export const getTemplate = async (
@@ -56,7 +56,7 @@ export const getRemoteDefaultTemplate = async (
       urlParams.append(key, value);
     }
   }
-  const url = `${API_URL_BASE}/api/templates?${urlParams.toString()}`;
+  const url = `${getApiUrlBase(ghOwner, ghRepo)}/api/templates?${urlParams.toString()}`;
   core.info(`Fetching default template from ${url}`);
   const response = await fetch(url, {
     method: 'GET'

@@ -3,15 +3,17 @@ import * as bluebird from 'bluebird';
 import fetch from 'cross-fetch';
 import FormData from 'form-data';
 import fs from 'fs';
+// eslint-disable-next-line import/no-unresolved
 import mime from 'mime-types';
 import { posix, resolve } from 'path';
 
-import { API_URL_BASE } from '../../stoatApiHelpers';
+import { getApiUrlBase } from '../../stoatApiHelpers';
 import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);
-  const response = await fetch(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
+  const url = `${getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
+  const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(request)
   });

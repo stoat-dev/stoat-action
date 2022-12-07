@@ -77,6 +77,8 @@ export type CreateSignedUrlResponse = {
 };
 
 export interface UploadPartialConfigRequest {
+  ghOwner: string;
+  ghRepo: string;
   ghSha: string;
   taskId: string;
   stoatConfigFileId: number;

@@ -44,6 +44,8 @@ const runStaticHostingPlugin = async (
 
   // submit partial config
   const requestBody: UploadStaticHostingRequest = {
+    ghOwner: owner,
+    ghRepo: repo,
     ghSha,
     taskId,
     stoatConfigFileId,
