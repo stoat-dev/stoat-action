@@ -5,21 +5,17 @@ on:
       - main
       - 'releases/*'
     paths:
-      - './*'
+      - './action/*'
       - '.stoat/**'
       - '.github/workflows/test-action.yaml'
-      - 'src/**'
-      - '__tests__/**'
   push:
     branches:
       - main
       - 'releases/*'
     paths:
-      - './*'
+      - './action/*'
       - '.stoat/**'
       - '.github/workflows/test-action.yaml'
-      - 'src/**'
-      - '__tests__/**'
 
 jobs:
   build:
