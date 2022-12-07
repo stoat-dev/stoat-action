@@ -36,7 +36,7 @@ export const uploadWorkflowOutputs = async (
     commentTemplateFile: commentTemplate.template,
     ghToken
   };
-  const url = `${getApiUrlBase(owner, repo)}/api/workflow_outputs`;
+  const url = `${await getApiUrlBase(owner, repo)}/api/workflow_outputs`;
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(params)

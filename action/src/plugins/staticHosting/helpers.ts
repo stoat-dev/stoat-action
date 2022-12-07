@@ -12,7 +12,7 @@ import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);
-  const url = `${getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
+  const url = `${await getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(request)

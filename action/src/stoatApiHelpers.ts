@@ -10,7 +10,7 @@ export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
-export const getApiUrlBase = (ghOwner: string, ghRepo: string) => {
+export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
   if (ghOwner !== 'stoat-dev' || !INTERNAL_REPOS.includes(ghRepo)) {
     return PROD_API_URL_BASE;
   }
@@ -22,8 +22,19 @@ export const getApiUrlBase = (ghOwner: string, ghRepo: string) => {
 
   const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
   const apiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
-  core.info(`Using API URL base for branch "${branchName}": ${apiUrlBase}`);
+  const finalUrlBase = await testApiUrlOrFallback(apiUrlBase, PROD_API_URL_BASE);
+  core.info(`Using API URL base for branch "${branchName}": ${finalUrlBase}`);
   return apiUrlBase;
+};
+
+export const testApiUrlOrFallback = async (apiUrlBase: string, fallbackUrlBase: string) => {
+  const response = await fetch(apiUrlBase);
+  if (response.ok) {
+    return apiUrlBase;
+  }
+
+  core.warning(`Failed to connect to ${apiUrlBase}, falling back to ${fallbackUrlBase}`);
+  return fallbackUrlBase;
 };
 
 export async function waitForShaToMatch(repoSha: string) {
