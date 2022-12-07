@@ -24321,10 +24321,23 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
-const API_URL_BASE = 'https://www.stoat.dev';
+const INTERNAL_REPOS = ['stoat-dev/stoat', 'stoat-dev/stoat-action'];
+const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
+const PROD_API_URL_BASE = 'https://www.stoat.dev';
+const getApiUrlBase = (ghOwner, ghRepo) => {
+    const repoFullName = `${ghOwner}/${ghRepo}`;
+    const branchName = lib_core.getInput('pr_branch_name');
+    if (!INTERNAL_REPOS.includes(repoFullName) || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+        return PROD_API_URL_BASE;
+    }
+    const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+    const apiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+    lib_core.info(`Using API URL base for branch "${branchName}": ${apiUrlBase}`);
+    return apiUrlBase;
+};
 function waitForShaToMatch(repoSha) {
     return __awaiter(this, void 0, void 0, function* () {
-        const url = `${API_URL_BASE}/api/debug/sha`;
+        const url = `${PROD_API_URL_BASE}/api/debug/sha`;
         let shaMatches = false;
         let waits = 0;
         while (!shaMatches) {
@@ -24362,10 +24375,10 @@ var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thi
 
 
 
-const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
+const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository: { owner, repo }, ghBranch, ghPullRequestNumber, ghWorkflow, ghSha, ghCommitTimestamp, ghRunId, ghRunNumber, ghRunAttempt, ghToken }) => commentHelpers_awaiter(void 0, void 0, void 0, function* () {
     const params = {
-        ghOwner: ghRepository.owner,
-        ghRepo: ghRepository.repo,
+        ghOwner: owner,
+        ghRepo: repo,
         ghBranch,
         ghPullRequestNumber,
         ghWorkflow,
@@ -24378,7 +24391,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository, ghB
         commentTemplateFile: commentTemplate.template,
         ghToken
     };
-    const url = `${API_URL_BASE}/api/workflow_outputs`;
+    const url = `${getApiUrlBase(owner, repo)}/api/workflow_outputs`;
     const response = yield node_ponyfill_default()(url, {
         method: 'POST',
         body: JSON.stringify(params)
@@ -28302,7 +28315,7 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 const submitPartialConfig = (taskId, apiSuffix, requestBody) => helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Submitting partial config...`);
-    const staticHostingApiUrl = `${API_URL_BASE}/api/plugins/${apiSuffix}`;
+    const staticHostingApiUrl = `${getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/plugins/${apiSuffix}`;
     const response = yield node_ponyfill_default()(staticHostingApiUrl, {
         method: 'POST',
         body: JSON.stringify(requestBody)
@@ -28340,6 +28353,8 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
     lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
         `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`);
     const requestBody = {
+        ghOwner: owner,
+        ghRepo: repo,
         ghSha,
         taskId,
         stoatConfigFileId,
@@ -28394,6 +28409,8 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
     }
     // submit partial config
     const requestBody = {
+        ghOwner: owner,
+        ghRepo: repo,
         ghSha,
         taskId,
         stoatConfigFileId,
@@ -28431,12 +28448,14 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 
 
+// eslint-disable-next-line import/no-unresolved
 
 
 
 const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${request.taskId}] Getting signed url...`);
-    const response = yield node_ponyfill_default()(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
+    const url = `${getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
+    const response = yield node_ponyfill_default()(url, {
         method: 'POST',
         body: JSON.stringify(request)
     });
@@ -28543,6 +28562,8 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
     const requestBody = {
+        ghOwner: owner,
+        ghRepo: repo,
         ghSha,
         taskId,
         stoatConfigFileId,
@@ -28715,7 +28736,7 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
             urlParams.append(key, value);
         }
     }
-    const url = `${API_URL_BASE}/api/templates?${urlParams.toString()}`;
+    const url = `${getApiUrlBase(ghOwner, ghRepo)}/api/templates?${urlParams.toString()}`;
     lib_core.info(`Fetching default template from ${url}`);
     const response = yield node_ponyfill_default()(url, {
         method: 'GET'
