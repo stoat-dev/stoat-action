@@ -1,5 +1,5 @@
 {
-  "name": "stoat-action",
+  "name": "@stoat/action",
   "version": "0.0.4",
   "private": false,
   "description": "Supercharge your CI / CD pipelines",
