@@ -1,6 +1,6 @@
 {
-  "name": "stoat",
-  "version": "0.0.4",
+  "name": "@stoat/cli",
+  "version": "0.0.1",
   "description": "Stoat CLI",
   "main": "src/index.ts",
   "bin": {
@@ -47,7 +47,7 @@
     "path": "^0.12.7",
     "portfinder": "^1.0.32",
     "prettier": "2.7.1",
-    "stoat-action": "*"
+    "@stoat/action": "*"
   },
   "devDependencies": {
     "@types/marked": "^4.0.7",
