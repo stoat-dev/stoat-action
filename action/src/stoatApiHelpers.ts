@@ -1,14 +1,31 @@
 import * as core from '@actions/core';
+import * as github from '@actions/github';
 import fetch from 'cross-fetch';
 
 interface ShaResponse {
   sha: string;
 }
 
-export const API_URL_BASE = 'https://www.stoat.dev';
+export const INTERNAL_REPOS = ['stoat-dev/stoat', 'stoat-dev/stoat-action'];
+export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
+
+export const PROD_API_URL_BASE = 'https://www.stoat.dev';
+
+export const getApiUrlBase = (ghOwner: string, ghRepo: string) => {
+  const repoFullName = `${ghOwner}/${ghRepo}`;
+  const branchName = core.getInput('pr_branch_name');
+  if (!INTERNAL_REPOS.includes(repoFullName) || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+    return PROD_API_URL_BASE;
+  }
+
+  const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+  const apiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+  core.info(`Using API URL base for branch "${branchName}": ${apiUrlBase}`);
+  return apiUrlBase;
+};
 
 export async function waitForShaToMatch(repoSha: string) {
-  const url = `${API_URL_BASE}/api/debug/sha`;
+  const url = `${PROD_API_URL_BASE}/api/debug/sha`;
 
   let shaMatches = false;
 
