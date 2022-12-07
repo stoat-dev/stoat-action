@@ -5,15 +5,18 @@ interface ShaResponse {
   sha: string;
 }
 
-export const INTERNAL_REPOS = ['stoat-dev/stoat', 'stoat-dev/stoat-action'];
+export const INTERNAL_REPOS = ['stoat', 'stoat-action'];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
 export const getApiUrlBase = (ghOwner: string, ghRepo: string) => {
-  const repoFullName = `${ghOwner}/${ghRepo}`;
+  if (ghOwner !== 'stoat-dev' || !INTERNAL_REPOS.includes(ghRepo)) {
+    return PROD_API_URL_BASE;
+  }
+
   const branchName = core.getInput('pr_branch_name');
-  if (!INTERNAL_REPOS.includes(repoFullName) || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+  if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
     return PROD_API_URL_BASE;
   }
 
