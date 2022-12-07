@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 
-import { addStoatActionToYaml } from '../src/lib/init/configFileHelpers';
+import { addStoatActionToYaml } from '../src/helpers/init/configFileHelpers';
 
 describe('Add Stoat Action to YAML', () => {
   test('add action to build job', async () => {

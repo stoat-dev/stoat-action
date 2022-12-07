@@ -1,4 +1,3 @@
-import { getLocationForJsonPath, parseWithPointers } from '@stoplight/yaml';
 import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';

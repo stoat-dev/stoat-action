@@ -33,7 +33,7 @@ describe('static hosting plugin', () => {
     jest.restoreAllMocks();
   });
 
-  for (const path of ['', '.', './', '__tests__/..', '../stoat-action']) {
+  for (const path of ['', '.', './', '__tests__/..', '../action']) {
     it(`forbids upload of project root directory (path = "${path}")`, async () => {
       const taskConfig: StaticHostingPlugin = {
         static_hosting: {

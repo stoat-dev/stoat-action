@@ -7,8 +7,8 @@ import { marked } from 'marked';
 import { AddressInfo } from 'net';
 import path from 'path';
 import portfinder from 'portfinder';
+import { StaticHostingPlugin } from 'stoat-action/src/schemas/stoatConfigSchema';
 
-import { StaticHostingPlugin } from '../../../../src/schemas/stoatConfigSchema';
 import { getGitRoot } from '../pathHelpers';
 import ConfigFileGlobal from './configFileGlobal';
 

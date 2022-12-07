@@ -27,15 +27,17 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ${{ github.workspace }}/cli/node_modules
-          key: ${{ runner.os }}-node-16-${{ hashFiles('cli/package-lock.json') }}
+            ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: |
-          npm install
+          cd cli
+          yarn install
       - name: Build and test stoat action
         run: |
-          npm run build
-          npm run test
+          cd cli
+          yarn build
+          yarn test
       - name: Run Stoat Action
         uses: ./
         if: always()
