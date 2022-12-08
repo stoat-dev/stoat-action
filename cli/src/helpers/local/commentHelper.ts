@@ -32,11 +32,12 @@ async function createServer(localPath: string): Promise<http.Server> {
 }
 
 async function runServersAndGetLinkUpdate(
-    staticServers: { [key: string]: { [key: string]: http.Server } },
-    taskId: string,
-    localPath: string,
-    directoryToHost: string,
-    fileName?: string) {
+  staticServers: { [key: string]: { [key: string]: http.Server } },
+  taskId: string,
+  localPath: string,
+  directoryToHost: string,
+  fileName?: string
+) {
   if (taskId in staticServers) {
     if (localPath in staticServers[taskId]) {
       // do nothing, server is already running for the right path
@@ -53,7 +54,7 @@ async function runServersAndGetLinkUpdate(
   // add to links config
   const port = (staticServers[taskId][localPath].address() as AddressInfo).port;
 
-  return{
+  return {
     tasks: {
       [taskId]: {
         static_hosting: {
@@ -96,29 +97,23 @@ export async function getDashboard(req: express.Request, res: express.Response) 
 
           let linkUpdate;
 
-          if(fs.existsSync(absolutePath)) {
+          if (fs.existsSync(absolutePath)) {
             const indexPath = path.join(absolutePath, 'index.html');
 
-            if(fs.lstatSync(absolutePath).isFile()) {
+            if (fs.lstatSync(absolutePath).isFile()) {
               linkUpdate = await runServersAndGetLinkUpdate(
-                  staticServers,
-                  taskId,
-                  localPath,
-                  path.dirname(absolutePath),
-                  path.basename(absolutePath)
+                staticServers,
+                taskId,
+                localPath,
+                path.dirname(absolutePath),
+                path.basename(absolutePath)
               );
-            } else if(fs.existsSync(indexPath)) {
-              linkUpdate = await runServersAndGetLinkUpdate(
-                  staticServers,
-                  taskId,
-                  localPath,
-                  absolutePath,
-                  undefined
-              );
+            } else if (fs.existsSync(indexPath)) {
+              linkUpdate = await runServersAndGetLinkUpdate(staticServers, taskId, localPath, absolutePath, undefined);
             }
           }
 
-          if(linkUpdate) {
+          if (linkUpdate) {
             links = deepmerge(links, linkUpdate);
           }
         }
