@@ -39,3 +39,15 @@ Follow these steps to generate Docusaurus previews for each pull request.
 That's it. Now, every time you open a pull request, Stoat will host the Docusaurus build and post a comment with a link to the preview. See an example in [this pull request](https://github.com/stoat-dev/stoat-action/pull/12).
 
 ![screen shot](https://user-images.githubusercontent.com/1933157/204400790-95dcc777-f0eb-4225-af52-3c7424b5dc81.png)
+
+:::tip
+
+You can preview the static hosting comment locally by installing our CLI and launching local mode (requires Node/NPM):
+```
+npm i -g stoat
+stoat local
+```
+
+See our [cli guide](../tutorials/cli) for more information.
+
+:::

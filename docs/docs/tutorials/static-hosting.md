@@ -113,6 +113,19 @@ tasks:
 
 After committing, pushing, and waiting for the build, the name will now show up as `Hello World` instead of the task id `hello-world`.
 
+:::tip
+
+You can preview the static hosting comment locally by installing our CLI and launching local mode (requires Node/NPM):
+```
+# make sure npm installed
+npm i -g stoat
+stoat local
+```
+
+See our [cli guide](cli) for more information.
+
+:::
+
 ### That's it!
 
 Using the above steps, you can easily upload any build artifacts for your PRs!

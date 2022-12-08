@@ -50,3 +50,15 @@ Follow these steps to generate JaCoCo coverage report previews for each pull req
 That's it. Now, every time you open a pull request, Stoat will host the JaCoCo test coverage report and post a comment with a link to the report. See an example in [this pull request](https://github.com/stoat-dev/examples/pull/1).
 
 ![screen shot](https://user-images.githubusercontent.com/1933157/204409716-b3eff069-6a6a-486e-92f4-b397fd4b8ae8.png)
+
+:::tip
+
+You can preview the static hosting comment locally by installing our CLI and launching local mode (requires Node/NPM):
+```
+npm i -g stoat
+stoat local
+```
+
+See our [cli guide](../tutorials/cli) for more information.
+
+:::
