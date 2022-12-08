@@ -23,24 +23,19 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
 
   const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
   const devApiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
-  const finalUrlBase = await testApiUrlOrFallback(devApiUrlBase, PROD_API_URL_BASE);
-  core.info(`Using API URL base for branch "${branchName}": ${finalUrlBase}`);
-  return finalUrlBase;
-};
 
-export const testApiUrlOrFallback = async (apiUrlBase: string, fallbackUrlBase: string) => {
   try {
-    const response = await fetch(apiUrlBase);
+    const response = await fetch(devApiUrlBase);
     if (response.ok) {
-      return apiUrlBase;
+      return devApiUrlBase;
     }
-    core.warning(`Testing connection to "${apiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+    core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
   } catch (e) {
-    core.warning(`Testing connection to "${apiUrlBase}" failed: ${e}`);
+    core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
   }
 
-  core.warning(`Fall back from "${apiUrlBase}" to "${fallbackUrlBase}"`);
-  return fallbackUrlBase;
+  core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
+  return PROD_API_URL_BASE;
 };
 
 export async function waitForShaToMatch(repoSha: string) {
