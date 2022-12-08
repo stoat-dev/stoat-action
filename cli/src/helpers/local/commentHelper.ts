@@ -57,7 +57,7 @@ async function runServersAndGetLinkUpdate(
     tasks: {
       [taskId]: {
         static_hosting: {
-          sha: 'unknown',
+          sha: 'local',
           link: `http://localhost:${port}/${fileName ? fileName : ''}`,
           status: '✅'
         }
