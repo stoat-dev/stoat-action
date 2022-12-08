@@ -1,6 +1,6 @@
 {
   "name": "stoat",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Stoat CLI",
   "main": "src/index.ts",
   "bin": {
