@@ -36,6 +36,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/node_modules
+            ${{ github.workspace }}/action/node_modules
           key: ${{ runner.os }}-node-16-action-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         working-directory: .
