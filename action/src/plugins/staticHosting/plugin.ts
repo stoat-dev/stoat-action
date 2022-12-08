@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun, UploadStaticHostingRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
-import { createSignedUrl, uploadDirectory } from './helpers';
+import { createSignedUrl, uploadPath } from './helpers';
 
 const runStaticHostingPlugin = async (
   taskId: string,
@@ -40,7 +40,7 @@ const runStaticHostingPlugin = async (
 
   // upload directory
   core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-  await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+  await uploadPath(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
   const requestBody: UploadStaticHostingRequest = {
