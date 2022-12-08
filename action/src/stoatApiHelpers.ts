@@ -44,7 +44,7 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
     core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
   }
 
-  core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
+  core.warning(`Fall back to ${PROD_API_URL_BASE}`);
   return PROD_API_URL_BASE;
 };
 
