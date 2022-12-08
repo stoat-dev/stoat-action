@@ -36,10 +36,11 @@ jobs:
             ${{ github.workspace }}/cli/node_modules
           key: ${{ runner.os }}-node-16-cli-${{ hashFiles('cli/yarn.lock') }}
       - name: Install dependencies
-        working-directory: .
+        working-directory: cli
         run: |
           yarn install --frozen-lockfile
       - name: Build and test stoat cli
+        working-directory: cli
         run: |
           yarn build
           yarn test
