@@ -7,7 +7,7 @@ interface ShaResponse {
   sha: string;
 }
 
-export type DevServerCheck = { needDevServer: false } | { devServerUrl: string };
+export type DevServerCheck = false | string;
 
 export const STOAT_ORG = 'stoat-dev';
 const STOAT_REPO = 'stoat';
@@ -57,7 +57,7 @@ export const waitForStoatDevServer = async (
   repoSha: string
 ): Promise<DevServerCheck> => {
   if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-    return { needDevServer: false };
+    return false;
   }
   core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
   const devServerBase = getDevServerBase(branchName);
@@ -77,15 +77,13 @@ export const waitForShaToMatch = async (serverBase: string, repoSha: string): Pr
     ++attempt;
     const response = await fetch(url);
     if (!response.ok) {
-      core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+      throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
     } else {
       const { sha: serverSha } = (await response.json()) as ShaResponse;
       core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
 
       if (serverSha === repoSha) {
-        return {
-          devServerUrl: serverBase
-        };
+        return serverBase;
       }
     }
     core.info(`Waiting / retrying for server to be deployed...`);
