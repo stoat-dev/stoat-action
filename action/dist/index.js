@@ -24358,11 +24358,11 @@ const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, fun
  */
 const waitForStoatDevServer = (repository, branchName, repoSha) => __awaiter(void 0, void 0, void 0, function* () {
     if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-        return;
+        return { needDevServer: false };
     }
     core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
     const devServerBase = getDevServerBase(branchName);
-    yield waitForShaToMatch(devServerBase, repoSha);
+    return waitForShaToMatch(devServerBase, repoSha);
 });
 const waitForShaToMatch = (serverBase, repoSha) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${serverBase}/api/debug/sha`;
@@ -24374,17 +24374,21 @@ const waitForShaToMatch = (serverBase, repoSha) => __awaiter(void 0, void 0, voi
         ++attempt;
         const response = yield node_ponyfill_default()(url);
         if (!response.ok) {
-            throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-        }
-        const { sha: serverSha } = (yield response.json());
-        core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
-        if (serverSha === repoSha) {
-            return;
+            core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
         }
         else {
-            yield new Promise((r) => setTimeout(r, 5000));
+            const { sha: serverSha } = (yield response.json());
+            core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
+            if (serverSha === repoSha) {
+                return {
+                    devServerUrl: serverBase
+                };
+            }
         }
+        core.info(`Waiting / retrying for server to be deployed...`);
+        yield new Promise((r) => setTimeout(r, 5000));
     }
+    throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
 });
 
 ;// CONCATENATED MODULE: ./src/commentHelpers.ts
