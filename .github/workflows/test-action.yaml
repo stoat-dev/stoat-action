@@ -35,8 +35,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}-node-16-action-${{ hashFiles('yarn.lock') }}
+            ${{ github.workspace }}/action/node_modules
+          key: ${{ runner.os }}-node-16-action-${{ hashFiles('action/yarn.lock') }}
       - name: Install dependencies
         working-directory: .
         run: |
