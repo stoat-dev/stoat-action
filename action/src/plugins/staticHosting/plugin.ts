@@ -30,12 +30,14 @@ const runStaticHostingPlugin = async (
   }
 
   // get signed url
+  const isFile = fs.lstatSync(pathToUpload).isFile();
   const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
     ghToken,
-    taskId
+    taskId,
+    filename: isFile ? pathToUpload : undefined
   });
 
   // upload directory
