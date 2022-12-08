@@ -37,12 +37,10 @@ jobs:
           path: |
             ${{ github.workspace }}/action/node_modules
           key: ${{ runner.os }}-node-16-action-${{ hashFiles('action/yarn.lock') }}
-      - name: Install dependencies
-        working-directory: action
+      - name: Install dependencies]
         run: |
           yarn install --frozen-lockfile
-      - name: Build and test stoat action
-        working-directory: action
+      - name: Build and test stoat action\
         run: |
           yarn all
       - name: Compare expected vs actual dist directories
