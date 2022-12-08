@@ -6,9 +6,9 @@ import { uploadWorkflowOutputs } from './commentHelpers';
 import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
+import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
-import {waitForStoatDevServer} from "./stoatApiHelpers";
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,

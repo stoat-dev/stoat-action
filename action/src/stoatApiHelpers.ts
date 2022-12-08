@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import fetch from 'cross-fetch';
-import {Repository} from "./types";
+
+import { Repository } from './types';
 
 interface ShaResponse {
   sha: string;
