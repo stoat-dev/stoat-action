@@ -28439,6 +28439,7 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
 
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
 // EXTERNAL MODULE: ./node_modules/bluebird/js/release/bluebird.js
 var bluebird = __nccwpck_require__(8710);
 // EXTERNAL MODULE: ./node_modules/form-data/lib/form_data.js
@@ -28562,17 +28563,26 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         lib_core.error(`[${taskId}] For security reason, the project root directory cannot be uploaded for hosting.`);
         return;
     }
+    const isFile = external_fs_default().lstatSync(pathToUpload).isFile();
     // get signed url
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner: owner,
         ghRepo: repo,
         ghSha,
         ghToken,
-        taskId
+        taskId,
+        filename: isFile ? external_path_default().basename(pathToUpload) : undefined
     });
-    // upload directory
-    lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-    yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+    if (isFile) {
+        // upload file
+        lib_core.info(`[${taskId}] Uploading file ${pathToUpload} to ${objectPath}...`);
+        yield uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
+    }
+    else {
+        // upload directory
+        lib_core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
+        yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+    }
     // submit partial config
     const requestBody = {
         ghOwner: owner,

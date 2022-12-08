@@ -1,11 +1,11 @@
 import * as core from '@actions/core';
 import fs from 'fs';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun, UploadStaticHostingRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
-import { createSignedUrl, uploadDirectory } from './helpers';
+import {createSignedUrl, uploadDirectory, uploadFileWithSignedUrl} from './helpers';
 
 const runStaticHostingPlugin = async (
   taskId: string,
@@ -29,18 +29,27 @@ const runStaticHostingPlugin = async (
     return;
   }
 
+  const isFile = fs.lstatSync(pathToUpload).isFile();
+
   // get signed url
   const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
     ghToken,
-    taskId
+    taskId,
+    filename: isFile ? path.basename(pathToUpload) : undefined
   });
 
-  // upload directory
-  core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-  await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+  if (isFile) {
+    // upload file
+    core.info(`[${taskId}] Uploading file ${pathToUpload} to ${objectPath}...`);
+    await uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
+  } else {
+    // upload directory
+    core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
+    await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+  }
 
   // submit partial config
   const requestBody: UploadStaticHostingRequest = {

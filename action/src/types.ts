@@ -67,6 +67,8 @@ export type CreateSignedUrlRequest = {
   ghSha: string;
   ghToken: string;
   taskId: string;
+  // when filename exists, it is a file upload; otherwise it is a directory upload
+  filename?: string;
 };
 
 export type CreateSignedUrlResponse = {
