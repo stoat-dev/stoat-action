@@ -5,13 +5,14 @@ interface ShaResponse {
   sha: string;
 }
 
+export const STOAT_ORG = 'stoat-dev';
 export const INTERNAL_REPOS = ['stoat', 'stoat-action'];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
 export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
-  if (ghOwner !== 'stoat-dev' || !INTERNAL_REPOS.includes(ghRepo)) {
+  if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
     return PROD_API_URL_BASE;
   }
 
@@ -21,19 +22,24 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
   }
 
   const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
-  const apiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
-  const finalUrlBase = await testApiUrlOrFallback(apiUrlBase, PROD_API_URL_BASE);
+  const devApiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+  const finalUrlBase = await testApiUrlOrFallback(devApiUrlBase, PROD_API_URL_BASE);
   core.info(`Using API URL base for branch "${branchName}": ${finalUrlBase}`);
-  return apiUrlBase;
+  return finalUrlBase;
 };
 
 export const testApiUrlOrFallback = async (apiUrlBase: string, fallbackUrlBase: string) => {
-  const response = await fetch(apiUrlBase);
-  if (response.ok) {
-    return apiUrlBase;
+  try {
+    const response = await fetch(apiUrlBase);
+    if (response.ok) {
+      return apiUrlBase;
+    }
+    core.warning(`Testing connection to "${apiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+  } catch (e) {
+    core.warning(`Testing connection to "${apiUrlBase}" failed: ${e}`);
   }
 
-  core.warning(`Failed to connect to ${apiUrlBase}, falling back to ${fallbackUrlBase}`);
+  core.warning(`Fall back from "${apiUrlBase}" to "${fallbackUrlBase}"`);
   return fallbackUrlBase;
 };
 
