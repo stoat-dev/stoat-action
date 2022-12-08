@@ -55,7 +55,7 @@ export const waitForStoatDevServer = async (
   repository: Repository,
   branchName: string,
   repoSha: string,
-  perAttemptWaitingSeconds: number = 5,
+  perAttemptWaitingSeconds: number = 5
 ): Promise<DevServerCheck> => {
   if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
     return false;
@@ -68,7 +68,11 @@ export const waitForStoatDevServer = async (
 /**
  * The perAttemptWaitingSeconds is configurable for testing purposes.
  */
-export const waitForShaToMatch = async (serverBase: string, repoSha: string, perAttemptWaitingSeconds: number = 5): Promise<DevServerCheck> => {
+export const waitForShaToMatch = async (
+  serverBase: string,
+  repoSha: string,
+  perAttemptWaitingSeconds: number = 5
+): Promise<DevServerCheck> => {
   const url = `${serverBase}/api/debug/sha`;
 
   const maxWaitingTimeSeconds = 2 * 60;

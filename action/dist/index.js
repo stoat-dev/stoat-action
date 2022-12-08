@@ -24356,37 +24356,37 @@ const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, fun
 /**
  * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
  */
-const waitForStoatDevServer = (repository, branchName, repoSha) => __awaiter(void 0, void 0, void 0, function* () {
+const waitForStoatDevServer = (repository, branchName, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
     if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-        return { needDevServer: false };
+        return false;
     }
     core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
     const devServerBase = getDevServerBase(branchName);
-    return waitForShaToMatch(devServerBase, repoSha);
+    return waitForShaToMatch(devServerBase, repoSha, perAttemptWaitingSeconds);
 });
-const waitForShaToMatch = (serverBase, repoSha) => __awaiter(void 0, void 0, void 0, function* () {
+/**
+ * The perAttemptWaitingSeconds is configurable for testing purposes.
+ */
+const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${serverBase}/api/debug/sha`;
     const maxWaitingTimeSeconds = 2 * 60;
-    const perAttemptWaitingSeconds = 5;
     const maxAttempts = maxWaitingTimeSeconds / perAttemptWaitingSeconds;
     let attempt = 0;
     while (attempt < maxAttempts) {
         ++attempt;
         const response = yield node_ponyfill_default()(url);
         if (!response.ok) {
-            core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+            throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
         }
         else {
             const { sha: serverSha } = (yield response.json());
             core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
             if (serverSha === repoSha) {
-                return {
-                    devServerUrl: serverBase
-                };
+                return serverBase;
             }
         }
         core.info(`Waiting / retrying for server to be deployed...`);
-        yield new Promise((r) => setTimeout(r, 5000));
+        yield new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
     }
     throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
 });
