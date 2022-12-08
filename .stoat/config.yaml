@@ -11,7 +11,7 @@ tasks:
     metadata:
       name: Action Test Coverage (single file)
     static_hosting:
-      path: action/coverage/coverage-final.json
+      path: action/coverage/lcov-report/index.html
   test-coverage-cli:
     metadata:
       name: CLI Test Coverage
