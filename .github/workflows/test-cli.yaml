@@ -15,6 +15,10 @@ on:
       - '.stoat/**'
       - '.github/workflows/test-cli.yaml'
 
+defaults:
+  run:
+    working-directory: cli
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,12 +36,11 @@ jobs:
             ${{ github.workspace }}/node_modules
           key: ${{ runner.os }}-node-16-cli-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
+        working-directory: .
         run: |
-          cd cli
-          yarn install
-      - name: Build and test stoat action
+          yarn install --frozen-lockfile
+      - name: Build and test stoat cli
         run: |
-          cd cli
           yarn build
           yarn test
       - name: Run Stoat Action

@@ -24321,20 +24321,33 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 };
 
 
-const INTERNAL_REPOS = ['stoat-dev/stoat', 'stoat-dev/stoat-action'];
+const STOAT_ORG = 'stoat-dev';
+const INTERNAL_REPOS = ['stoat', 'stoat-action'];
 const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 const PROD_API_URL_BASE = 'https://www.stoat.dev';
-const getApiUrlBase = (ghOwner, ghRepo) => {
-    const repoFullName = `${ghOwner}/${ghRepo}`;
+const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, function* () {
+    if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
+        return PROD_API_URL_BASE;
+    }
     const branchName = lib_core.getInput('pr_branch_name');
-    if (!INTERNAL_REPOS.includes(repoFullName) || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+    if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
         return PROD_API_URL_BASE;
     }
     const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
-    const apiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
-    lib_core.info(`Using API URL base for branch "${branchName}": ${apiUrlBase}`);
-    return apiUrlBase;
-};
+    const devApiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+    try {
+        const response = yield node_ponyfill_default()(devApiUrlBase);
+        if (response.ok) {
+            return devApiUrlBase;
+        }
+        lib_core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+    }
+    catch (e) {
+        lib_core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
+    }
+    lib_core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
+    return PROD_API_URL_BASE;
+});
 function waitForShaToMatch(repoSha) {
     return __awaiter(this, void 0, void 0, function* () {
         const url = `${PROD_API_URL_BASE}/api/debug/sha`;
@@ -24391,7 +24404,7 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository: { o
         commentTemplateFile: commentTemplate.template,
         ghToken
     };
-    const url = `${getApiUrlBase(owner, repo)}/api/workflow_outputs`;
+    const url = `${yield getApiUrlBase(owner, repo)}/api/workflow_outputs`;
     const response = yield node_ponyfill_default()(url, {
         method: 'POST',
         body: JSON.stringify(params)
@@ -28315,7 +28328,7 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 const submitPartialConfig = (taskId, apiSuffix, requestBody) => helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${taskId}] Submitting partial config...`);
-    const staticHostingApiUrl = `${getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/plugins/${apiSuffix}`;
+    const staticHostingApiUrl = `${yield getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/plugins/${apiSuffix}`;
     const response = yield node_ponyfill_default()(staticHostingApiUrl, {
         method: 'POST',
         body: JSON.stringify(requestBody)
@@ -28454,7 +28467,7 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     lib_core.info(`[${request.taskId}] Getting signed url...`);
-    const url = `${getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
+    const url = `${yield getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
     const response = yield node_ponyfill_default()(url, {
         method: 'POST',
         body: JSON.stringify(request)
@@ -28736,7 +28749,7 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
             urlParams.append(key, value);
         }
     }
-    const url = `${getApiUrlBase(ghOwner, ghRepo)}/api/templates?${urlParams.toString()}`;
+    const url = `${yield getApiUrlBase(ghOwner, ghRepo)}/api/templates?${urlParams.toString()}`;
     lib_core.info(`Fetching default template from ${url}`);
     const response = yield node_ponyfill_default()(url, {
         method: 'GET'
