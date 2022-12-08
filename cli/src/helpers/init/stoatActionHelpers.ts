@@ -44,7 +44,7 @@ async function approveWorkflows(jobs: GhJob[]) {
 }
 
 function getRelevantJobs(dir: string): GhJob[] {
-  if(!fs.existsSync(dir)) {
+  if (!fs.existsSync(dir)) {
     return [];
   }
 

@@ -11,9 +11,5 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
   },
-  "references": [
-    { "path": "./action"},
-    { "path": "./cli" }
-  ],
   "exclude": ["docs", "**/coverage", "**/dist", "**/action/lib", "**/cli/lib", "**/jest.config.js", "**/*.test.ts"]
 }
