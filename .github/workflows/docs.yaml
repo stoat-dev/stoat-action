@@ -33,7 +33,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ${{ github.workspace }}/node_modules
             ${{ github.workspace }}/docs/node_modules
           key: ${{ runner.os }}-node-16-${{ hashFiles('docs/package-lock.json') }}
 
