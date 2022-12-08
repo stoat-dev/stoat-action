@@ -17,6 +17,10 @@ on:
       - '.stoat/**'
       - '.github/workflows/test-action.yaml'
 
+defaults:
+  run:
+    working-directory: action
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,11 +38,11 @@ jobs:
             ${{ github.workspace }}/node_modules
           key: ${{ runner.os }}-node-16-action-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
+        working-directory: .
         run: |
           yarn install --frozen-lockfile
       - name: Build and test stoat action
         run: |
-          cd action
           yarn all
       - name: Compare expected vs actual dist directories
         run: |
