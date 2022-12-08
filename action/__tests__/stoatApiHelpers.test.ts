@@ -2,13 +2,22 @@ import * as core from '@actions/core';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fetch, { Response } from 'cross-fetch';
 
-import { PROD_API_URL_BASE, getApiUrlBase } from '../src/stoatApiHelpers';
+import { PROD_API_URL_BASE, getApiUrlBase, getDevServerBase, waitForStoatDevServer } from '../src/stoatApiHelpers';
 
 jest.mock('cross-fetch', () => jest.fn());
 const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
 
 jest.mock('@actions/core');
 const mockCore = core as jest.Mocked<typeof core>;
+
+describe('getDevServerBase', () => {
+  it('returns the correct dev server base', () => {
+    expect(getDevServerBase('token1')).toEqual('https://stoat-git-token1-stoat-dev.vercel.app');
+    expect(getDevServerBase('token1/token2_token3$token4')).toEqual(
+      'https://stoat-git-token1-token2-token3-token4-stoat-dev.vercel.app'
+    );
+  });
+});
 
 describe('await getApiUrlBase', () => {
   beforeEach(() => {
@@ -52,6 +61,46 @@ describe('await getApiUrlBase', () => {
 
         it('returns production server', async () => {
           expect(await getApiUrlBase('stoat-dev', 'stoat')).toEqual(PROD_API_URL_BASE);
+        });
+      });
+    });
+  });
+});
+
+describe('waitForStoatDevServer', () => {
+  const repoSha = 's1';
+  describe('non-stoat repos', () => {
+    it('does not wait', async () => {
+      expect(await waitForStoatDevServer({ owner: 'external-org', repo: 'repo' }, 'b1', repoSha)).toEqual({
+        needDevServer: false
+      });
+      expect(await waitForStoatDevServer({ owner: 'stoat-dev', repo: 'stoat-action' }, 'b1', repoSha)).toEqual({
+        needDevServer: false
+      });
+      expect(await waitForStoatDevServer({ owner: 'stoat-dev', repo: 'examples' }, 'b1', repoSha)).toEqual({
+        needDevServer: false
+      });
+    });
+  });
+
+  describe('stoat repo', () => {
+    it('does not wait for main branch', async () => {
+      expect(await waitForStoatDevServer({ owner: 'stoat-dev', repo: 'stoat' }, 'main', repoSha)).toEqual({
+        needDevServer: false
+      });
+    });
+
+    describe('for dev branch', () => {
+      beforeEach(() => {
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: async () => ({ sha: repoSha })
+        } as Response);
+      });
+
+      it('waits for dev branches', async () => {
+        expect(await waitForStoatDevServer({ owner: 'stoat-dev', repo: 'stoat' }, 'dev/feature1', repoSha)).toEqual({
+          devServerUrl: 'https://stoat-git-dev-feature1-stoat-dev.vercel.app'
         });
       });
     });

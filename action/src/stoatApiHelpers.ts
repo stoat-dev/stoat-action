@@ -7,6 +7,8 @@ interface ShaResponse {
   sha: string;
 }
 
+export type DevServerCheck = { needDevServer: false } | { devServerUrl: string };
+
 export const STOAT_ORG = 'stoat-dev';
 const STOAT_REPO = 'stoat';
 const STOAT_ACTION_REPO = 'stoat-action';
@@ -49,16 +51,20 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
 /**
  * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
  */
-export const waitForStoatDevServer = async (repository: Repository, branchName: string, repoSha: string) => {
+export const waitForStoatDevServer = async (
+  repository: Repository,
+  branchName: string,
+  repoSha: string
+): Promise<DevServerCheck> => {
   if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-    return;
+    return { needDevServer: false };
   }
   core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
   const devServerBase = getDevServerBase(branchName);
-  await waitForShaToMatch(devServerBase, repoSha);
+  return waitForShaToMatch(devServerBase, repoSha);
 };
 
-export const waitForShaToMatch = async (serverBase: string, repoSha: string) => {
+export const waitForShaToMatch = async (serverBase: string, repoSha: string): Promise<DevServerCheck> => {
   const url = `${serverBase}/api/debug/sha`;
 
   const maxWaitingTimeSeconds = 2 * 60;
@@ -71,16 +77,20 @@ export const waitForShaToMatch = async (serverBase: string, repoSha: string) => 
     ++attempt;
     const response = await fetch(url);
     if (!response.ok) {
-      throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-    }
-
-    const { sha: serverSha } = (await response.json()) as ShaResponse;
-    core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
-
-    if (serverSha === repoSha) {
-      return;
+      core.error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
     } else {
-      await new Promise((r) => setTimeout(r, 5000));
+      const { sha: serverSha } = (await response.json()) as ShaResponse;
+      core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
+
+      if (serverSha === repoSha) {
+        return {
+          devServerUrl: serverBase
+        };
+      }
     }
+    core.info(`Waiting / retrying for server to be deployed...`);
+    await new Promise((r) => setTimeout(r, 5000));
   }
+
+  throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
 };
