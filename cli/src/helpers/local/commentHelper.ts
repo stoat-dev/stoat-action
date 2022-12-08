@@ -7,7 +7,7 @@ import { marked } from 'marked';
 import { AddressInfo } from 'net';
 import path from 'path';
 import portfinder from 'portfinder';
-import { StaticHostingPlugin } from 'stoat-action/src/schemas/stoatConfigSchema';
+import { StaticHostingPlugin } from '../../../../action/src/schemas/stoatConfigSchema';
 
 import { getGitRoot } from '../pathHelpers';
 import ConfigFileGlobal from './configFileGlobal';
@@ -29,6 +29,42 @@ async function createServer(localPath: string): Promise<http.Server> {
   const expressApp = express();
   expressApp.use(express.static(localPath));
   return expressApp.listen(port);
+}
+
+async function runServersAndGetLinkUpdate(
+  staticServers: { [key: string]: { [key: string]: http.Server } },
+  taskId: string,
+  localPath: string,
+  directoryToHost: string,
+  fileName?: string
+) {
+  if (taskId in staticServers) {
+    if (localPath in staticServers[taskId]) {
+      // do nothing, server is already running for the right path
+    } else {
+      // destroy server and start new one
+      staticServers[taskId][localPath].close();
+      staticServers[taskId][localPath] = await createServer(directoryToHost);
+    }
+  } else {
+    // create server from scratch
+    staticServers[taskId] = { [localPath]: await createServer(directoryToHost) };
+  }
+
+  // add to links config
+  const port = (staticServers[taskId][localPath].address() as AddressInfo).port;
+
+  return {
+    tasks: {
+      [taskId]: {
+        static_hosting: {
+          sha: 'local',
+          link: `http://localhost:${port}/${fileName ? fileName : ''}`,
+          status: '✅'
+        }
+      }
+    }
+  };
 }
 
 export async function getDashboard(req: express.Request, res: express.Response) {
@@ -58,37 +94,27 @@ export async function getDashboard(req: express.Request, res: express.Response) 
           const localPath = hostingTask.static_hosting.path;
 
           const absolutePath = path.join(getGitRoot(), localPath);
-          const indexPath = path.join(absolutePath, 'index.html');
 
-          if (fs.existsSync(indexPath)) {
-            // manage static server lifecycle
-            if (taskId in staticServers) {
-              if (localPath in staticServers[taskId]) {
-                // do nothing, server is already running for the right path
-              } else {
-                // destroy server and start new one
-                staticServers[taskId][localPath].close();
-                staticServers[taskId][localPath] = await createServer(absolutePath);
-              }
-            } else {
-              // create server from scratch
-              staticServers[taskId] = { [localPath]: await createServer(absolutePath) };
+          let linkUpdate;
+
+          if (fs.existsSync(absolutePath)) {
+            const indexPath = path.join(absolutePath, 'index.html');
+
+            if (fs.lstatSync(absolutePath).isFile()) {
+              linkUpdate = await runServersAndGetLinkUpdate(
+                staticServers,
+                taskId,
+                localPath,
+                path.dirname(absolutePath),
+                path.basename(absolutePath)
+              );
+            } else if (fs.existsSync(indexPath)) {
+              linkUpdate = await runServersAndGetLinkUpdate(staticServers, taskId, localPath, absolutePath, undefined);
             }
+          }
 
-            // add to links config
-            const port = (staticServers[taskId][localPath].address() as AddressInfo).port;
-
-            links = deepmerge(links, {
-              tasks: {
-                [taskId]: {
-                  static_hosting: {
-                    sha: 'unknown',
-                    link: `http://localhost:${port}/`,
-                    status: '✅'
-                  }
-                }
-              }
-            });
+          if (linkUpdate) {
+            links = deepmerge(links, linkUpdate);
           }
         }
       }
