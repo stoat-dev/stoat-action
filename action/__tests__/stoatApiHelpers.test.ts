@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import fetch from 'cross-fetch';
+import fetch, { Response } from 'cross-fetch';
 
 import { PROD_API_URL_BASE, getApiUrlBase } from '../src/stoatApiHelpers';
 
@@ -12,7 +12,7 @@ const mockCore = core as jest.Mocked<typeof core>;
 
 describe('await getApiUrlBase', () => {
   beforeEach(() => {
-    mockFetch.mockResolvedValue(new Response('ok'));
+    mockFetch.mockResolvedValue({ ok: true } as Response);
   });
 
   describe('external repos', () => {
