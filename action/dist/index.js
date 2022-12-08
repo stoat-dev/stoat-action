@@ -28579,7 +28579,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         core.error(`[${taskId}] For security reason, the project root directory cannot be uploaded for hosting.`);
         return;
     }
-    const isFile = external_fs_default().lstatSync(pathToUpload).isFile();
+    const lstat = external_fs_default().lstatSync(pathToUpload);
     // get signed url
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner: owner,
@@ -28587,17 +28587,17 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghSha,
         ghToken,
         taskId,
-        filename: isFile ? external_path_default().basename(pathToUpload) : undefined
+        filename: lstat.isFile() ? external_path_default().basename(pathToUpload) : undefined
     });
-    if (isFile) {
-        // upload file
-        core.info(`[${taskId}] Uploading file ${pathToUpload} to ${objectPath}...`);
+    if (lstat.isFile()) {
         yield uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
     }
-    else {
-        // upload directory
+    else if (lstat.isDirectory()) {
         core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
         yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+    }
+    else {
+        throw new Error(`[${taskId}] Path ${pathToUpload} is not a file or a directory!`);
     }
     // submit partial config
     const requestBody = {

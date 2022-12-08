@@ -29,7 +29,7 @@ const runStaticHostingPlugin = async (
     return;
   }
 
-  const isFile = fs.lstatSync(pathToUpload).isFile();
+  const lstat = fs.lstatSync(pathToUpload);
 
   // get signed url
   const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
@@ -38,17 +38,16 @@ const runStaticHostingPlugin = async (
     ghSha,
     ghToken,
     taskId,
-    filename: isFile ? path.basename(pathToUpload) : undefined
+    filename: lstat.isFile() ? path.basename(pathToUpload) : undefined
   });
 
-  if (isFile) {
-    // upload file
-    core.info(`[${taskId}] Uploading file ${pathToUpload} to ${objectPath}...`);
+  if (lstat.isFile()) {
     await uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
-  } else {
-    // upload directory
+  } else if (lstat.isDirectory()) {
     core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
     await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+  } else {
+    throw new Error(`[${taskId}] Path ${pathToUpload} is not a file or a directory!`);
   }
 
   // submit partial config
