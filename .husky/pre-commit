@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-{
+(
   cd action
   npx lint-staged
-}
+)
 
-{
+(
   cd cli
   npx lint-staged
-}
+)
