@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import fs from 'fs';
-import { resolve } from 'path';
+import { basename, resolve } from 'path';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun, UploadStaticHostingRequest } from '../../types';
@@ -37,7 +37,7 @@ const runStaticHostingPlugin = async (
     ghSha,
     ghToken,
     taskId,
-    filename: isFile ? pathToUpload : undefined
+    filename: isFile ? basename(pathToUpload) : undefined
   });
 
   // upload directory
