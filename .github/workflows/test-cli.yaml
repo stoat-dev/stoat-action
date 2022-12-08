@@ -33,9 +33,8 @@ jobs:
           key: ${{ runner.os }}-node-16-cli-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: |
-          cd cli
-          yarn install
-      - name: Build and test stoat action
+          yarn install --frozen-lockfile
+      - name: Build and test stoat cli
         run: |
           cd cli
           yarn build
