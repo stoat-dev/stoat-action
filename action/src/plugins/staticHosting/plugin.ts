@@ -42,7 +42,7 @@ const runStaticHostingPlugin = async (
   });
 
   if (lstat.isFile()) {
-    await uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
+    await uploadFileWithSignedUrl(signedUrl, fields, objectPath, pathToUpload);
   } else if (lstat.isDirectory()) {
     core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
     await uploadDirectory(signedUrl, fields, pathToUpload, objectPath);

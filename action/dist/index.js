@@ -28590,7 +28590,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         filename: lstat.isFile() ? external_path_default().basename(pathToUpload) : undefined
     });
     if (lstat.isFile()) {
-        yield uploadFileWithSignedUrl(signedUrl, fields, pathToUpload, objectPath);
+        yield uploadFileWithSignedUrl(signedUrl, fields, objectPath, pathToUpload);
     }
     else if (lstat.isDirectory()) {
         core.info(`[${taskId}] Uploading directory ${pathToUpload} to ${objectPath}...`);
