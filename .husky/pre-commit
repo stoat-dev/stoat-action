@@ -7,6 +7,6 @@
 }
 
 {
-  cd cli
+  cd ../cli
   npx lint-staged
 }
