@@ -10,8 +10,8 @@ interface ShaResponse {
 export type DevServerCheck = false | string;
 
 export const STOAT_ORG = 'stoat-dev';
-const STOAT_REPO = 'stoat';
-const STOAT_ACTION_REPO = 'stoat-action';
+export const STOAT_REPO = 'stoat';
+export const STOAT_ACTION_REPO = 'stoat-action';
 export const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
@@ -54,21 +54,24 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
 export const waitForStoatDevServer = async (
   repository: Repository,
   branchName: string,
-  repoSha: string
+  repoSha: string,
+  perAttemptWaitingSeconds: number = 5,
 ): Promise<DevServerCheck> => {
   if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
     return false;
   }
   core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
   const devServerBase = getDevServerBase(branchName);
-  return waitForShaToMatch(devServerBase, repoSha);
+  return waitForShaToMatch(devServerBase, repoSha, perAttemptWaitingSeconds);
 };
 
-export const waitForShaToMatch = async (serverBase: string, repoSha: string): Promise<DevServerCheck> => {
+/**
+ * The perAttemptWaitingSeconds is configurable for testing purposes.
+ */
+export const waitForShaToMatch = async (serverBase: string, repoSha: string, perAttemptWaitingSeconds: number = 5): Promise<DevServerCheck> => {
   const url = `${serverBase}/api/debug/sha`;
 
   const maxWaitingTimeSeconds = 2 * 60;
-  const perAttemptWaitingSeconds = 5;
   const maxAttempts = maxWaitingTimeSeconds / perAttemptWaitingSeconds;
 
   let attempt: number = 0;
@@ -87,7 +90,7 @@ export const waitForShaToMatch = async (serverBase: string, repoSha: string): Pr
       }
     }
     core.info(`Waiting / retrying for server to be deployed...`);
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
   }
 
   throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
