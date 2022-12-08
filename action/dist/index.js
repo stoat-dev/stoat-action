@@ -24303,7 +24303,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var lib_core = __nccwpck_require__(2186);
+var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
 // EXTERNAL MODULE: ./node_modules/cross-fetch/dist/node-ponyfill.js
@@ -24322,58 +24322,74 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 const STOAT_ORG = 'stoat-dev';
-const INTERNAL_REPOS = ['stoat', 'stoat-action'];
+const STOAT_REPO = 'stoat';
+const STOAT_ACTION_REPO = 'stoat-action';
+const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
 const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 const PROD_API_URL_BASE = 'https://www.stoat.dev';
+const getDevServerBase = (branchName) => {
+    const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+    return `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+};
 const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, function* () {
     if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
         return PROD_API_URL_BASE;
     }
-    const branchName = lib_core.getInput('pr_branch_name');
+    const branchName = core.getInput('pr_branch_name');
     if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
         return PROD_API_URL_BASE;
     }
-    const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
-    const devApiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+    const devApiUrlBase = getDevServerBase(branchName);
     try {
         const response = yield node_ponyfill_default()(devApiUrlBase);
         if (response.ok) {
             return devApiUrlBase;
         }
-        lib_core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
     }
     catch (e) {
-        lib_core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
+        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
     }
-    lib_core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
+    core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
     return PROD_API_URL_BASE;
 });
-function waitForShaToMatch(repoSha) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const url = `${PROD_API_URL_BASE}/api/debug/sha`;
-        let shaMatches = false;
-        let waits = 0;
-        while (!shaMatches) {
-            const response = yield fetch(url);
-            if (!response.ok) {
-                throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-            }
-            const data = (yield response.json());
-            const serverSha = data.sha;
-            core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${shaMatches}`);
+/**
+ * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
+ */
+const waitForStoatDevServer = (repository, branchName, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
+    if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+        return false;
+    }
+    core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
+    const devServerBase = getDevServerBase(branchName);
+    return waitForShaToMatch(devServerBase, repoSha, perAttemptWaitingSeconds);
+});
+/**
+ * The perAttemptWaitingSeconds is configurable for testing purposes.
+ */
+const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = `${serverBase}/api/debug/sha`;
+    const maxWaitingTimeSeconds = 2 * 60;
+    const maxAttempts = maxWaitingTimeSeconds / perAttemptWaitingSeconds;
+    let attempt = 0;
+    while (attempt < maxAttempts) {
+        ++attempt;
+        const response = yield node_ponyfill_default()(url);
+        if (!response.ok) {
+            throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+        }
+        else {
+            const { sha: serverSha } = (yield response.json());
+            core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
             if (serverSha === repoSha) {
-                shaMatches = true;
-            }
-            else {
-                if (waits > 20) {
-                    throw Error('Waited too long fer server, failing!');
-                }
-                yield new Promise((r) => setTimeout(r, 5000));
-                waits++;
+                return serverBase;
             }
         }
-    });
-}
+        core.info(`Waiting / retrying for server to be deployed...`);
+        yield new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
+    }
+    throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
+});
 
 ;// CONCATENATED MODULE: ./src/commentHelpers.ts
 var commentHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -24410,11 +24426,11 @@ const uploadWorkflowOutputs = (stoatConfig, commentTemplate, { ghRepository: { o
         body: JSON.stringify(params)
     });
     if (!response.ok) {
-        lib_core.error(`Failed to upload workflow outputs (${response.status} ${response.statusText}): ${yield response.text()}`);
+        core.error(`Failed to upload workflow outputs (${response.status} ${response.statusText}): ${yield response.text()}`);
         throw new Error();
     }
     const { stoatConfigFileId } = (yield response.json());
-    lib_core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
+    core.info(`Uploaded workflow outputs (stoat config ${stoatConfigFileId})!`);
     return stoatConfigFileId;
 });
 
@@ -28302,11 +28318,11 @@ function readStoatConfig(configFilePath = '.stoat/config.yaml') {
 function getTypedStoatConfig(stoatConfig) {
     var _a;
     return configHelpers_awaiter(this, void 0, void 0, function* () {
-        lib_core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
+        core.info(`Validating Stoat config file: ${JSON.stringify(stoatConfig)}`);
         const validate = configHelpers_ajv.compile(stoatConfigSchema_namespaceObject);
         const valid = validate(stoatConfig);
         if (!valid) {
-            lib_core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
+            core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
             throw new Error('Failed to validate Stoat config file!');
         }
         return stoatConfig;
@@ -28327,19 +28343,19 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 
 const submitPartialConfig = (taskId, apiSuffix, requestBody) => helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Submitting partial config...`);
+    core.info(`[${taskId}] Submitting partial config...`);
     const staticHostingApiUrl = `${yield getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/plugins/${apiSuffix}`;
     const response = yield node_ponyfill_default()(staticHostingApiUrl, {
         method: 'POST',
         body: JSON.stringify(requestBody)
     });
-    lib_core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
+    core.info(`[${taskId}] Partial config submission response: ${response.status} - ${response.statusText}`);
     if (!response.ok) {
-        lib_core.error('Failed to run static hosting plugin');
+        core.error('Failed to run static hosting plugin');
         return;
     }
     const { partialConfigId } = (yield response.json());
-    lib_core.info(`[${taskId}] Created partial config ${partialConfigId}`);
+    core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
 
 ;// CONCATENATED MODULE: ./src/plugins/jobRuntime/plugin.ts
@@ -28355,15 +28371,15 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     if (!ghJob) {
-        lib_core.warning(`[${taskId}] No job information found for job run`);
+        core.warning(`[${taskId}] No job information found for job run`);
         return;
     }
     const startedAt = new Date(ghJob.started_at);
     const now = new Date();
     const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
-    lib_core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
+    core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
         `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`);
     const requestBody = {
         ghOwner: owner,
@@ -28398,17 +28414,17 @@ var json_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisAr
 
 const MAX_CHARACTERS = 1024;
 const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
-    lib_core.info(`[${taskId}] Current directory: ${process.cwd()}`);
+    core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
+    core.info(`[${taskId}] Current directory: ${process.cwd()}`);
     const jsonToUpload = taskConfig.json.path;
     if (!external_fs_default().existsSync(jsonToUpload)) {
-        lib_core.warning(`[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
+        core.warning(`[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
         return;
     }
     const jsonString = (0,external_fs_.readFileSync)(jsonToUpload).toString();
     if (jsonString.length > MAX_CHARACTERS) {
         const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
-        lib_core.error(message);
+        core.error(message);
         throw Error(message);
     }
     let value;
@@ -28417,7 +28433,7 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
     }
     catch (e) {
         const message = `JSON file to upload does not have valid JSON contents: ${jsonToUpload}`;
-        lib_core.error(message);
+        core.error(message);
         throw Error(message);
     }
     // submit partial config
@@ -28466,7 +28482,7 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 
 const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${request.taskId}] Getting signed url...`);
+    core.info(`[${request.taskId}] Getting signed url...`);
     const url = `${yield getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
     const response = yield node_ponyfill_default()(url, {
         method: 'POST',
@@ -28476,12 +28492,12 @@ const createSignedUrl = (request) => staticHosting_helpers_awaiter(void 0, void 
     if (!response.ok) {
         throw new Error(response.statusText);
     }
-    lib_core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
+    core.info(`[${request.taskId}] Hosting URL: ${results.hostingUrl}`);
     return results;
 });
 const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     if (dryRun) {
-        lib_core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
+        core.info(`-- [DryRun] Upload ${localFilePath} -> ${objectKey}`);
         return;
     }
     const form = new (form_data_default())();
@@ -28497,7 +28513,7 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
         method: 'POST',
         body: form
     });
-    lib_core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
+    core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
@@ -28511,7 +28527,7 @@ const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, 
     try {
         const files = yield external_fs_default().promises.readdir(dirPath);
         if (!Array.isArray(files)) {
-            lib_core.warning(`Empty directory is ignored: ${dirPath}`);
+            core.warning(`Empty directory is ignored: ${dirPath}`);
             return;
         }
         yield bluebird.Promise.map(files, (filename) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
@@ -28549,17 +28565,17 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
-    lib_core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
-    lib_core.info(`[${taskId}] Current directory: ${currentDirectory}`);
+    core.info(`[${taskId}] Current directory: ${currentDirectory}`);
     const pathToUpload = (0,external_path_.resolve)(taskConfig.static_hosting.path);
-    lib_core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
+    core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
     if (!external_fs_default().existsSync(pathToUpload)) {
-        lib_core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
+        core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
         return;
     }
     if (pathToUpload === currentDirectory) {
-        lib_core.error(`[${taskId}] For security reason, the project root directory cannot be uploaded for hosting.`);
+        core.error(`[${taskId}] For security reason, the project root directory cannot be uploaded for hosting.`);
         return;
     }
     // get signed url
@@ -28571,7 +28587,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         taskId
     });
     // upload directory
-    lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
+    core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
     const requestBody = {
@@ -28616,7 +28632,7 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield jobRuntime_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else {
-            lib_core.warning(`Unknown plugin: ${taskId}`);
+            core.warning(`Unknown plugin: ${taskId}`);
         }
     }
 });
@@ -28750,7 +28766,7 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
         }
     }
     const url = `${yield getApiUrlBase(ghOwner, ghRepo)}/api/templates?${urlParams.toString()}`;
-    lib_core.info(`Fetching default template from ${url}`);
+    core.info(`Fetching default template from ${url}`);
     const response = yield node_ponyfill_default()(url, {
         method: 'GET'
     });
@@ -28758,7 +28774,7 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
         throw Error(`Failed to get default template: ${response.status} - ${response.statusText}`);
     }
     const { template, format } = (yield response.json());
-    lib_core.info(`Got default template (format ${format}):\n${template}`);
+    core.info(`Got default template (format ${format}):\n${template}`);
     return { template, format };
 });
 const getPlugins = (stoatConfig) => {
@@ -28794,6 +28810,7 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
+
 function getGhCommitTimestamp(octokit, repository, repoSha) {
     var _a;
     return app_awaiter(this, void 0, void 0, function* () {
@@ -28808,9 +28825,9 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
                 throw Error('Date string retrieved was empty!');
             }
             else {
-                lib_core.info(`Retrieved date string: ${dateStr}`);
+                core.info(`Retrieved date string: ${dateStr}`);
                 const parsedDate = new Date(dateStr);
-                lib_core.info(`Parsed date as: ${parsedDate}`);
+                core.info(`Parsed date as: ${parsedDate}`);
                 return parsedDate;
             }
         }
@@ -28822,20 +28839,22 @@ function getGhCommitTimestamp(octokit, repository, repoSha) {
 function run(stoatConfig) {
     return app_awaiter(this, void 0, void 0, function* () {
         const typedStoatConfig = yield getTypedStoatConfig(stoatConfig);
-        lib_core.info('Initializing Octokit...');
-        const token = lib_core.getInput('token');
+        core.info('Initializing Octokit...');
+        const token = core.getInput('token');
         const octokit = github.getOctokit(token);
-        lib_core.info('Fetching current pull request number...');
+        core.info('Fetching current pull request number...');
         const pullRequestNumber = yield getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
         if (pullRequestNumber === null) {
-            lib_core.info(`Build not associated with a pull request.`);
+            core.info(`Build not associated with a pull request.`);
         }
         else {
-            lib_core.info(`Detected pull request number: ${pullRequestNumber}`);
+            core.info(`Detected pull request number: ${pullRequestNumber}`);
         }
-        lib_core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
-        const repoSha = lib_core.getInput('actual_sha');
-        lib_core.info('Checking if prior steps succeeded...');
+        core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
+        const repoSha = core.getInput('actual_sha');
+        const ghBranch = core.getInput('pr_branch_name');
+        yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
+        core.info('Checking if prior steps succeeded...');
         let stepsSucceeded = true;
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
@@ -28846,16 +28865,16 @@ function run(stoatConfig) {
         // with matrix jobs and such this can be difficult to determine
         // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
         for (const job of jobListResponse.data.jobs) {
-            lib_core.info(`Inspecting job "${job.name}"`);
+            core.info(`Inspecting job "${job.name}"`);
             for (const step of job.steps || []) {
-                lib_core.info(`-- Step "${step.name}": ${step.conclusion}`);
+                core.info(`-- Step "${step.name}": ${step.conclusion}`);
                 if (step.conclusion !== null && step.conclusion !== 'skipped') {
                     stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
                 }
             }
         }
-        lib_core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-        lib_core.info(`Fetching commit timestamp...`);
+        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
+        core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
         // It is different from the job name in the job list response. So we cannot use it to
@@ -28867,43 +28886,43 @@ function run(stoatConfig) {
         const ghJobRunId = github.context.runId;
         const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
         if (ghJob === undefined) {
-            lib_core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+            core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
         const githubActionRun = {
             ghRepository: github.context.repo,
-            ghBranch: lib_core.getInput('pr_branch_name'),
+            ghBranch,
             ghPullRequestNumber: pullRequestNumber,
             ghWorkflow: github.context.workflow,
             ghJob,
             ghSha: repoSha,
             ghCommitTimestamp,
-            ghRunId: parseInt(lib_core.getInput('run_id')),
-            ghRunNumber: parseInt(lib_core.getInput('run_number')),
-            ghRunAttempt: parseInt(lib_core.getInput('run_attempt')),
+            ghRunId: parseInt(core.getInput('run_id')),
+            ghRunNumber: parseInt(core.getInput('run_number')),
+            ghRunAttempt: parseInt(core.getInput('run_attempt')),
             ghToken: token
         };
-        lib_core.info('Loading template...');
+        core.info('Loading template...');
         const { owner, repo } = githubActionRun.ghRepository;
         const commentTemplate = yield getTemplate(owner, repo, typedStoatConfig);
-        lib_core.info('Uploading workflow outputs...');
+        core.info('Uploading workflow outputs...');
         const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
         yield runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
     });
 }
 (() => app_awaiter(void 0, void 0, void 0, function* () {
     try {
-        lib_core.info('Reading Stoat config...');
+        core.info('Reading Stoat config...');
         const stoatConfig = readStoatConfig();
         if ('enabled' in stoatConfig && !stoatConfig.enabled) {
-            lib_core.info('Stoat is disabled! skipping...');
+            core.info('Stoat is disabled! skipping...');
         }
         else {
             yield run(stoatConfig);
         }
     }
     catch (error) {
-        lib_core.error('Stoat failed!');
-        lib_core.setFailed(error.message);
+        core.error('Stoat failed!');
+        core.setFailed(error.message);
     }
 }))();
 

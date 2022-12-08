@@ -6,6 +6,7 @@ import { uploadWorkflowOutputs } from './commentHelpers';
 import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
+import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
 
@@ -55,6 +56,9 @@ async function run(stoatConfig: any) {
   core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
   const repoSha = core.getInput('actual_sha');
 
+  const ghBranch = core.getInput('pr_branch_name');
+  await waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
+
   core.info('Checking if prior steps succeeded...');
   let stepsSucceeded = true;
 
@@ -103,7 +107,7 @@ async function run(stoatConfig: any) {
 
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
-    ghBranch: core.getInput('pr_branch_name'),
+    ghBranch,
     ghPullRequestNumber: pullRequestNumber,
     ghWorkflow: github.context.workflow,
     ghJob,

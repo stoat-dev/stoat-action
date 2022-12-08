@@ -1,15 +1,26 @@
 import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
+import { Repository } from './types';
+
 interface ShaResponse {
   sha: string;
 }
 
+export type DevServerCheck = false | string;
+
 export const STOAT_ORG = 'stoat-dev';
-export const INTERNAL_REPOS = ['stoat', 'stoat-action'];
+export const STOAT_REPO = 'stoat';
+export const STOAT_ACTION_REPO = 'stoat-action';
+export const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
+
+export const getDevServerBase = (branchName: string): string => {
+  const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+  return `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+};
 
 export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
   if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
@@ -21,8 +32,7 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
     return PROD_API_URL_BASE;
   }
 
-  const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
-  const devApiUrlBase = `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+  const devApiUrlBase = getDevServerBase(branchName);
 
   try {
     const response = await fetch(devApiUrlBase);
@@ -38,34 +48,54 @@ export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
   return PROD_API_URL_BASE;
 };
 
-export async function waitForShaToMatch(repoSha: string) {
-  const url = `${PROD_API_URL_BASE}/api/debug/sha`;
+/**
+ * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
+ */
+export const waitForStoatDevServer = async (
+  repository: Repository,
+  branchName: string,
+  repoSha: string,
+  perAttemptWaitingSeconds: number = 5
+): Promise<DevServerCheck> => {
+  if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+    return false;
+  }
+  core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
+  const devServerBase = getDevServerBase(branchName);
+  return waitForShaToMatch(devServerBase, repoSha, perAttemptWaitingSeconds);
+};
 
-  let shaMatches = false;
+/**
+ * The perAttemptWaitingSeconds is configurable for testing purposes.
+ */
+export const waitForShaToMatch = async (
+  serverBase: string,
+  repoSha: string,
+  perAttemptWaitingSeconds: number = 5
+): Promise<DevServerCheck> => {
+  const url = `${serverBase}/api/debug/sha`;
 
-  let waits = 0;
+  const maxWaitingTimeSeconds = 2 * 60;
+  const maxAttempts = maxWaitingTimeSeconds / perAttemptWaitingSeconds;
 
-  while (!shaMatches) {
+  let attempt: number = 0;
+
+  while (attempt < maxAttempts) {
+    ++attempt;
     const response = await fetch(url);
-
     if (!response.ok) {
       throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
-    }
-
-    const data = (await response.json()) as ShaResponse;
-    const serverSha = data.sha;
-
-    core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${shaMatches}`);
-
-    if (serverSha === repoSha) {
-      shaMatches = true;
     } else {
-      if (waits > 20) {
-        throw Error('Waited too long fer server, failing!');
-      }
+      const { sha: serverSha } = (await response.json()) as ShaResponse;
+      core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
 
-      await new Promise((r) => setTimeout(r, 5000));
-      waits++;
+      if (serverSha === repoSha) {
+        return serverBase;
+      }
     }
+    core.info(`Waiting / retrying for server to be deployed...`);
+    await new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
   }
-}
+
+  throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
+};

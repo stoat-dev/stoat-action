@@ -18,6 +18,4 @@ tasks:
     static_hosting:
       path: docs/build
   job_runtime:
-    metadata:
-      name: Job Runtime
     job_runtime: {}
