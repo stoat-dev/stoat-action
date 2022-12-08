@@ -1,6 +1,6 @@
 {
   "name": "stoat",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Stoat CLI",
   "main": "src/index.ts",
   "bin": {
@@ -40,19 +40,22 @@
     "deepmerge-ts": "^4.2.2",
     "esbuild": "^0.15.16",
     "express": "^4.18.2",
+    "handlebars": "^4.7.7",
     "inquirer": "^9.1.4",
+    "js-yaml": "^4.1.0",
     "latest-version": "^7.0.0",
     "marked": "^4.2.3",
     "open": "^8.4.0",
     "path": "^0.12.7",
     "portfinder": "^1.0.32",
-    "prettier": "2.7.1",
-    "stoat-action": "*"
+    "prettier": "2.7.1"
   },
   "devDependencies": {
     "@types/marked": "^4.0.7",
     "@types/node": "^18.11.10",
+    "@types/js-yaml": "^4.0.5",
     "husky": "^8.0.2",
+    "@vercel/ncc": "^0.34.0",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",

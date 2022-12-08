@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import fs from 'fs';
-import { getTypedStoatConfig, readStoatConfig } from 'stoat-action/src/configHelpers';
-import {StoatConfigSchema} from "stoat-action/src/schemas/stoatConfigSchema";
-import { getTemplate } from 'stoat-action/src/templateHelpers';
-import { Template } from 'stoat-action/src/types';
+import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
+import {StoatConfigSchema} from "../../../../action/src/schemas/stoatConfigSchema";
+import { getTemplate } from '../../../../action/src/templateHelpers';
+import { Template } from '../../../../action/src/types';
 
 import { findStoatConfigPath } from '../pathHelpers';
 
