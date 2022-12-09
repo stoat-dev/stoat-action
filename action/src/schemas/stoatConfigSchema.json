@@ -16,16 +16,19 @@
     "tasks": {
       "type": "object",
       "additionalProperties": {
-        "type": "object",
-        "oneOf": [
-          { "$ref": "#/definitions/static_hosting_plugin" },
-          { "$ref": "#/definitions/json_plugin" },
-          { "$ref": "#/definitions/job_runtime_plugin" }
-        ]
+        "$ref": "#/definitions/task_plugin"
       }
     }
   },
   "definitions": {
+    "task_plugin": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/definitions/static_hosting_plugin" },
+        { "$ref": "#/definitions/json_plugin" },
+        { "$ref": "#/definitions/job_runtime_plugin" }
+      ]
+    },
     "static_hosting_plugin": {
       "type": "object",
       "required": ["static_hosting"],
