@@ -73,7 +73,7 @@
           "additionalProperties": true
         },
         "job_runtime": {
-          "type": "object",
+          "type": ["null", "object"],
           "additionalProperties": true,
           "properties": {
             "width": {

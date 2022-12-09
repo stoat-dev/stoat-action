@@ -38,7 +38,7 @@ export interface JobRuntimePlugin {
   metadata?: {
     [k: string]: unknown;
   };
-  job_runtime: {
+  job_runtime: null | {
     width?: number;
     height?: number;
     [k: string]: unknown;
