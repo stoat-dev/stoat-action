@@ -2,7 +2,6 @@ import * as core from '@actions/core';
 import Ajv from 'ajv';
 import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
-import { cloneDeep } from 'lodash';
 
 import { StoatConfigSchema } from './schemas/stoatConfigSchema';
 import stoatSchema from './schemas/stoatConfigSchema.json';
@@ -28,16 +27,18 @@ export async function getTypedStoatConfig(stoatConfig: any): Promise<StoatConfig
 }
 
 /**
- * When a plugin config is null, the deepmerge will replace the null
- * with the last object value without merging multiple objects.
+ * This function updates the config in place. If any of the plugin configs
+ * are null, this function replace the null value with an empty object.
+ * This is necessary because when the plugin config is null, the deepmerge
+ * on the server side will replace the null value with the last object value
+ * without merging multiple objects.
  */
 export const processNullPluginConfig = (stoatConfig: StoatConfigSchema): StoatConfigSchema => {
   if (stoatConfig.tasks === undefined) {
     return stoatConfig;
   }
 
-  const clone = cloneDeep(stoatConfig);
-  const tasks = clone.tasks || {};
+  const tasks = stoatConfig.tasks || {};
   for (const taskPlugin of Object.values(tasks)) {
     for (const [pluginField, pluginValue] of Object.entries(taskPlugin)) {
       if (pluginValue === null) {
@@ -45,5 +46,5 @@ export const processNullPluginConfig = (stoatConfig: StoatConfigSchema): StoatCo
       }
     }
   }
-  return clone;
+  return stoatConfig;
 };

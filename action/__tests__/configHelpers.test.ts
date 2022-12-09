@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+import _ from 'lodash';
 
 import { processNullPluginConfig } from '../src/configHelpers';
 import { StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
@@ -26,18 +27,18 @@ describe('processNullPluginConfig', () => {
   } as StoatConfigSchema;
 
   it('does nothing if tasks is undefined', () => {
-    expect(processNullPluginConfig(stoatConfigWithoutTasks)).toEqual(stoatConfigWithoutTasks);
+    expect(processNullPluginConfig(_.cloneDeep(stoatConfigWithoutTasks))).toEqual(stoatConfigWithoutTasks);
   });
 
   it('does nothing if tasks is empty', () => {
-    expect(processNullPluginConfig(stoatConfigWithEmptyTasks)).toEqual(stoatConfigWithEmptyTasks);
+    expect(processNullPluginConfig(_.cloneDeep(stoatConfigWithEmptyTasks))).toEqual(stoatConfigWithEmptyTasks);
   });
 
   it('does nothing if no task plugin task config is null', () => {
-    expect(processNullPluginConfig(stoatConfigWithEmptyObject)).toEqual(stoatConfigWithEmptyObject);
+    expect(processNullPluginConfig(_.cloneDeep(stoatConfigWithEmptyObject))).toEqual(stoatConfigWithEmptyObject);
   });
 
   it('replaces null with empty object', () => {
-    expect(processNullPluginConfig(stoatConfigWithNullPlugin)).toEqual(stoatConfigWithEmptyObject);
+    expect(processNullPluginConfig(_.cloneDeep(stoatConfigWithNullPlugin))).toEqual(stoatConfigWithEmptyObject);
   });
 });
