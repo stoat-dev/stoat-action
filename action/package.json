@@ -13,7 +13,8 @@
     "gen-types": "json2ts -i 'src/schemas/**/*.json' -o src/schemas",
     "test": "jest --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
-    "prepare": "cd .. && husky install action/.husky"
+    "prepare": "cd .. && husky install action/.husky",
+    "script": "npx ts-node"
   },
   "repository": {
     "type": "git",

@@ -28294,7 +28294,7 @@ var jsYaml = {
 
 
 ;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]}}},"definitions":{"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"$ref":"#/definitions/task_plugin"}}},"definitions":{"task_plugin":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]},"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":["null","object"],"additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28325,9 +28325,30 @@ function getTypedStoatConfig(stoatConfig) {
             core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
             throw new Error('Failed to validate Stoat config file!');
         }
-        return stoatConfig;
+        return processNullPluginConfig(stoatConfig);
     });
 }
+/**
+ * This function updates the config in place. If any of the plugin configs
+ * are null, this function replaces the null value with an empty object.
+ * This is necessary because when any plugin config is null, the deepmerge
+ * on the server side will replace the null value with the last object value
+ * without merging multiple objects.
+ */
+const processNullPluginConfig = (stoatConfig) => {
+    if (stoatConfig.tasks === undefined) {
+        return stoatConfig;
+    }
+    const tasks = stoatConfig.tasks || {};
+    for (const taskPlugin of Object.values(tasks)) {
+        for (const [pluginField, pluginValue] of Object.entries(taskPlugin)) {
+            if (pluginValue === null) {
+                taskPlugin[pluginField] = {};
+            }
+        }
+    }
+    return stoatConfig;
+};
 
 ;// CONCATENATED MODULE: ./src/plugins/helpers.ts
 var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
