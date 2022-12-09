@@ -67,6 +67,7 @@ export type CreateSignedUrlRequest = {
   ghSha: string;
   ghToken: string;
   taskId: string;
+  filename?: string;
 };
 
 export type CreateSignedUrlResponse = {

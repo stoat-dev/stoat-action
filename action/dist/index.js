@@ -24350,7 +24350,7 @@ const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, fun
     catch (e) {
         core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
     }
-    core.warning(`Fall back from "${devApiUrlBase}" to ${PROD_API_URL_BASE}`);
+    core.warning(`Fall back to ${PROD_API_URL_BASE}`);
     return PROD_API_URL_BASE;
 });
 /**
@@ -28517,12 +28517,17 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
-const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
+const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     const dirPath = (0,external_path_.resolve)(localPathToUpload);
     const dirStats = yield external_fs_default().promises.stat(dirPath);
     const objectPrefix = targetDirectory !== null && targetDirectory !== void 0 ? targetDirectory : '';
-    if (!dirStats.isDirectory()) {
-        throw new Error(`Path is not a directory: ${dirPath}`);
+    if (!dirStats.isFile() && !dirStats.isDirectory()) {
+        throw new Error(`Path is neither a file or directory: ${dirPath}`);
+    }
+    if (dirStats.isFile()) {
+        const objectKey = external_path_.posix.join(objectPrefix, (0,external_path_.basename)(localPathToUpload));
+        yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
+        return;
     }
     try {
         const files = yield external_fs_default().promises.readdir(dirPath);
@@ -28538,7 +28543,7 @@ const uploadDirectory = (signedUrl, fields, localPathToUpload, targetDirectory, 
                 yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
             }
             else if (fileStats.isDirectory()) {
-                yield uploadDirectory(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
+                yield uploadPath(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
             }
         }), {
             concurrency: 10
@@ -28579,16 +28584,18 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         return;
     }
     // get signed url
+    const isFile = external_fs_default().lstatSync(pathToUpload).isFile();
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
         ghOwner: owner,
         ghRepo: repo,
         ghSha,
         ghToken,
-        taskId
+        taskId,
+        filename: isFile ? (0,external_path_.basename)(pathToUpload) : undefined
     });
     // upload directory
     core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-    yield uploadDirectory(signedUrl, fields, pathToUpload, objectPath);
+    yield uploadPath(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
     const requestBody = {
         ghOwner: owner,
