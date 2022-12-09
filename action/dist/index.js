@@ -28591,7 +28591,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghSha,
         ghToken,
         taskId,
-        filename: isFile ? pathToUpload : undefined
+        filename: isFile ? (0,external_path_.basename)(pathToUpload) : undefined
     });
     // upload directory
     core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
