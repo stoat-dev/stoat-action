@@ -28330,8 +28330,8 @@ function getTypedStoatConfig(stoatConfig) {
 }
 /**
  * This function updates the config in place. If any of the plugin configs
- * are null, this function replace the null value with an empty object.
- * This is necessary because when the plugin config is null, the deepmerge
+ * are null, this function replaces the null value with an empty object.
+ * This is necessary because when any plugin config is null, the deepmerge
  * on the server side will replace the null value with the last object value
  * without merging multiple objects.
  */
