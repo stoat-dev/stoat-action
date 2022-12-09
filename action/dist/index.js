@@ -45512,7 +45512,6 @@ var jsYaml = {
 
 // EXTERNAL MODULE: ./node_modules/lodash/lodash.js
 var lodash = __nccwpck_require__(250);
-var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
 ;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchema.json
 const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"$ref":"#/definitions/task_plugin"}}},"definitions":{"task_plugin":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]},"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":["null","object"],"additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
@@ -45557,7 +45556,7 @@ const processNullPluginConfig = (stoatConfig) => {
     if (stoatConfig.tasks === undefined) {
         return stoatConfig;
     }
-    const clone = lodash_default().cloneDeep(stoatConfig);
+    const clone = (0,lodash.cloneDeep)(stoatConfig);
     const tasks = clone.tasks || {};
     for (const taskPlugin of Object.values(tasks)) {
         for (const [pluginField, pluginValue] of Object.entries(taskPlugin)) {
