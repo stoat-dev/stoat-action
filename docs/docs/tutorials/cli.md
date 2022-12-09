@@ -27,8 +27,8 @@ We recommend following the prompts and adding the action to any workflow that wi
 
 :::tip
 
-Local mode doesn't send data off of your computer! This is safe to run for private repos before we add support for
-authenticating our static hosting endpoints.
+Local mode doesn't send any of your code or any of your build artifacts off of your computer! 
+This is safe to run for private repos before we add support for authenticating our static hosting endpoints.
 
 :::
 
