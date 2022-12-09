@@ -32,6 +32,8 @@ export async function getTypedStoatConfig(stoatConfig: any): Promise<StoatConfig
  * This is necessary because when any plugin config is null, the deepmerge
  * on the server side will replace the null value with the last object value
  * without merging multiple objects.
+ * In the future, we can use a custom merging function to fix this issue
+ * on the server side.
  */
 export const processNullPluginConfig = (stoatConfig: StoatConfigSchema): StoatConfigSchema => {
   if (stoatConfig.tasks === undefined) {
