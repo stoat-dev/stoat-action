@@ -44,6 +44,8 @@ const runJsonPlugin = async (
 
   // submit partial config
   const requestBody: UploadJsonRequest = {
+    ghOwner: owner,
+    ghRepo: repo,
     ghSha,
     taskId,
     stoatConfigFileId,

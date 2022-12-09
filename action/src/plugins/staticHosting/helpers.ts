@@ -3,15 +3,17 @@ import * as bluebird from 'bluebird';
 import fetch from 'cross-fetch';
 import FormData from 'form-data';
 import fs from 'fs';
+// eslint-disable-next-line import/no-unresolved
 import mime from 'mime-types';
-import { posix, resolve } from 'path';
+import { basename, posix, resolve } from 'path';
 
-import { API_URL_BASE } from '../../stoatApiHelpers';
+import { getApiUrlBase } from '../../stoatApiHelpers';
 import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);
-  const response = await fetch(`${API_URL_BASE}/api/plugins/static_hostings/signed_url`, {
+  const url = `${await getApiUrlBase(request.ghOwner, request.ghRepo)}/api/plugins/static_hostings/signed_url`;
+  const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(request)
   });
@@ -57,7 +59,7 @@ export const uploadFileWithSignedUrl = async (
 
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
-export const uploadDirectory = async (
+export const uploadPath = async (
   signedUrl: string,
   fields: Record<string, string>,
   localPathToUpload: string,
@@ -68,8 +70,14 @@ export const uploadDirectory = async (
   const dirStats = await fs.promises.stat(dirPath);
   const objectPrefix = targetDirectory ?? '';
 
-  if (!dirStats.isDirectory()) {
-    throw new Error(`Path is not a directory: ${dirPath}`);
+  if (!dirStats.isFile() && !dirStats.isDirectory()) {
+    throw new Error(`Path is neither a file or directory: ${dirPath}`);
+  }
+
+  if (dirStats.isFile()) {
+    const objectKey = posix.join(objectPrefix, basename(localPathToUpload));
+    await uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
+    return;
   }
 
   try {
@@ -90,7 +98,7 @@ export const uploadDirectory = async (
         if (fileStats.isFile()) {
           await uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
         } else if (fileStats.isDirectory()) {
-          await uploadDirectory(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
+          await uploadPath(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
         }
       },
       {

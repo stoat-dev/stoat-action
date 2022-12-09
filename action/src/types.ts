@@ -67,6 +67,7 @@ export type CreateSignedUrlRequest = {
   ghSha: string;
   ghToken: string;
   taskId: string;
+  filename?: string;
 };
 
 export type CreateSignedUrlResponse = {
@@ -77,6 +78,8 @@ export type CreateSignedUrlResponse = {
 };
 
 export interface UploadPartialConfigRequest {
+  ghOwner: string;
+  ghRepo: string;
   ghSha: string;
   taskId: string;
   stoatConfigFileId: number;

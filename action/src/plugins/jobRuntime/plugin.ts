@@ -25,6 +25,8 @@ const runJobRuntimePlugin = async (
       `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`
   );
   const requestBody: UploadJobRuntimeRequest = {
+    ghOwner: owner,
+    ghRepo: repo,
     ghSha,
     taskId,
     stoatConfigFileId,
