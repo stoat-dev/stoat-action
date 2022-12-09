@@ -49,3 +49,7 @@ Does your build produce any artifacts that you'd like to be able to access from 
 ## Templating
 
 Want to summarize any data from your builds? Try out our [templating tutorial](tutorials/templating)!
+
+## CLI
+
+We also provide a [cli tool](tutorials/cli) to get started quickly on existing repos!
