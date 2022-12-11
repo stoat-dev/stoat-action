@@ -49,4 +49,8 @@ or run into any problems with installing, please [let us know](mailto:contact@st
 
 ## Start using Stoat!
 
-To get value out of Stoat, you'll need to start pushing data to Stoat. Check out our [static hosting](tutorials/static-hosting) and [templating](tutorials/templating) tutorials to see examples.
+To get value out of Stoat, you'll need to start pushing data to Stoat. Check out these tutorials to see examples:
+
+- [Static hosting](tutorials/static-hosting)
+- [Job runtime](tutorials/job-runtime)
+- [Templating](tutorials/templating)
