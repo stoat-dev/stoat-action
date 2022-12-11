@@ -51,20 +51,22 @@ export const uploadFileWithSignedUrl = async (
 
   let retry = 0;
   const maxRetry = 6;
-  while (retry < maxRetry) {
-    const response = await fetch(signedUrl, {
+  while (retry <= maxRetry) {
+    const { ok, status, statusText } = await fetch(signedUrl, {
       method: 'POST',
       body: form as any
     });
-    core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
-    if (response.ok) {
+    const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
+    core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
+
+    if (ok) {
       break;
-    } else if (response.status === 503) {
+    } else if (status === 503) {
       const waitingMillis = 2 ** retry * 100;
-      core.warning(`-- Hit 503 error, waiting for ${waitingMillis}ms before retry...`);
+      core.warning(`-- Hit 503 error, waiting for ${waitingMillis}ms before retry (${retry})...`);
       await new Promise((r) => setTimeout(r, waitingMillis));
     } else {
-      throw new Error(response.statusText);
+      throw new Error(statusText);
     }
     ++retry;
   }
