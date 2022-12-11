@@ -46,6 +46,10 @@ is likely an easier-to-use replacement.
 
 Does your build produce any artifacts that you'd like to be able to access from your PR instantly? Try out our [static hosting tutorial](tutorials/static-hosting)!
 
+## Job runtime
+
+Want to track how your change affects the runtime of your GitHub Action jobs? Try out our [job runtime tutorial](tutorials/job-runtime).
+
 ## Templating
 
 Want to summarize any data from your builds? Try out our [templating tutorial](tutorials/templating)!
