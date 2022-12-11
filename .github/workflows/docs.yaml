@@ -16,6 +16,10 @@ on:
       - '.stoat/**'
       - '.github/workflows/docs.yaml'
 
+defaults:
+  run:
+    working-directory: docs
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,11 +40,11 @@ jobs:
             ${{ github.workspace }}/docs/node_modules
           key: ${{ runner.os }}-node-16-${{ hashFiles('docs/package-lock.json') }}
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Build
-        run: |
-          cd docs
-          npm install
-          npm run build
+        run: npm run build
 
       - name: Run Stoat Action
         uses: ./
