@@ -28530,11 +28530,28 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     form.append('key', objectKey);
     form.append('Content-Type', mime_types.lookup(localFilePath) || 'application/octet-stream');
     form.append('file', external_fs_default().readFileSync(localFilePath));
-    const response = yield node_ponyfill_default()(signedUrl, {
-        method: 'POST',
-        body: form
-    });
-    core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${response.status} - ${response.statusText}`);
+    let retry = 0;
+    const maxRetry = 6;
+    while (retry <= maxRetry) {
+        const { ok, status, statusText } = yield node_ponyfill_default()(signedUrl, {
+            method: 'POST',
+            body: form
+        });
+        const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
+        core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
+        if (ok) {
+            break;
+        }
+        else if (status === 503) {
+            const waitingMillis = Math.pow(2, retry) * 100;
+            core.warning(`-- Hit 503 error, waiting for ${waitingMillis}ms before retry (${retry})...`);
+            yield new Promise((r) => setTimeout(r, waitingMillis));
+        }
+        else {
+            throw new Error(statusText);
+        }
+        ++retry;
+    }
 });
 // Reference:
 // https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
