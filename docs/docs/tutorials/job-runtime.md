@@ -10,7 +10,7 @@ version: 1
 enabled: true
 tasks:
   # Add a task with any arbitrary name.
-  job-runtime:
+  build-time-history:
     # The task should have the job runtime plugin.
     job_runtime:
 ```
