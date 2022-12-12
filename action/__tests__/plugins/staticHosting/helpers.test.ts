@@ -16,8 +16,11 @@ describe('uploadFileWithSignedUrl', function () {
   });
 
   describe('when there is no error', function () {
-    it('uploads the file with one fetch call', async () => {
+    beforeEach(() => {
       mockFetch.mockResolvedValue({ ok: true } as Response);
+    });
+
+    it('uploads the file with one fetch call', async () => {
       await uploadFileWithSignedUrl('https://localhost', {}, 'object-key', 'package.json');
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
