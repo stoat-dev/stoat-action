@@ -37,7 +37,7 @@ jobs:
             ${{ github.workspace }}/cli/node_modules
           key: ${{ runner.os }}-node-16-cli-${{ hashFiles('cli/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
       - name: Install action dependencies
-        working-dir: action
+        working-directory: action
         run: |
           yarn install --frozen-lockfile
       - name: Install cli dependencies
