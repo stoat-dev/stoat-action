@@ -39,7 +39,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "form-data": "^4.0.0",
     "handlebars": "^4.7.7",
-    "mime-types": "^2.1.35"
+    "mime-types": "^2.1.35",
+    "p-retry": "^5.1.2"
   },
   "devDependencies": {
     "@octokit/openapi-types": "^14.0.0",
