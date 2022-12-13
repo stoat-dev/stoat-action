@@ -28666,6 +28666,7 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
+    let hasJobRuntime = false;
     for (const [taskId, taskConfig] of Object.entries(stoatConfig.tasks || {})) {
         if ('static_hosting' in taskConfig) {
             yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
@@ -28674,11 +28675,16 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else if ('job_runtime' in taskConfig) {
+            hasJobRuntime = true;
             yield jobRuntime_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
         else {
             core.warning(`Unknown plugin: ${taskId}`);
         }
+    }
+    if (!hasJobRuntime) {
+        const defaultJobRuntimeConfig = { job_runtime: {} };
+        yield jobRuntime_plugin('default-job-runtime', defaultJobRuntimeConfig, githubActionRun, stoatConfigFileId);
     }
 });
 
