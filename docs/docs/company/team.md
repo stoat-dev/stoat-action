@@ -15,7 +15,7 @@ As the first engineer, he helped to build and grow the open source project from 
 
 ### [Liren Tu](https://www.linkedin.com/in/tuliren/)
 
-Liren is a top-notch engineering manager, architect, and builder. 
+Liren is a software engineer.
 At LiveRamp, he developed and maintained multiple internal developer tools while leading application teams focused on data engineering at the petabyte scale. 
 He was also a founding engineer for the Scale NLP team, helping to take the product from nothing to product-market-fit. 
 Most recently at Airbyte, Liren wrote tools that reduced the time needed to create API integrations by hours.
