@@ -4,6 +4,8 @@ sidebar_position: 6
 
 # Why Stoat?
 
+## Stoat vs. existing GitHub actions
+
 A common question about Stoat is why using a new action while there are already many other actions that can do similar things. For example, a user can apply the [`create-or-update-comment` action](https://github.com/peter-evans/create-or-update-comment) to maintain a comment on a PR, and post whatever information there. The answer is simplicity. Let's go through a detailed example of the `create-or-update-comment` action. To guarantee that the information in the comment is always up-to-date, there are three requirements:
 
   - Create a new comment when the PR is opened.
@@ -58,9 +60,9 @@ Suppose there is a step, `output_information`, that generates the information th
       The information is no longer relevant.
 ```
 
-This example is modified from a real use case at [Airbyte](https://github.com/airbytehq/airbyte/blob/v0.40.25/.github/workflows/report-connectors-dependency.yml). You can see that this is overly complicated, not to mention that they only work for one GitHub job. Things will be even worse if there is a need to aggregate information from multiple jobs.
+This example is adapted from a real use case at [Airbyte](https://github.com/airbytehq/airbyte/blob/v0.40.25/.github/workflows/report-connectors-dependency.yml). You can see that this is overly complicated, not to mention that they only work for one GitHub job. Things will be even worse if information from multiple jobs needs to be aggregated.
 
-In contrast, here is the equivalent Stoat config, action, and template:
+In contrast, here are the equivalent Stoat config, action, and template files:
 
 ```yaml title=".stoat/config.yaml"
 ---
@@ -81,9 +83,17 @@ tasks:
   if: always()
 ```
 
-```yaml title=".stoat/template.yaml"
+```handlebars title=".stoat/template.hbs"
 # The template references the Stoat task defined in the config file.
 The information is: {{ tasks.post-comment.json.value.information }}
 ```
 
-So four GitHub action steps are replaced with the one Stoat action. Even better, the same Stoat config and template can be reused for all the Stoat tasks.
+So four GitHub action steps are replaced with the one Stoat action. Even better, the same Stoat config and template files can be reused for all the Stoat tasks.
+
+## Stoat Advantages
+
+We think there are three advantages of using Stoat over existing GitHub actions.
+
+- Simplicity. Stoat provides a straightforward way to access build outputs and present them for GitHub pull requests. There is no need to figure out obscure GitHub action syntax.
+- Data aggregation. Stoat can aggregate data from multiple GitHub jobs and present them in a unified view. Before Stoat, it requires sophisticated GitHub workflows and a custom backend, which only large companies with dedicated infra teams can afford.
+- Extensibility. The current Stoat templating system and the ever-growing Stoat plugins make it easy to customize the output. In the future, Stoat will integrate with more platforms in addition to GitHub.
