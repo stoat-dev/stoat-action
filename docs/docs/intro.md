@@ -38,22 +38,14 @@ data such as test runtimes or any other values that are computed as part of the 
 
 The GitHub Application listens for any changes for a PR and the Stoat servers to render a static comment on every
 PR. We call this a "static comment" because unlike some GitHub tools that create new comments on every change, Stoat creates 
-a single comment and updates it as changes come in. 
-If you've ever used a combination of calls to the [`create-or-update-comment` GitHub action](https://github.com/peter-evans/create-or-update-comment), Stoat
-is likely an easier-to-use replacement.
+a single comment and updates it as changes come in.
 
-## Static hosting
+Currently, Stoat supports these plugins:
 
-Does your build produce any artifacts that you'd like to be able to access from your PR instantly? Try out our [static hosting tutorial](tutorials/static-hosting)!
-
-## Job runtime
-
-Want to track how your change affects the runtime of your GitHub Action jobs? Try out our [job runtime tutorial](tutorials/job-runtime).
-
-## Templating
-
-Want to summarize any data from your builds? Try out our [templating tutorial](tutorials/templating)!
-
-## CLI
+| Plugin | Description | Doc |
+| --- | --- | --- |
+| Static hosting | Host any build artifacts for preview. | [link](tutorials/static-hosting) |
+| Job runtime | Track the runtime of each job in a workflow. | [link](tutorials/job-runtime) |
+| Template | Render a custom template using data from the build. | [link](tutorials/templating) |
 
 We also provide a [cli tool](tutorials/cli) to get started quickly on existing repos!
