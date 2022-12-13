@@ -9,6 +9,13 @@ In the future, we will add more guidance on the timeline for these items.
 We'd love your input on what we should be working on! If you have a feature request, bugs you've encountered, 
 rough edges, or anything that makes Stoat difficult to use, please send us feedback at [contact@stoat.dev](mailto:contact@stoat.dev).
 
+:::tip
+
+Please [sign up for our mailing list](https://forms.gle/5EAfBMP1APQLLe2B7) or [follow our Twitter](https://twitter.com/stoat_dev) if you would like to be notified when we
+make progress!
+
+:::
+
 ## Private Repo Support
 
 Currently, Stoat is only supported for public repos. 
