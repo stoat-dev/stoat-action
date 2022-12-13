@@ -1,22 +1,25 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Setting Up Stoat
 
-## 1. Choose a GitHub Repo
-
-Start out by either choosing an existing repo that you want to use or create a repo specifically for trying out Stoat.
-For Stoat to be useful, the repo used should have at least one GitHub workflow used as part of a CI build.
-
 :::caution
 
 We currently only recommend using Stoat for **public repos**. Authentication is [on our roadmap](roadmap), but until it's released,
-know that any files or any other pieces of data you send to Stoat for templating are publicly accessible! 
+know that any files or any other pieces of data you send to Stoat for templating are publicly accessible!
 
 :::
 
+## 1. Install Stoat Application
+
+Go to [the Stoat GitHub app page](https://github.com/apps/stoat-app/) and install the application for your repository. If you have any question about the permissions
+or run into any problems with installing, please [let us know](company/contact-us).
+
 ## 2. Add Stoat Configuration to Repo
+
+Start out by either choosing an existing repo that you want to use or create a repo specifically for trying out Stoat.
+For Stoat to be useful, the repo used should have at least one GitHub workflow used as part of a CI build.
 
 Stoat uses file-based configuration that you check into your repo. This config file is located from the root of the repository at `.stoat/config.yaml`.
 
@@ -42,14 +45,16 @@ version: 1
 enabled: true
 ```
 
-## 3. Install Stoat Application
+:::tip
 
-Go to [the Stoat GitHub app page](https://github.com/apps/stoat-app/) and install the application for your repository. If you have any question about the permissions
-or run into any problems with installing, please [let us know](mailto:contact@stoat.dev).
+The [cli](tutorials/cli) can help create the config file and add actions to your GitHub workflows.
 
-## Start using Stoat!
+:::
 
-To get value out of Stoat, you'll need to start pushing data to Stoat. Check out these tutorials to see examples:
+## 3. Start using Stoat!
+
+To start pushing data to Stoat, you will need to configure tasks in the `.stoat/config.yaml` file and add the Stoat GitHub action to your GitHub workflows. 
+Check out these tutorials to see examples:
 
 - [Static hosting](tutorials/static-hosting)
 - [Job runtime](tutorials/job-runtime)
