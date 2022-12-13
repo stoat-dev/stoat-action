@@ -1,4 +1,4 @@
-# Website
+# Documentation
 
 https://docs.stoat.dev
 
