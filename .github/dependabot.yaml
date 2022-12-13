@@ -1,6 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
     directory: action
     schedule:
       interval: weekly
@@ -18,3 +23,8 @@ updates:
     directory: docs
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "@mdx-js/react"
+        # currently only v1 is supported
+        # https://docusaurus.io/docs/markdown-features/react
+        versions: [ "2.x" ]

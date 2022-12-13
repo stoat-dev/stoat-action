@@ -37,15 +37,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.npm
             ${{ github.workspace }}/docs/node_modules
-          key: ${{ runner.os }}-node-16-${{ hashFiles('docs/package-lock.json') }}
+          key: ${{ runner.os }}-node-16-${{ hashFiles('docs/yarn.lock') }}
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Build
-        run: npm run build
+        run: yarn build
 
       - name: Run Stoat Action
         uses: ./
