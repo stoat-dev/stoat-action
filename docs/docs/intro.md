@@ -17,17 +17,6 @@ With just a couple minutes of configuration, you can automatically add PR commen
 
 ![Stoat Screenshot](../static/img/example-screenshot.png)
 
-## Quick Start
-
-Check out some [examples](category/quick-start) to quickly set up Stoat for these popular applications:
-
-<ul>
-  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/docusaurus">Docusaurus</a></li>
-  <li><JaCoCo width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/jacoco">Jacoco Test Coverage</a></li>
-  <li><Jest width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/jest">Jest Test Coverage</a></li>
-  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="quick-start/storybook">Storybook</a></li>
-</ul>
-
 ## How it works
 
 Stoat consists of a [GitHub Application](https://github.com/apps/stoat-app) and a [GitHub Action](https://github.com/stoat-dev/stoat-action).

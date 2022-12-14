@@ -8,7 +8,7 @@ Builds often produce certain static assets such as:
 
 ## Set Up Stoat
 
-First of all, make sure you've [set up Stoat](../installation) for your repo.
+First of all, make sure you've [set up Stoat](../../installation) for your repo.
 
 ## Configure uploading static assets
 
