@@ -39,7 +39,8 @@ improvements for our core set of plugins. You can view a description of the [cur
 4. `tasks` (optional) - This is a mapping of a unique task identifier to a task (the configuration for a plugin). More information about how to configure tasks is available in our tutorials.
 
 For now, create a config file at `.stoat/config.yaml` with the following contents:
-```yaml
+
+```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true

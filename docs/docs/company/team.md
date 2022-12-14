@@ -9,16 +9,16 @@ sidebar_position: 2
 ### [Jared Rhizor](https://www.linkedin.com/in/jrhizor/)
 
 Jared is a seasoned tech professional with a track record of success. 
-As a data engineer at LiveRamp, he led the team responsible for maintaining one of the industry's largest device graphs. 
-He was also a key player in the early days of Airbyte.
+As a data engineer at [LiveRamp](https://liveramp.com), he led the team responsible for maintaining one of the industry's largest device graphs. 
+He was also a key player in the early days of [Airbyte](https://airbyte.com).
 As the first engineer, he helped to build and grow the open source project from pre-idea to a massively deployed system processing hundreds of terabytes of data for thousands of users.
 
 ### [Liren Tu](https://www.linkedin.com/in/tuliren/)
 
-Liren is a top-notch engineering manager, architect, and builder. 
-At LiveRamp, he developed and maintained multiple internal developer tools while leading application teams focused on data engineering at the petabyte scale. 
-He was also a founding engineer for the Scale NLP team, helping to take the product from nothing to product-market-fit. 
-Most recently at Airbyte, Liren wrote tools that reduced the time needed to create API integrations by hours.
+Liren is a software engineer who loves to learn, build, and automate.
+At [LiveRamp](https://liveramp.com), he developed and maintained multiple internal developer tools while leading application teams focused on data engineering at the petabyte scale. 
+At [Scale AI](https://scale.com), he was a founding engineer for the Scale NLP team, working relentlessly on taking the product from zero to product-market-fit.
+Most recently at [Airbyte](https://airbyte.com), Liren authored and optimized some of the most commonly used data connectors across databases, date warehouses, and blob storages.
 
 # Interested in working with us?
 
