@@ -76,7 +76,7 @@ jobs:
 
 ### 3. Add the path to the Stoat config file
 
-From the [installation guide](../installation), you should have a file with the following contents at `.stoat/config.yaml`:
+From the [installation guide](../../installation), you should have a file with the following contents at `.stoat/config.yaml`:
 ```yaml title=".stoat/config.yaml"
 ---
 version: 1
@@ -125,7 +125,7 @@ npm i -g stoat
 stoat local
 ```
 
-See our [CLI guide](cli) for more information.
+See our [CLI guide](../cli) for more information.
 
 :::
 
@@ -135,4 +135,4 @@ Using the above steps, you can easily upload any build artifacts for your pull r
 
 ## Customize templating
 
-If you'd like to customize what the Stoat PR comment looks like, check out our [templating tutorial](templating.md).
+If you'd like to customize what the Stoat PR comment looks like, check out our [templating tutorial](../templating.md).
