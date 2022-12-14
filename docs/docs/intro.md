@@ -40,9 +40,11 @@ The GitHub Application listens for any changes for a PR and the Stoat servers to
 PR. We call this a "static comment" because unlike some GitHub tools that create new comments on every change, Stoat creates 
 a single comment and updates it as changes come in.
 
-See detailed tutorials for various Stoat features:
+Here are the current Stoat features and in-depth tutorials.
 
-- [Static hosting](tutorials/static-hosting): Host any build artifacts for preview.
-- [Job runtime](tutorials/job-runtime): Track the runtime of all GitHub workflow runs for a pull request.
-- [Commandline](tutorials/cli): Get started quickly on existing repos and run Stoat in local mode.
-- [Templating](tutorials/templating): Use any data from the build and render your custom pull request dashboard.
+| Feature | Tutorial | Description |
+| :--- | :--- | :--- |
+| Static hosting | [Link](tutorials/static-hosting) | Host any build artifacts for preview. |
+| Job runtime tracking | [Link](tutorials/job-runtime) | Track the runtime of all GitHub workflow runs for a pull request. |
+| Commandline | [Link](tutorials/cli) | Get started quickly on existing repos and run Stoat in local mode. |
+| Templating | [Link](tutorials/templating) | Use any data from the build and render your custom pull request dashboard. |
