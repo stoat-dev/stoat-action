@@ -37,7 +37,7 @@ We will introduce the ability to read events from specified branches and use tho
 
 When comparing events between branches (or even within the same branch), users often want to construct charts and render them in the Stoat static comment so 
 the data can easily be understood at a glance. While this is possible today by generating a chart in a GitHub action, uploading it, and then linking to it via the 
-comment config, we'd prefer to make this native functionality.
+comment config, we'd prefer to make this functionality native.
 
 ## Workflow Dispatch Validation
 
@@ -51,9 +51,9 @@ This is in the early stages, and we'd appreciate [feedback](mailto:contact@stoat
 
 ## Stoat Dashboard
 
-As Stoats starts to gather events and metrics from across your repo, there are cross-branch or `main`-branch summaries that 
+As Stoat starts to gather events and metrics from across your repo, there are cross-branch or `main`-branch summaries that 
 users would like to see on the Stoat website instead of just on Stoat static comments.
-If you have any dashboard views that you'd like to generate for your repo [please let us know](mailto:contact@stoat.dev).
+If you have any dashboard views that you'd like to generate for your repo, [please let us know](mailto:contact@stoat.dev).
 
 ## Programmatic Comment Rendering
 
