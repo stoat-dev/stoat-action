@@ -1,3 +1,8 @@
+import Docusaurus from '../../../static/img/examples/docusaurus-logo.svg'
+import JaCoCo from '../../../static/img/examples/jacoco-logo.svg'
+import Jest from '../../../static/img/examples/jest-logo.svg'
+import StorybookLogo from '../../../static/img/examples/storybook-logo.svg'
+
 # Static Hosting
 
 Builds often produce certain static assets such as:
@@ -5,6 +10,15 @@ Builds often produce certain static assets such as:
 2. [Storybook.js component previews](https://storybook.js.org/docs/react/sharing/publish-storybook)
 3. [Docusaurus](https://docusaurus.io/docs/next/installation#build) or other static page outputs.
 4. Custom HTML that you generate as part of your build.
+
+To quickly setup Stoat for these popular applications, check the documentations below:
+
+<ul>
+  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="docusaurus">Docusaurus</a></li>
+  <li><JaCoCo width={16} height={16} />&nbsp;&nbsp;<a href="jacoco">Jacoco Test Coverage</a></li>
+  <li><Jest width={16} height={16} />&nbsp;&nbsp;<a href="jest">Jest Test Coverage</a></li>
+  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="storybook">Storybook</a></li>
+</ul>
 
 ## Set Up Stoat
 

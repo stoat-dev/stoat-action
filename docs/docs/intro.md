@@ -2,11 +2,6 @@
 sidebar_position: 1
 ---
 
-import Docusaurus from '../static/img/examples/docusaurus-logo.svg'
-import JaCoCo from '../static/img/examples/jacoco-logo.svg'
-import Jest from '../static/img/examples/jest-logo.svg'
-import StorybookLogo from '../static/img/examples/storybook-logo.svg'
-
 # What is Stoat?
 
 Stoat helps users aggregate data from GitHub builds into a single
