@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as bluebird from 'bluebird';
-import fetch, { Response } from 'cross-fetch';
+import fetch from 'cross-fetch';
 import FormData from 'form-data';
 import fs from 'fs';
 // eslint-disable-next-line import/no-unresolved
@@ -54,7 +54,7 @@ export const uploadFileWithSignedUrl = async (
   const maxRetry = 6;
   while (retry <= maxRetry) {
     try {
-      const {ok, status, statusText} = await fetch(signedUrl, {
+      const { ok, status, statusText } = await fetch(signedUrl, {
         method: 'POST',
         body: form as any
       });
