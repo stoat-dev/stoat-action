@@ -55,8 +55,4 @@ The [cli](tutorials/cli) can help create the config file and add actions to your
 ## 3. Start using Stoat!
 
 To start pushing data to Stoat, you will need to configure tasks in the `.stoat/config.yaml` file and add the Stoat GitHub action to your GitHub workflows. 
-Check out these tutorials to see examples:
-
-- [Static hosting](tutorials/static-hosting)
-- [Job runtime](tutorials/job-runtime)
-- [Templating](tutorials/templating)
+Check out the [Tutorials](category/tutorials) page for more examples.

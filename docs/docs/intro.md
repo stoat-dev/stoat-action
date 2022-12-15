@@ -2,11 +2,6 @@
 sidebar_position: 1
 ---
 
-import Docusaurus from '../static/img/examples/docusaurus-logo.svg'
-import JaCoCo from '../static/img/examples/jacoco-logo.svg'
-import Jest from '../static/img/examples/jest-logo.svg'
-import StorybookLogo from '../static/img/examples/storybook-logo.svg'
-
 # What is Stoat?
 
 Stoat helps users aggregate data from GitHub builds into a single
@@ -16,17 +11,6 @@ static comment as a customizable build dashboard for your pull requests.
 With just a couple minutes of configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
 
 ![Stoat Screenshot](../static/img/example-screenshot.png)
-
-## Quick Start
-
-Check out some [examples](category/quick-start) to quickly set up Stoat for these popular applications:
-
-<ul>
-  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/docusaurus">Docusaurus</a></li>
-  <li><JaCoCo width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/jacoco">Jacoco Test Coverage</a></li>
-  <li><Jest width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/jest">Jest Test Coverage</a></li>
-  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="quick-start/storybook">Storybook</a></li>
-</ul>
 
 ## How it works
 

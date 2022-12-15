@@ -1,3 +1,8 @@
+import Docusaurus from '../../../static/img/examples/docusaurus-logo.svg'
+import JaCoCo from '../../../static/img/examples/jacoco-logo.svg'
+import Jest from '../../../static/img/examples/jest-logo.svg'
+import StorybookLogo from '../../../static/img/examples/storybook-logo.svg'
+
 # Static Hosting
 
 Builds often produce certain static assets such as:
@@ -6,9 +11,18 @@ Builds often produce certain static assets such as:
 3. [Docusaurus](https://docusaurus.io/docs/next/installation#build) or other static page outputs.
 4. Custom HTML that you generate as part of your build.
 
+To quickly set up Stoat for these popular applications, check the documentations below:
+
+<ul>
+  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="docusaurus">Docusaurus</a></li>
+  <li><JaCoCo width={16} height={16} />&nbsp;&nbsp;<a href="jacoco">Jacoco Test Coverage</a></li>
+  <li><Jest width={16} height={16} />&nbsp;&nbsp;<a href="jest">Jest Test Coverage</a></li>
+  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="storybook">Storybook</a></li>
+</ul>
+
 ## Set Up Stoat
 
-First of all, make sure you've [set up Stoat](../installation) for your repo.
+First of all, make sure you've [set up Stoat](../../installation) for your repo.
 
 ## Configure uploading static assets
 
@@ -76,7 +90,7 @@ jobs:
 
 ### 3. Add the path to the Stoat config file
 
-From the [installation guide](../installation), you should have a file with the following contents at `.stoat/config.yaml`:
+From the [installation guide](../../installation), you should have a file with the following contents at `.stoat/config.yaml`:
 ```yaml title=".stoat/config.yaml"
 ---
 version: 1
@@ -125,7 +139,7 @@ npm i -g stoat
 stoat local
 ```
 
-See our [CLI guide](cli) for more information.
+See our [CLI guide](../cli) for more information.
 
 :::
 
@@ -135,4 +149,4 @@ Using the above steps, you can easily upload any build artifacts for your pull r
 
 ## Customize templating
 
-If you'd like to customize what the Stoat PR comment looks like, check out our [templating tutorial](templating.md).
+If you'd like to customize what the Stoat PR comment looks like, check out our [templating tutorial](../templating.md).
