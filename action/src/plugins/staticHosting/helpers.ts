@@ -49,24 +49,29 @@ export const uploadFileWithSignedUrl = async (
   form.append('Content-Type', mime.lookup(localFilePath) || 'application/octet-stream');
   form.append('file', fs.readFileSync(localFilePath));
 
+  // TODO: replace the following code with a retry library
   let retry = 0;
   const maxRetry = 6;
   while (retry <= maxRetry) {
-    const { ok, status, statusText } = await fetch(signedUrl, {
-      method: 'POST',
-      body: form as any
-    });
-    const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
-    core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
+    try {
+      const { ok, status, statusText } = await fetch(signedUrl, {
+        method: 'POST',
+        body: form as any
+      });
+      const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
+      core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
 
-    if (ok) {
-      break;
-    } else if (status === 503) {
-      const waitingMillis = 2 ** retry * 100;
-      core.warning(`-- Hit 503 error, waiting for ${waitingMillis}ms before retry (${retry})...`);
-      await new Promise((r) => setTimeout(r, waitingMillis));
-    } else {
-      throw new Error(statusText);
+      if (ok) {
+        break;
+      } else if (status === 503) {
+        const waitingMillis = 2 ** retry * 100;
+        core.warning(`-- Hit 503 error, waiting for ${waitingMillis}ms before retry (${retry})...`);
+        await new Promise((r) => setTimeout(r, waitingMillis));
+      } else {
+        core.error(`-- Failed to upload ${localFilePath}: ${status} - ${statusText}`);
+      }
+    } catch (e) {
+      core.error(`-- Failed to upload ${localFilePath}: ${e}`);
     }
     ++retry;
   }

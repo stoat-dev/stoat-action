@@ -47,4 +47,23 @@ describe('uploadFileWithSignedUrl', function () {
       });
     });
   });
+
+  describe('when there is network error', () => {
+    beforeEach(() => {
+      mockFetch
+        .mockRejectedValueOnce('Network error')
+        .mockResolvedValue({ ok: true, status: 204, statusText: 'No content' } as Response);
+    });
+
+    it('retries', async () => {
+      await uploadFileWithSignedUrl('https://localhost', {}, 'object-key', 'package.json');
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+
+      const warnings = mockCore.error.mock.calls;
+      expect(warnings.length).toEqual(1);
+      warnings.forEach((warning) => {
+        expect(warning[0]).toContain('Network error');
+      });
+    });
+  });
 });
