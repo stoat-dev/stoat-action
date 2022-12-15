@@ -16,8 +16,11 @@ First of all, make sure you've [set up Stoat](../installation) for your repo.
 
 The location of your static assets depends on your repository structure and build configuration. Most build plugins that
 produce static outputs have configurable destinations and default destinations.
-In our [examples repo](https://github.com/stoat-dev/examples/) the [Stoat config file](https://github.com/stoat-dev/examples/blob/main/.stoat/config.yaml) 
-contains example output locations for Gradle JaCoCo html reports (`<gradle-folder>/list/build/reports/html/jacoco`) and Storybook.js output (`<storybook-folder>/storybook-static`).
+In our [examples repo](https://github.com/stoat-dev/examples/), the [Stoat config file](https://github.com/stoat-dev/examples/blob/main/.stoat/config.yaml) 
+contains example output locations:
+
+- Gradle JaCoCo HTML reports: `<gradle-folder>/list/build/reports/html/jacoco`
+- Storybook.js output: `<storybook-folder>/storybook-static`
 
 For the purpose of this tutorial, let's host a file checked into the repo instead of something produced by the build itself. 
 Create a file in your repo at the path `hello_world/index.html`:
@@ -37,7 +40,7 @@ Create a file in your repo at the path `hello_world/index.html`:
 
 ### 2. Add the Stoat action to your CI workflow after the step that generates your static assets
 
-To allow uploading files to Stoat, you'll need to add the Stoat action after any step in your GitHub workflows that contains files you want to upload.
+To allow uploading files to Stoat, you'll need to add the Stoat action after any step in your GitHub workflows that contain files you want to upload.
 
 The Stoat action step looks like:
 ```yaml
@@ -46,7 +49,7 @@ The Stoat action step looks like:
   if: always()
 ```
 
-Note that you usually want to run the Stoat actin even if prior build steps fail. Let's say you want to upload test reports, those build outputs would be most useful when the GitHub step for testing fails.
+Note that you usually want to run the Stoat action even if prior build steps fail. For example, if you want to upload test reports, those build outputs would be most useful when the GitHub step for testing fails.
 
 To view an example for actual build output, check out our [examples repo](https://github.com/stoat-dev/examples/blob/a0fcc04/.github/workflows/backend.yaml#L33-L35).
 
@@ -91,12 +94,12 @@ tasks:
       path: hello_world
 ```
 
-This tells Stoat that when the Stoat action runs, if the path `hello_world` has contents, those contents should be uploaded to the
+This tells Stoat to check the `hello_world` path for contents when the Stoat action runs, and then upload those contents to the 
 Stoat servers. Here, the key `hello-world` is the id of the task, and the value is the configuration for the `static_hosting` plugin for that task.
 
 ### 4. Create a PR and access the file from the Stoat comment!
 
-If you create a branch, commit the files we've created, push the branch, and create a PR, you'll soon see a link in a PR comment to your "Hello World" directory!
+If you create a branch, commit the files we've created, push the branch, and create a PR. You'll soon see a link in a PR comment to your "Hello World" directory!
 
 You can repeat this with multiple directories. You can also customize how the name of the directory is shown in the PR in `.stoat/config.yaml`:
 ```yaml title=".stoat/config.yaml"
@@ -117,18 +120,18 @@ After committing, pushing, and waiting for the build, the name will now show up 
 
 You can preview the static hosting comment locally by installing our CLI and launching local mode (requires Node/NPM):
 ```
-# make sure npm installed
+# make sure to have npm installed
 npm i -g stoat
 stoat local
 ```
 
-See our [cli guide](cli) for more information.
+See our [CLI guide](cli) for more information.
 
 :::
 
 ### That's it!
 
-Using the above steps, you can easily upload any build artifacts for your PRs!
+Using the above steps, you can easily upload any build artifacts for your pull requests!
 
 ## Customize templating
 

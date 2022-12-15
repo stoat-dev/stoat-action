@@ -1,7 +1,7 @@
 # Templating
 
 When rendering PR comments, Stoat uses a [Handlebars](https://handlebarsjs.com/) template.
-Which template file to use is specified by the optional `comment_template_file` key/value in `.stoat/config.yaml`.
+Which template file to use is specified by the optional `comment_template_file` key-value pair in `.stoat/config.yaml`.
 If this file is absent, a default template is used. 
 
 The current default template is set as:
@@ -9,7 +9,7 @@ The current default template is set as:
 {{{ views.plugins.static_hosting.github.table }}}
 ```
 
-The value of `views.plugins.static_hosting.github.table` is the GitHub markdown for the rendered version of the following template:
+The value of `views.plugins.static_hosting.github.table` is the GitHub Markdown for the rendered version of the following template:
 ```hbs
 | Name | Link | Commit | Status |
 | :--- | :--- | :--: | :-----: |
@@ -24,7 +24,7 @@ The current default template is also available via our API: [https://www.stoat.d
 
 ## Modifying the comment template
 
-For this tutorial, let's first add a line of text that says "Hello World" at the output of the Stoat PR comment.
+For this tutorial, let's first add a line of text that says "Hello World" at the top of a Stoat PR comment.
 
 Create `.stoat/template.hbs` with the following contents:
 ```hbs title=".stoat/template.hbs"
@@ -35,7 +35,7 @@ Hello World!
 
 All but the first two lines should be pulled from the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1).
 
-The Stoat config file must be pointed to this new template file. Here's an example of `.stoat/config.yaml`:
+The Stoat config file must now point to this new template file. Here's an example of `.stoat/config.yaml`:
 ```yaml title=".stoat/config.yaml"
 ---
 version: 1
@@ -50,7 +50,7 @@ Now, if you create a PR with these two new changes, the comment will include `He
 ## What data is available?
 
 The input used to render the template is provided by Stoat itself or the plugins that have been configured to push data. 
-The JSON schema of the data available for templating is [available on our GitHub repo](https://github.com/stoat-dev/stoat-action/blob/main/src/schemas/stoatConfigSchemaRendered.json).
+The JSON schema of the data available for templating is [available on our GitHub repo here](https://github.com/stoat-dev/stoat-action/blob/main/src/schemas/stoatConfigSchemaRendered.json).
 
 In the prior example, you can see that this output is read by iterating through plugins, checking if they use static hosting, and then outputting lines in a table based on the response.
 
@@ -93,4 +93,4 @@ we check to see if the value exists yet.
 
 If you commit these changes (with a build process that creates `time.json`), you will now see just the build time in the Stoat PR!
 
-To see a working example of this for a Gradle build see this PR with [an example of recording build times and adding them to the Stoat PR comment](https://github.com/stoat-dev/examples/pull/2/files).
+To see a working example of this for a Gradle build, see [this PR](https://github.com/stoat-dev/examples/pull/2/files) with an example of recording build times and adding them to the Stoat PR comment.

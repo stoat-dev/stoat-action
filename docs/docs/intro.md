@@ -9,17 +9,17 @@ import StorybookLogo from '../static/img/examples/storybook-logo.svg'
 
 # What is Stoat?
 
-Stoat is a tool that helps users aggregate data from GitHub builds into a single
-GitHub PR comment that is updated as new data becomes available. You can think of this
-static comment as a customizable dashboard for your PR build.
+Stoat helps users aggregate data from GitHub builds into a single
+GitHub pull request comment that is updated as new data becomes available. You can think of this
+static comment as a customizable build dashboard for your pull requests.
 
-With just a couple of minutes configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
+With just a couple minutes of configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
 
 ![Stoat Screenshot](../static/img/example-screenshot.png)
 
 ## Quick Start
 
-Check out some [examples](category/quick-start) to quickly setup Stoat for these popular applications:
+Check out some [examples](category/quick-start) to quickly set up Stoat for these popular applications:
 
 <ul>
   <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="quick-start/docusaurus">Docusaurus</a></li>
@@ -33,10 +33,10 @@ Check out some [examples](category/quick-start) to quickly setup Stoat for these
 Stoat consists of a [GitHub Application](https://github.com/apps/stoat-app) and a [GitHub Action](https://github.com/stoat-dev/stoat-action).
 
 The GitHub Action pushes data for a specific build to the Stoat servers. This data might be files produced as side effects of a build, such as
-code coverage reports, frontend component previews, or documentation pages. This data might also be any JSON blob, that may represent
-data such as test runtimes or any other values that are computed as part of the build.
+code coverage reports, frontend component previews, or documentation pages. This data might also be any JSON blob that represents 
+test runtime data or any other values that are computed as part of the build.
 
-The GitHub Application listens for any changes for a PR and the Stoat servers to render a static comment on every
+The GitHub Application listens for any changes on a pull request, which the Stoat servers pass along to render a static comment on every
 PR. We call this a "static comment" because unlike some GitHub tools that create new comments on every change, Stoat creates 
 a single comment and updates it as changes come in.
 

@@ -1,6 +1,6 @@
 # Job Runtime
 
-The job runtime plugin automatically collect runtime for every GitHub action, and present them in the pinned comment in pull requests.
+The job runtime plugin automatically collects runtime for every GitHub action and presents them in the static comment on pull requests.
 
 To enable this plugin, add a new task with the `job_runtime` plugin in your `.stoat/config.yaml` file:
 
@@ -37,7 +37,7 @@ jobs:
         if: always()
 ```
 
-That's it. Next time when you create a pull request, you should see a line plot of action runtimes in the pinned comment. For example:
+That's it. Next time you create a pull request, you should see a line plot of action runtimes in the pinned comment. For example:
 
 <img width="523" alt="job runtime chart" src="https://user-images.githubusercontent.com/1933157/206887357-257a39a5-27b5-4542-bf69-26c71f06522d.png" />
 
