@@ -11,7 +11,7 @@ Builds often produce certain static assets such as:
 3. [Docusaurus](https://docusaurus.io/docs/next/installation#build) or other static page outputs.
 4. Custom HTML that you generate as part of your build.
 
-To quickly setup Stoat for these popular applications, check the documentations below:
+To quickly set up Stoat for these popular applications, check the documentations below:
 
 <ul>
   <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="docusaurus">Docusaurus</a></li>
