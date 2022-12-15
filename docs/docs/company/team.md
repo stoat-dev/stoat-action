@@ -8,8 +8,7 @@ sidebar_position: 2
 
 ### [Jared Rhizor](https://www.linkedin.com/in/jrhizor/)
 
-Jared is a seasoned tech professional with a track record of success. 
-As a data engineer at [LiveRamp](https://liveramp.com), he led the team responsible for maintaining one of the industry's largest device graphs. 
+As a data engineer at [LiveRamp](https://liveramp.com), Jared led the team responsible for maintaining one of the industry's largest device graphs. 
 He was also a key player in the early days of [Airbyte](https://airbyte.com).
 As the first engineer, he helped to build and grow the open source project from pre-idea to a massively deployed system processing hundreds of terabytes of data for thousands of users.
 
