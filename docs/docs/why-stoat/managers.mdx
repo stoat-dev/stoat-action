@@ -1,17 +1,16 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
-# For DevOps Engineers
+# For Engineering Managers
 
-Are you:
-* Creating build tooling that needs to show results to users in GitHub comments?
-* Helping your users manage and run many integration tests?
-* Experiencing noisy comment spam in pull requests for all of your tools?
-* Running into problems where orchestrating many GitHub actions results in fragile build systems?
-* Trying to prevent build times from drifting longer and longer over time?
+Do you have:
+* Metrics you want your dev to keep in mind while making changes?
+* Devs introducing changes that increase build times unintentionally?
+* Noisy comment spam in pull requests from your tooling?
+* Devs experiencing slow build tooling interrupting their flow?
 
-If the answer to any of these questions is true, Stoat might be able to help you.
+If the answer to any of these questions is true, Stoat might be able to help you and your team.
 
 Stoat makes it trivial to aggregate and access any build-related output in a single Stoat GitHub comment that is updated by the Stoat GitHub application.
 This means you can use a single comment to collect output from multiple tools.
@@ -20,6 +19,8 @@ All you have to do is push files or other data to Stoat and Stoat maintains the 
 This comment uses Handlebars templates and is fully customizable.
 
 Stoat also tracks metrics around build runtime (and in the future will allow tracking custom metrics).
+These metrics could include any build-computable KPI, such as benchmarks or any stats that show the value to the business of a code change.
+Stoat wants to make these metrics visible to devs when they make changes, not after the fact in a separate dashboard.
 
 Here's a screenshot from an [example pull request](https://github.com/stoat-dev/example-java/pull/1) that shows Stoat updating a build comment with build outputs:
 <img src={require('../../static/img/screenshot-java.png').default} alt="java comment screenshot" width={600} />
@@ -29,5 +30,5 @@ Here's a screenshot from an [example pull request](https://github.com/stoat-dev/
 In the near future, Stoat is also going to add support for running and managing integration tests.
 If you're interested in becoming a design partner for this feature, we'd [love to talk to you](../company/contact-us).
 
-We'd also [love to hear from you](../company/contact-us) about any challenges you see building out internal developer tools.
+We'd also [love to hear from you](../company/contact-us) about any challenges you see your team facing in terms of metric visibility, build system rough edges, and building internal tooling.
 Stoat intends to become the platform for building developer tooling, so any feedback and ideas you have to share are very welcome!
