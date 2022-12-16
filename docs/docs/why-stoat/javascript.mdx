@@ -1,0 +1,194 @@
+---
+sidebar_position: 2
+---
+
+# For JavaScript Engineers
+
+A typical build for a JavaScript / TypeScript project produces a number of useful reports:
+- Test reports ([Jest](https://jestjs.io/), [Mocha](https://mochajs.org/), etc.)
+- Test coverage reports
+- Integration test artifacts ([Cypress](https://www.cypress.io/) screenshots/videos, etc.)
+- Component previews ([Storybook](https://storybook.js.org/), [Ladle](https://ladle.dev/), etc.)
+- Documentation
+
+Though useful for debugging and development, these outputs are usually disabled in continuous integration (CI) pipelines because the outputs are not accessible.
+It is almost impossible to look at those outputs from a CI pipeline running remotely.
+It's even difficult for developers to access these outputs for local builds.
+Who knows that the human-readable version of the Jest coverage report is under `coverage/lcov-report` by default?
+Stoat is the easiest way to make all of this information trivial to access for both local and remote builds.
+
+For remote builds, Stoat hosts these outputs and makes them accessible with a single click in a GitHub comment:
+<img src={require('../../static/img/screenshot-javascript.png').default} alt="javascript comment screenshot" width={600} />
+
+<br /><br />
+
+The comment can also track build times and other metrics. Additionally, the comment is fully customizable, so
+you can choose what to display and how it should appear in the comment.
+Visit our [templating documentation](../concepts/templating) for more information about customization.
+
+## Example Repo
+
+See a real build that generates and links to JavaScript build outputs in [this pull request](https://github.com/stoat-dev/example-javascript/pull/1).
+
+## Relevant Tutorials
+
+To get started with Stoat as a JavaScript / TypeScript engineer, we have an [end-to-end tutorial below](#javascript-user-tutorial).
+
+We also have tutorials for specific use-cases:
+* [View reports (tests, coverage, etc) in pull requests](../tutorials/view-reports)
+* [Preview UI components in pull requests](../tutorials/preview-components)
+* [View build time graph in every pull request](../tutorials/build-runtimes)
+* [Preview generated images in pull requests](../tutorials/preview-images)
+* [Preview generated videos in pull requests](../tutorials/preview-videos)
+* [Preview documentation in pull requests](../tutorials/preview-docs)
+
+## JavaScript User Tutorial
+
+In this doc, we are going to show you how to create previews for typical JavaScript build outputs.
+We are going to use this repo as an example: [penx/storybook-code-coverage](https://github.com/penx/storybook-code-coverage), authored by [Alasdair McLeay](https://github.com/penx).
+The author wrote a detailed article about the set-up of this repo: [Combining Storybook, Cypress and Jest Code Coverage](https://dev.to/penx/combining-storybook-cypress-and-jest-code-coverage-4pa5).
+This repo uses Jest for unit tests, Cypress for integration tests, and Storybook for visual previews.
+Each module generates their own test coverage reports, which can be merged together into one report.
+The original repo doesn't have a GitHub workflow to build the entire project, but we will add one as part of this portfolio.
+
+We have two goals here:
+1. Write a GitHub workflow to run the CI pipeline.
+2. Use Stoat to provide previews for the latest test coverage reports, static Storybook pages, and Cypress videos on every pull request.
+
+### 1. Add GitHub workflow
+
+Create a YAML file at `.github/workflows/ci.yaml` with the following content:
+
+```yaml title=".github/workflows/ci.yaml"
+name: Continuous Integration
+
+on:
+  # Trigger the ci pipeline for every comment on the default branch or a pull request.
+  # The default branch for the sample repo is `master`.
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up node and cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.8.0'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --prefer-offline
+
+      # This project has a `coverage` script that runs all the
+      #  tests and merge all their coverage reports.
+      - name: Run tests and generate report
+        run: yarn coverage
+
+      - name: Generate storybook
+        run: yarn build-storybook
+```
+
+When you set it up for your own projects, most of the YAML file can be exactly the same. The only differences are:
+- Replace `master` with the name of your default branch.
+- Replace `16.8.0` with the version of Node.js you are using.
+- Run the test script that is set in `package.json`. Typically, it is `jest --coverage` for unit test.
+
+Note that the Stoat action is appended at the end of the `ci` job.
+This one step can carry out various tasks according to the Stoat config.
+
+### 2. Install Stoat
+
+Set up Stoat with our [getting started guide](../installation).
+During the CLI setup process, an action should have been appended to your GitHub workflow:
+```yaml title=".github/workflows/ci.yaml"
+...
+- name: Generate storybook
+ run: yarn build-storybook
+
+- name: Run stoat action
+ uses: stoat-dev/stoat-action@v0
+ if: always()
+```
+
+### 3. Configure Stoat
+
+Update `.stoat/config.yaml` and paste in the following content:
+
+```yaml title=".stoat/config.yaml"
+---
+version: 1
+enabled: true
+tasks:
+  merged-test-coverage:
+    static_hosting:
+      path: coverage/merged/lcov-report
+  storybook:
+    static_hosting:
+      path: storybook-static
+  cypress-video:
+    static_hosting:
+      path: cypress/videos/spec.js.mp4
+  build-time:
+    job_runtime:
+```
+
+The Stoat config is a YAML file that contains a list of tasks. Each task contains one Stoat plugin. In the example above, we have four tasks:
+
+- Task `merged-test-coverage` looks for the test coverage report under `coverage/merged/lcov-report`, and uses the Stoat `static_hosting` plugin to upload it to the Stoat server. The entire directory will be uploaded, so the preview will include all the HTML, JavaScript, and CSS files.
+- Task `storybook` is very similar. It looks for the static Storybook build under `storybook-static`, and uploads them to the Stoat server.
+- Same for the `cypress-video` task. The only difference is that this task uploads a single file instead of a directory.
+- Task `build-time` is a different type of task. It uses the `job_runtime` plugin, which tracks and reports the time it takes to run every GitHub job. It is added here to show you the extensibility of the Stoat ecosystem. This functionality is fulfilled by the same Stoat action attached to the `ci` job.
+
+### 4. That's It!
+
+Now, commit the two files to the codebase, and create a pull request.
+After the build completes (about two minutes), you will be able to see the previews in a comment from the Stoat bot:
+
+<img src={require('../../static/img/screenshot-javascript-tutorial-ids.png').default} alt="javascript comment screenshot (with ids)" width={600} />
+
+Now you can click on the links to see the previews or watch the Cypress video. This comment will be auto updated whenever the CI workflow is triggered and completed.
+
+The Stoat comment is also highly customizable. For example, currently, in each row of the preview table, the `Name` column is just the task ID in the Stoat config. You can change it to something more friendly by adding a metadata `name` field to each of the task:
+
+```yaml title=".stoat/config.yaml"
+version: 1
+enabled: true
+tasks:
+  merged-test-coverage:
+    # The metadata and name fields are newly added here.
+    metadata:
+      name: Test coverage report
+    static_hosting:
+      path: coverage/merged/lcov-report
+  storybook:
+    metadata:
+      name: Storybook
+    static_hosting:
+      path: storybook-static
+  cypress-video:
+    metadata:
+      name: Cypress video
+    static_hosting:
+      path: cypress/videos/spec.js.mp4
+  build-time:
+    job_runtime:
+```
+
+Commit and push the change.
+
+After another two minutes, the comment is updated with the new names and runtime chart:
+
+<img src={require('../../static/img/screenshot-javascript-tutorial-names.png').default} alt="javascript comment screenshot (with names)" width={600} />
+
+You can find the exact pull request used for this tutorial [here](https://github.com/stoat-dev/example-javascript/pull/1).
+
+Now you're ready to start using Stoat for your JavaScript and TypeScript projects!
