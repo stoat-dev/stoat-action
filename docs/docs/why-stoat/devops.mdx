@@ -1,0 +1,33 @@
+---
+sidebar_position: 4
+---
+
+# For DevOps Engineers
+
+Are you:
+* Creating build tooling that needs to show results to users in GitHub comments?
+* Helping your users manage and run many integration tests?
+* Experiencing noisy comment spam in pull requests for all of your tools?
+* Running into problems where orchestrating many GitHub actions results in fragile build systems?
+* Trying to prevent build times from drifting longer and longer over time?
+
+If the answer to any of these questions is true, Stoat might be able to help you.
+
+Stoat makes it trivial to aggregate and access any build-related output in a single Stoat GitHub comment that is updated by the Stoat GitHub application.
+This means you can use a single comment to collect output from multiple tools.
+Stoat handles all the race conditions and edge cases.
+All you have to do is push files or other data to Stoat and Stoat maintains the external state necessary to aggregate this data into a single comment.
+This comment uses Handlebars templates and is fully customizable.
+
+Stoat also tracks metrics around build runtime (and in the future will allow tracking custom metrics).
+
+Here's a screenshot from an [example pull request](https://github.com/stoat-dev/example-java/pull/1) that shows Stoat updating a build comment with build outputs:
+<img src={require('../../static/img/screenshot-java.png').default} alt="java comment screenshot" width={600} />
+
+<br /><br />
+
+In the near future, Stoat is also going to add support for running and managing integration tests.
+If you're interested in becoming a design partner for this feature, we'd [love to talk to you](../company/contact-us).
+
+We'd also [love to hear from you](../company/contact-us) about any challenges you see building out internal developer tools.
+Stoat intends to become a platform for building developer tooling, so any feedback and ideas you have to share are very welcome!
