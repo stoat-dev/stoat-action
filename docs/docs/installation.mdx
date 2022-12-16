@@ -1,0 +1,53 @@
+---
+sidebar_position: 2
+---
+
+import PersonaList from './partials/_persona_list.mdx'
+import TutorialList from './partials/_tutorial_list.mdx'
+
+# Get Started
+
+:::caution
+
+We currently only recommend using Stoat for **public repos**!
+
+[Paid authentication](company/pricing) for private repos is on our [roadmap](company/roadmap). Until it's released,
+all files, all metrics, and all other data you publish to Stoat for templating will be publicly accessible!
+
+:::
+
+## 1. Install GitHub Application
+
+Go to the [Stoat GitHub application page](https://github.com/apps/stoat-app/) and install the application for your repository. If you have any question about the permissions
+or run into any problems with installing, please [let us know](company/contact-us).
+
+## 2. Install CLI
+
+Requirements:
+- Node/NPM
+- Mac/Linux
+
+To install, run:
+```
+npm i -g stoat
+```
+
+## 3. Initialize Stoat for a Git Repository
+
+To initialize a Stoat project within a Git repository, run:
+```
+stoat init
+```
+
+The initialization command will create a configuration file for Stoat at `.stoat/config.yaml` 
+and will give you the option to add the Stoat GitHub action as the final step in all GitHub jobs.
+
+## 4. Configure Stoat
+
+To start pushing data to Stoat, you will need to add additional configuration.
+
+We have comprehensive examples and guides for different types of users:
+<PersonaList />
+
+We also have tutorials explaining how to enable specific functionality:
+<TutorialList />

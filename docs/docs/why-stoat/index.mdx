@@ -1,8 +1,8 @@
----
-sidebar_position: 6
----
+import PersonaList from '../partials/_persona_list.mdx'
 
 # Why Stoat?
+
+<PersonaList />
 
 ## Stoat vs. existing GitHub actions
 
@@ -97,3 +97,5 @@ We think there are three advantages of using Stoat over existing GitHub actions.
 - **Simplicity**. Stoat provides a straightforward way to access build outputs and present them for GitHub pull requests. There is no need to figure out obscure GitHub action syntax.
 - **Data aggregation**. Stoat can aggregate data from multiple GitHub jobs and present them in a unified view. Before Stoat, it requires sophisticated GitHub workflows and a custom backend, which only large companies with dedicated infra teams can afford.
 - **Extensibility**. The current Stoat templating system and the ever-growing Stoat plugins make it easy to customize the output. In the future, Stoat will integrate with more platforms in addition to GitHub.
+
+TODO: set up something like the docusauris icon links for the others

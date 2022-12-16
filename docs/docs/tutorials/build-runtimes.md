@@ -1,4 +1,9 @@
-# Job Runtime
+---
+sidebar_position: 104
+title: Track Build Times
+---
+
+# View build time graph in every PR
 
 The job runtime plugin automatically collects runtime for every GitHub action and presents them in the static comment on pull requests.
 

@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Templating
 
 When rendering PR comments, Stoat uses a [Handlebars](https://handlebarsjs.com/) template.
