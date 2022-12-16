@@ -44,3 +44,7 @@ to learn how to embed the video directly in the Stoat comment as an image.
     ```
 
    If you create a pull request, you should now have a link to the generated video in the Stoat comment after the build completes.
+
+## Example Repo
+
+See a real build that generates a video of a browser test with [Cypress](https://www.cypress.io/) and links to the video in a Stoat comment in [this pull request](https://github.com/stoat-dev/example-javascript/pull/1).
