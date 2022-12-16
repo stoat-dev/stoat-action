@@ -2,142 +2,88 @@
 sidebar_position: 4
 ---
 
-import Docusaurus from '../../static/img/examples/docusaurus-logo.svg'
-import JaCoCo from '../../static/img/examples/jacoco-logo.svg'
-import Jest from '../../static/img/examples/jest-logo.svg'
-import StorybookLogo from '../../static/img/examples/storybook-logo.svg'
-
 # Static Hosting
 
-Builds often produce certain static assets such as:
-1. Test coverage reports (from [Jest](https://www.npmjs.com/package/jest-html-reporter), [Jacoco](https://docs.gradle.org/current/userguide/jacoco_plugin.html), etc)
-2. [Storybook.js component previews](https://storybook.js.org/docs/react/sharing/publish-storybook)
-3. [Docusaurus](https://docusaurus.io/docs/next/installation#build) or other static page outputs.
-4. Custom HTML that you generate as part of your build.
+We have tutorials to help you set up static hosting for various types of build outputs:
+* [Build Reports (tests, coverage, etc.)](../tutorials/view-reports)
+* [Images](../tutorials/preview-images)
+* [Videos](../tutorials/preview-videos)
+* [Static Documentation (like Swagger, Javadocs, etc.)](../tutorials/preview-docs)
+* [Static Component Previews (like Storybook)](../tutorials/preview-components)
 
-To quickly set up Stoat for these popular applications, check the documentations below:
+## About the `static_hosting` plugin
 
-<ul>
-  <li><Docusaurus width={16} height={16} />&nbsp;&nbsp;<a href="docusaurus">Docusaurus</a></li>
-  <li><JaCoCo width={16} height={16} />&nbsp;&nbsp;<a href="jacoco">Jacoco Test Coverage</a></li>
-  <li><Jest width={16} height={16} />&nbsp;&nbsp;<a href="jest">Jest Test Coverage</a></li>
-  <li><StorybookLogo width={13} height={16} />&nbsp;&nbsp;<a href="storybook">Storybook</a></li>
-</ul>
-
-## Set Up Stoat
-
-First of all, make sure you've [set up Stoat](../../installation) for your repo.
-
-## Configure uploading static assets
-
-### 1. Find the path to static assets
-
-The location of your static assets depends on your repository structure and build configuration. Most build plugins that
-produce static outputs have configurable destinations and default destinations.
-In our [examples repo](https://github.com/stoat-dev/examples/), the [Stoat config file](https://github.com/stoat-dev/examples/blob/main/.stoat/config.yaml) 
-contains example output locations:
-
-- Gradle JaCoCo HTML reports: `<gradle-folder>/list/build/reports/html/jacoco`
-- Storybook.js output: `<storybook-folder>/storybook-static`
-
-For the purpose of this tutorial, let's host a file checked into the repo instead of something produced by the build itself. 
-Create a file in your repo at the path `hello_world/index.html`:
-```html title="hello_world/index.html"
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Output</title>
-</head>
-<body>
-
-<h1>Hello World</h1>
-
-</body>
-</html>
-```
-
-### 2. Add the Stoat action to your CI workflow after the step that generates your static assets
-
-To allow uploading files to Stoat, you'll need to add the Stoat action after any step in your GitHub workflows that contain files you want to upload.
-
-The Stoat action step looks like:
-```yaml
-- name: Run Stoat Action
-  uses: stoat-dev/stoat-action@v0
-  if: always()
-```
-
-Note that you usually want to run the Stoat action even if prior build steps fail. For example, if you want to upload test reports, those build outputs would be most useful when the GitHub step for testing fails.
-
-To view an example for actual build output, check out our [examples repo](https://github.com/stoat-dev/examples/blob/a0fcc04/.github/workflows/backend.yaml#L33-L35).
-
-For this tutorial we're using a file that we'll check directly into our repo, not a build output, so we can configure a new GitHub workflow with a Stoat action by 
-creating a file at `.github/worklows/hello-world.yaml`:
-```yaml title=".github/worklows/hello-world.yaml"
-name: Hello World
-
-on:
-  push:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Run Stoat Action
-        uses: stoat-dev/stoat-action@v0
-        if: always()
-```
-
-### 3. Add the path to the Stoat config file
-
-From the [installation guide](../../installation), you should have a file with the following contents at `.stoat/config.yaml`:
-```yaml title=".stoat/config.yaml"
----
-version: 1
-enabled: true
-```
-
-Let's configure Stoat to upload the `hello_world` directory we created in `.stoat/config.yaml`:
+Sample task configuration:
 ```yaml title=".stoat/config.yaml"
 ---
 version: 1
 enabled: true
 tasks:
-  hello-world:
-    static_hosting:
-      path: hello_world
-```
-
-This tells Stoat to check the `hello_world` path for contents when the Stoat action runs, and then upload those contents to the 
-Stoat servers. Here, the key `hello-world` is the id of the task, and the value is the configuration for the `static_hosting` plugin for that task.
-
-### 4. Create a PR and access the file from the Stoat comment!
-
-If you create a branch, commit the files we've created, push the branch, and create a PR. You'll soon see a link in a PR comment to your "Hello World" directory!
-
-You can repeat this with multiple directories. You can also customize how the name of the directory is shown in the PR in `.stoat/config.yaml`:
-```yaml title=".stoat/config.yaml"
----
-version: 1
-enabled: true
-tasks:
-  hello-world:
+  docs:
     metadata:
-      name: Hello World
+      name: Documentation
     static_hosting:
-      path: hello_world
+      path: build/static-docs
 ```
 
-After committing, pushing, and waiting for the build, the name will now show up as `Hello World` instead of the task id `hello-world`.
+The `metadata` key can contain any information that you want to use for [templating](./templating).
+However, the `name` key is optionally used by the default template to show the list of statically hosted build artifacts.
 
-### That's it!
+The `static_hosting` key contains the required `path`. This path is specified from the root of the Git repository and can
+either reference a file or a directory.
 
-Using the above steps, you can easily upload any build artifacts for your pull requests!
+After Stoat [aggregates](./aggregation) build data to render the comment, something like this will be used for templating:
+```yaml
+---
+version: 1
+enabled: true
+tasks:
+  docs:
+    metadata:
+      name: Documentation
+    static_hosting:
+      path: build/static-docs
+      sha: "1848b03dd4b58c8f8485d51a2157af4904e4073f"
+      link: "https://some-path-here.stoat.page"
+      status: "✅"
+```
 
-## Customize templating
+As you can see, Stoat adds on some information that allows you to access the hosted artifact or view information about the build that produced the artifact.
+Note that all information in your metadata field will be passed through.
 
-If you'd like to customize what the Stoat PR comment looks like, check out our [templating tutorial](../../reference/templating).
+That means, in your [comment template](./templating) you can use any metadata value or value under `static_hosting` to render the comment.
+
+For example, the following template could be used to add a link to the file in the Stoat comment:
+```handlebars
+[{{ tasks.docs.metadata.name }}]({{ tasks.docs.static_hosting.link }})
+```
+
+Or, if the uploaded file was an [image that could be embedded](../tutorials/preview-images), the following template could be used to render the image inline:
+```handlebars
+![{{ tasks.taskid.metadata.name }}]({{ tasks.taskid.static_hosting.link }})
+```
+
+## Default template
+
+If you'd like to just get a table of all build outputs configured with the `static_hosting` plugin, we recommend using:
+```handlebars
+{{{ views.plugins.static_hosting.github.table }}}
+```
+
+Under the hood, this uses the following template:
+```handlebars
+## Static Hosting
+
+| Name | Link | Commit | Status |
+| :--- | :--- | :--: | :-----: |
+{{#each tasks}}
+{{#if this.static_hosting.status ~}}
+| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.static_hosting.link }}) | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status }}} |
+{{/if ~}}
+{{/each}}
+```
+
+## Local previews
+
+Our CLI can run static hosting using your local build results.
+View our [local previews guide](./local-previews) for more information.
