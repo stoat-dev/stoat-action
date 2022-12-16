@@ -2,100 +2,47 @@ import PersonaList from '../partials/_persona_list.mdx'
 
 # Why Stoat?
 
+## Simple and reliable building blocks
+
+Stoat introduces the concept of a single, updatable "dashboard" comment in each pull request.
+This significantly reduces the "tool noise" in a pull request by allowing devs to design a comment
+template that cleanly lays out all related build information.
+
+Implementing a comment that can be updated by multiple commits and builds without race conditions
+requires a combination of GitHub actions, a GitHub application, and state that's stored outside of GitHub.
+Often, devs will use a combination of GitHub actions to attempt to build and updatable comment and end up
+with a fairly fragile system. Using a lightweight vendor for this system can save a lot of time debugging edge case behavior.
+
+Stoat also provides declarative configuration with a simple config file. This makes it very simple to configure static
+hosting for new build outputs and provides a clear mental model of what data went into building a specific comment.
+Moving all the complexity to the config file also eliminates a lot of the GitHub action complexity involving
+piping inputs and outputs between steps that plagues many build configurations.
+
+Finally, Stoat doesn't require any API keys or GitHub secrets to be able to store repository-related data. Instead,
+Stoat uses the `GITHUB_TOKEN` passed into its GitHub actions to determine what operations an action is allowed to
+perform, and whether it can upload data or files to the Stoat servers.
+
+## Data aggregation
+
+Stoat allows developers to aggregate data across builds without configuring a separate database or
+other persistence layer. Again, it does this without requiring additional API keys or GitHub secrets. In the future,
+we will allow aggregating data across branches (for example, comparing build times on `main` vs your current pull request's branch).
+Stoat will also be able to pull in data from outside of GitHub.
+
+## Access hidden data
+
+Build data is often siloed away. Spending one or two minutes waiting for GitHub action logs to load to view test results
+for every failed job is unacceptable. Far too many metrics that can be calculated as part of the build are relegated to
+reactive, post-release dashboards on DataDog or Metabase. Data that can detect and prevent future problems should be
+exposed directly to developers as part of their daily development process (in pull requests). Stoat is the only tool
+that helps developers bring metrics to the forefront of their development process.
+
+## Fully customizable
+
+Stoat comments (and in the future, interactive UIs) are fully customizable with templates and a general-purpose
+JSON aggregation engine. Templating, combined with an ever-growing catalogue of Stoat plugins, makes it easier and
+easier to build internal developer tools into your build system.
+
+## Examples
+See end-to-end examples of how engineers get value out of Stoat, tailored for different types of engineers:
 <PersonaList />
-
-## Stoat vs. existing GitHub actions
-
-A common question about Stoat is, "Why use a new action while there are already many other actions that can do similar things?" For example, a user can apply the [`create-or-update-comment` action](https://github.com/peter-evans/create-or-update-comment) to maintain a comment on a PR, and post whatever information they would like there. The answer is simplicity. Let's go through a detailed example of the `create-or-update-comment` action. To guarantee that the information in the comment is always up-to-date, there are three requirements:
-
-  - Create a new comment when the PR is opened.
-  - Update the comment when the PR is updated.
-  - Update or delete the comment when the comment is no longer needed.
-
-Suppose there is a step, `output_information`, that generates the information that we want to post to the PR. The complete steps needed to fulfill the above three requirements are:
-
-```yaml title=".github/workflows/post-comment.yaml"
-# This step generates the information that we want to post to the PR.
-# It may also generate nothing, which means the comment is not needed.
-- name: Output information
-  id: output_information
-
-# If the comment already exists, we want to locate it.
-- name: Find the existing comment if it exists
-  uses: peter-evans/find-comment@v2
-  id: find_comment
-  with:
-    issue-number: ${{ github.event.pull_request.number }}
-    comment-author: "github-actions[bot]"
-    # This step uses a unique identifier in the comment body to locate the comment.
-    # It is necessary for the remove_deprecated_comment step.
-    body-includes: "comment-identifier"
-
-- name: Create or update the comment
-  if: steps.output_information.outputs.comment == 'true'
-  uses: peter-evans/create-or-update-comment@v2
-  with:
-    issue-number: ${{ github.event.pull_request.number }}
-    comment-id: ${{ steps.find_comment.outputs.comment-id }}
-    edit-mode: "replace"
-    body: |
-      <!--- comment-identifier -->
-      The information is: {{ steps.output_information.outputs.information }}
-
-# If the output_information step generates nothing, we still need to
-# update the comment to remove the information posted in previous runs.
-- name: Remove deprecated comment
-  id: remove_deprecated_comment
-  if: steps.output_information.outputs.comment != 'true' && steps.find_comment.outputs.comment-id != ''
-  uses: peter-evans/create-or-update-comment@v2
-  with:
-    issue-number: ${{ github.event.pull_request.number }}
-    comment-id: ${{ steps.find_comment.outputs.comment-id }}
-    edit-mode: "replace"
-    # The comment must include a unique identifier so that the
-    # comment can be located by the find_comment step.
-    # It must match the one in the comment body.
-    body: |
-      <!--- comment-identifier -->
-      The information is no longer relevant.
-```
-
-This example is adapted from a real use case at [Airbyte](https://github.com/airbytehq/airbyte/blob/v0.40.25/.github/workflows/report-connectors-dependency.yml). You can see that this is overly complicated, not to mention that they only work for one GitHub job. Things will be even worse if information from multiple jobs needs to be aggregated.
-
-In contrast, here are the equivalent Stoat config, action, and template files:
-
-```yaml title=".stoat/config.yaml"
----
-version: 1
-enabled: true
-comment_template_file: ".stoat/template.hbs"
-tasks:
-  post-comment:
-    json:
-      # The post-comment step is supposed output a JSON file
-      # with the information that we want to post to the PR.
-      path: output.json
-```
-
-```yaml title=".github/workflows/post-comment.yaml"
-- name: Run Stoat Action
-  uses: stoat-dev/stoat-action@v0
-  if: always()
-```
-
-```handlebars title=".stoat/template.hbs"
-# The template references the Stoat task defined in the config file.
-The information is: {{ tasks.post-comment.json.value.information }}
-```
-
-Four GitHub action steps are replaced with the one Stoat action. Even better, the same Stoat config and template files can be reused for all the Stoat tasks.
-
-## Stoat Advantages
-
-We think there are three advantages of using Stoat over existing GitHub actions.
-
-- **Simplicity**. Stoat provides a straightforward way to access build outputs and present them for GitHub pull requests. There is no need to figure out obscure GitHub action syntax.
-- **Data aggregation**. Stoat can aggregate data from multiple GitHub jobs and present them in a unified view. Before Stoat, it requires sophisticated GitHub workflows and a custom backend, which only large companies with dedicated infra teams can afford.
-- **Extensibility**. The current Stoat templating system and the ever-growing Stoat plugins make it easy to customize the output. In the future, Stoat will integrate with more platforms in addition to GitHub.
-
-TODO: set up something like the docusauris icon links for the others
