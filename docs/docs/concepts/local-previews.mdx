@@ -1,0 +1,47 @@
+---
+sidebar_position: 5
+---
+
+# Local Previews
+
+:::tip
+
+Local mode doesn't send any of your code or build artifacts off of your computer!
+This is safe to run for private repos before we add support for authenticating our static hosting endpoints.
+
+:::
+
+### What is a local preview?
+
+Running the local preview will start a local server and open your default browser.
+This server will run on `localhost` and host any build outputs that were both specified in your Stoat config file at
+`.stoat/config.yaml` and detected within your Git repository.
+That meanas that you will need to run your build and generate outputs for the links to appear in your local preview.
+
+Example locally rendered comment:
+<img src={require('../../static/img/local_preview.png').default} width={400} />
+
+### Launch preview
+
+To create a local preview, you must [set up Stoat for your Git repository](../installation) and then run:
+```
+stoat local
+```
+
+### Limitations
+
+Since the local mode doesn't upload any build artifacts or pull any build data from the server, only functionality
+that requires static hosting will be available. Metric tracking and any other functionality will not be available.
+
+### Reference for `stoat local`
+
+```
+❯ stoat local -h
+Usage: stoat local [options]
+
+preview the Stoat comment for the repository locally
+
+Options:
+  -p, --port <port>  port for the local server (default is any available port starting with 8075)
+  -h, --help         display help for command
+```
