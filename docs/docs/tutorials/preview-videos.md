@@ -19,7 +19,7 @@ to learn how to embed the video directly in the Stoat comment as an image.
 
 1. Set up Stoat with our [getting started guide](../installation).
 
-2. Make sure the Stoat Action appears after the GitHub workflow step that generates your video.
+2. Make sure the [Stoat Action](https://github.com/stoat-dev/stoat-action) appears after the GitHub workflow step that generates your video.
 
     ```yaml title=".github/workflows/your-workflow.yaml"
     # existing step in your repo that generates an video
