@@ -1,0 +1,48 @@
+import PersonaList from '../partials/_persona_list.mdx'
+
+# Why Stoat?
+
+## Simple and reliable building blocks
+
+Stoat introduces the concept of a single, updatable "dashboard" comment in each pull request.
+This significantly reduces the "tool noise" in a pull request by allowing devs to design a comment
+template that cleanly lays out all related build information.
+
+Implementing a comment that can be updated by multiple commits and builds without race conditions
+requires a combination of GitHub actions, a GitHub application, and state that's stored outside of GitHub.
+Often, devs will use a combination of GitHub actions to attempt to build and updatable comment and end up
+with a fairly fragile system. Using a lightweight vendor for this system can save a lot of time debugging edge case behavior.
+
+Stoat also provides declarative configuration with a simple config file. This makes it very simple to configure static
+hosting for new build outputs and provides a clear mental model of what data went into building a specific comment.
+Moving all the complexity to the config file also eliminates a lot of the GitHub action complexity involving
+piping inputs and outputs between steps that plagues many build configurations.
+
+Finally, Stoat doesn't require any API keys or GitHub secrets to be able to store repository-related data. Instead,
+Stoat uses the `GITHUB_TOKEN` passed into its GitHub actions to determine what operations an action is allowed to
+perform, and whether it can upload data or files to the Stoat servers.
+
+## Data aggregation
+
+Stoat allows developers to aggregate data across builds without configuring a separate database or
+other persistence layer. Again, it does this without requiring additional API keys or GitHub secrets. In the future,
+we will allow aggregating data across branches (for example, comparing build times on `main` vs your current pull request's branch).
+Stoat will also be able to pull in data from outside of GitHub.
+
+## Access hidden data
+
+Build data is often siloed away. Spending one or two minutes waiting for GitHub action logs to load to view test results
+for every failed job is unacceptable. Far too many metrics that can be calculated as part of the build are relegated to
+reactive, post-release dashboards on DataDog or Metabase. Data that can detect and prevent future problems should be
+exposed directly to developers as part of their daily development process (in pull requests). Stoat is the only tool
+that helps developers bring metrics to the forefront of their development process.
+
+## Fully customizable
+
+Stoat comments (and in the future, interactive UIs) are fully customizable with templates and a general-purpose
+JSON aggregation engine. Templating, combined with an ever-growing catalogue of Stoat plugins, makes it easier and
+easier to build internal developer tools into your build system.
+
+## Examples
+See end-to-end examples of how engineers get value out of Stoat, tailored for different types of engineers:
+<PersonaList />

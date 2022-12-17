@@ -1,10 +1,10 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Vision
 
-Stoat aims to be the "**s**martest **t**ool **o**f **a**ll **t**ime" and the ultimate platform for developer tooling teams.
+Stoat aims to be the "**s**martest **t**ool **o**f **a**ll **t**ime" and the platform for developer tooling.
 
 As a first step, we're building a customizable dashboard for developers. Our initial focus is on three key areas:
 1. Simplifying access to build outputs and reports

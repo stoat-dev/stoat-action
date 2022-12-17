@@ -1,0 +1,42 @@
+---
+sidebar_position: 3
+---
+
+# For Python Engineers
+
+A typical build for a Python project produces a number of useful reports:
+* Test results ([pytest-html](https://pypi.org/project/pytest-html/), etc.)
+* Test coverage ([coverage.py](https://coverage.readthedocs.io/en/latest/), etc.)
+* Python Docs ([pydoc](https://docs.python.org/3/library/pydoc.html), [pdoc](https://pdoc.dev/), etc.)
+* API docs ([Swagger](https://swagger.io/), [ReDoc](https://redocly.com/), etc.)
+* ...and more!
+
+Accessing these reports for a remote build on GitHub can be painful.
+While you can try to address this by using a combination of GitHub actions to post some of these results to GitHub comments or zipping the output files and making them downloadable from the GitHub action page,
+Stoat is the easiest way to make all of this information trivial to access.
+
+Stoat hosts these outputs and makes them accessible with a single click in a GitHub comment:
+<img src="https://stoat-dev--static.stoat.page/screenshot-python.png" alt="python comment screenshot" width={600} />
+
+<br /><br />
+
+The comment can also track build times and other metrics. Additionally, the comment is fully customizable, so
+you can choose what to display and how it should appear in the comment.
+Visit our [templating documentation](../concepts/templating) for more information about customization.
+
+## Example Repo
+
+See a real build that generates and links to Python build reports in [this pull request](https://github.com/stoat-dev/example-python/pull/2).
+
+Enabling and finding the paths to HTML reports is often the hardest part about setting up Stoat.
+The [example-python source code](https://github.com/stoat-dev/example-python) contains examples of setting up a few
+HTML test reports and can be used as a reference.
+
+## Relevant Tutorials
+
+To get started with Stoat as a Python engineer, try out the following tutorials:
+* [View reports (tests, coverage, etc) in pull requests](../tutorials/view-reports)
+* [View build time graph in every pull request](../tutorials/build-runtimes)
+* [Preview documentation in pull requests](../tutorials/preview-docs)
+* [Preview generated images in pull requests](../tutorials/preview-images)
+* [Preview generated videos in pull requests](../tutorials/preview-videos)

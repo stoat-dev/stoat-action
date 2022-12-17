@@ -1,0 +1,52 @@
+---
+sidebar_position: 104
+title: Track Build Times
+---
+
+# Track build runtimes in every PR
+
+The job runtime plugin automatically collects build times for every GitHub job and graphs them in the Stoat comment.
+Each line in the plot represents the runtime of a different workflow job across all the commits in the pull request.
+The x-axis is the short commit SHA, and the y-axis is the runtime in seconds.
+In the future, you will be able to compare the build runtime with your default branch in the same graph.
+
+<img width="523" alt="job runtime chart" src="https://stoat-dev--static.stoat.page/screenshot-job-runtimes.png" />
+
+## How to enable tracking build runtimes
+
+1. Set up Stoat with our [getting started guide](../installation).
+
+2. Make sure the [Stoat Action](https://github.com/stoat-dev/stoat-action) appears at the end of each GitHub workflow job that you want to collect the runtime for:
+    ```yaml title=".github/workflows/hello-world.yaml"
+    name: Hello World
+
+    on:
+      push:
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v3
+
+          # Append the stoat action at the end of each job you want to collect runtime for.
+          - name: Run Stoat Action
+            uses: stoat-dev/stoat-action@v0
+            if: always()
+    ```
+
+3. To enable tracking build runtimes, add a new task for the `job_runtime` plugin in your `.stoat/config.yaml` file:
+    ```yaml title=".stoat/config.yaml"
+    ---
+    version: 1
+    enabled: true
+    tasks:
+      # name of the job runtime task
+      build-time-history:
+        # set this key to select the job_runtime plugin
+        job_runtime:
+    ```
+
+4. That's it. Next time you create a pull request, you should see a line plot of action runtimes in the pinned comment.

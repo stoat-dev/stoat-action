@@ -1,0 +1,34 @@
+---
+sidebar_position: 5
+---
+
+# For Engineering Managers
+
+Do you have:
+* Metrics you want your dev to keep in mind while making changes?
+* Devs introducing changes that increase build times unintentionally?
+* Noisy comment spam in pull requests from your tooling?
+* Devs experiencing slow build tooling interrupting their flow?
+
+If the answer to any of these questions is true, Stoat might be able to help you and your team.
+
+Stoat makes it trivial to aggregate and access any build-related output in a single Stoat GitHub comment that is updated by the Stoat GitHub application.
+This means you can use a single comment to collect output from multiple tools.
+Stoat handles all the race conditions and edge cases.
+All you have to do is push files or other data to Stoat and Stoat maintains the external state necessary to aggregate this data into a single comment.
+This comment uses Handlebars templates and is fully customizable.
+
+Stoat also tracks metrics around build runtime (and in the future will allow tracking custom metrics).
+These metrics could include any build-computable KPI, such as benchmarks or any stats that show the value to the business of a code change.
+Stoat wants to make these metrics visible to devs when they make changes, not after the fact in a separate dashboard.
+
+Here's a screenshot from an [example pull request](https://github.com/stoat-dev/example-java/pull/1) that shows Stoat updating a build comment with build outputs:
+<img src="https://stoat-dev--static.stoat.page/screenshot-java.png" alt="java comment screenshot" width={600} />
+
+<br /><br />
+
+In the near future, Stoat is also going to add support for running and managing integration tests.
+If you're interested in becoming a design partner for this feature, we'd [love to talk to you](../company/contact-us).
+
+We'd also [love to hear from you](../company/contact-us) about any challenges you see your team facing in terms of metric visibility, build system rough edges, and building internal tooling.
+Stoat intends to become the platform for building developer tooling, so any feedback and ideas you have to share are very welcome!
