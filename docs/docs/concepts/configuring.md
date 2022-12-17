@@ -51,5 +51,7 @@ This YAML file has a few sections:
         job_runtime:
    ```
 
+##  Debugging
+
 If you're wondering what config file was used to generate a specific comment, click the "debug" button at the bottom of the Stoat comment.
 The contents of the Stoat config file will be available, rendered in JSON.
