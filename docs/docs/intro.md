@@ -4,31 +4,27 @@ sidebar_position: 1
 
 # What is Stoat?
 
-Stoat helps users aggregate data from GitHub builds into a single
-GitHub pull request comment that is updated as new data becomes available. You can think of this
-static comment as a customizable build dashboard for your pull requests.
+Stoat is a SaaS platform for developer tooling focused on aggregating data across GitHub builds into a single pull request comment
+that is updated as new data becomes available. This comment as a customizable build dashboard embedded in your pull requests.
 
-With just a couple minutes of configuration, you can automatically add PR comments that contain links to test coverage reports, Storybook.js component summaries, build time summaries, and more:
+In only a few minutes, you can access test coverage reports, Storybook.js component summaries, build time summaries, and more from a GitHub comment:
 
 ![Stoat Screenshot](../static/img/example-screenshot.png)
 
-## How it works
+## Technical Details
 
-Stoat consists of a [GitHub Application](https://github.com/apps/stoat-app) and a [GitHub Action](https://github.com/stoat-dev/stoat-action).
+* [Stoat GitHub Action](https://github.com/stoat-dev/stoat-action)
+  * Pushes data (build reports, static sites, metrics, JSON) for builds to the Stoat server.
+* [Stoat GitHub Application](https://github.com/apps/stoat-app)
+  * Calls the Stoat server to render comments.
+* Stoat Server
+  * Listens for webhooks from the GitHub application.
+  * Stores and aggregates build data pushed by the GitHub action.
+  * Serves static files.
+  * Creates and updates pull request comments.
 
-The GitHub Action pushes data for a specific build to the Stoat servers. This data might be files produced as side effects of a build, such as
-code coverage reports, frontend component previews, or documentation pages. This data might also be any JSON blob that represents 
-test runtime data or any other values that are computed as part of the build.
+## Get Started
 
-The GitHub Application listens for any changes on a pull request, which the Stoat servers pass along to render a static comment on every
-PR. We call this a "static comment" because unlike some GitHub tools that create new comments on every change, Stoat creates 
-a single comment and updates it as changes come in.
+It only takes a couple of minutes to add Stoat to your repo.
 
-Here are the current Stoat features and links to in-depth tutorials.
-
-| Feature                                       | Description                                                                |
-|:----------------------------------------------|:---------------------------------------------------------------------------|
-| [Static hosting](tutorials/static-hosting)    | Host any build artifacts for preview.                                      |
-| [Job runtime tracking](tutorials/job-runtime) | Track the runtime of all GitHub workflow runs for a pull request.          |
-| [CLI](tutorials/cli)                          | Get started quickly on existing repos and run Stoat in local mode.         |
-| [Templating](tutorials/templating)            | Use any data from the build and render your custom pull request dashboard. |
+[Try our getting started guide to set up Stoat today!](./installation)
