@@ -68,12 +68,12 @@ const config = {
           src: 'img/logo-128.png'
         },
         items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Get Started!'
-          },
+          // {
+          //   type: 'doc',
+          //   docId: 'intro',
+          //   position: 'left',
+          //   label: 'Get Started!'
+          // },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
             href: 'https://github.com/stoat-dev/stoat-action',
