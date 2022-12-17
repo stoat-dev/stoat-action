@@ -94,8 +94,16 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Get Started!',
+                label: 'What is Stoat?',
                 to: '/docs/intro'
+              },
+              {
+                label: 'Get Started!',
+                to: '/docs/installation'
+              },
+              {
+                label: 'Why Stoat?',
+                to: '/docs/why-stoat'
               }
             ]
           },
@@ -114,6 +122,10 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/stoat-dev/'
+              },
+              {
+                label: 'YouTube',
+                href: 'https://www.youtube.com/@stoat-dev'
               },
               {
                 label: 'Built with Docusaurus',
