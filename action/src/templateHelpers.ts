@@ -72,16 +72,15 @@ export const getRemoteDefaultTemplate = async (
 };
 
 export const getPlugins = (stoatConfig: StoatConfigSchema): Plugin[] => {
-  if (!stoatConfig.tasks) {
-    return [];
-  }
   const plugins: Set<Plugin> = new Set<Plugin>();
-  for (const task of Object.values(stoatConfig.tasks)) {
-    if ('static_hosting' in task) {
-      plugins.add(Plugin.StaticHosting);
-    }
-    if ('json' in task) {
-      plugins.add(Plugin.Json);
+  for (const [pluginField, pluginValue] of Object.entries(stoatConfig.plugins || {})) {
+    if (Object.keys(pluginValue || {}).length > 0) {
+      if (pluginField === 'static_hosting') {
+        plugins.add(Plugin.StaticHosting);
+      }
+      if (pluginField === 'json') {
+        plugins.add(Plugin.Json);
+      }
     }
   }
   return Array.from(plugins);

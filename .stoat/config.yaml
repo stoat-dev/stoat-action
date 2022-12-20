@@ -2,18 +2,18 @@
 version: 1
 enabled: true
 plugins:
-  job-runtime:
+  job_runtime:
     enabled: true
-  static-hosting:
-    test-coverage-action:
+  static_hosting:
+    test_coverage_action:
       metadata:
         name: Action Test Coverage
       path: action/coverage/lcov-report
-    test-coverage-action-single-file:
+    test_coverage_action_single_file:
       metadata:
         name: Action Test Coverage (single file)
       path: action/coverage/lcov-report/index.html
-    test-coverage-cli:
+    test_coverage_cli:
       metadata:
         name: CLI Test Coverage
       path: cli/coverage/lcov-report

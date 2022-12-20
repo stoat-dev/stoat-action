@@ -13,70 +13,72 @@
     "comment_template_file": {
       "type": "string"
     },
-    "tasks": {
+    "plugins": {
       "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/task_plugin"
+      "properties": {
+        "static_hosting": {
+          "$ref": "#/definitions/static_hosting_plugin_map"
+        },
+        "json": {
+          "$ref": "#/definitions/json_plugin_map"
+        },
+        "job_runtime": {
+          "$ref": "#/definitions/job_runtime_plugin"
+        }
       }
     }
   },
   "definitions": {
-    "task_plugin": {
+    "static_hosting_plugin_map": {
       "type": "object",
-      "oneOf": [
-        { "$ref": "#/definitions/static_hosting_plugin" },
-        { "$ref": "#/definitions/json_plugin" },
-        { "$ref": "#/definitions/job_runtime_plugin" }
-      ]
+      "additionalProperties": {
+        "$ref": "#/definitions/static_hosting_plugin"
+      }
     },
     "static_hosting_plugin": {
       "type": "object",
-      "required": ["static_hosting"],
+      "required": ["path"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "static_hosting": {
-          "type": "object",
-          "required": ["path"],
-          "properties": {
-            "path": {
-              "type": "string"
-            }
-          }
+        "path": {
+          "type": "string"
         }
+      }
+    },
+    "json_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/json_plugin"
       }
     },
     "json_plugin": {
       "type": "object",
-      "required": ["json"],
+      "required": ["path"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "json": {
-          "type": "object",
-          "required": ["path"],
-          "properties": {
-            "path": {
-              "type": "string"
-            }
-          }
+        "path": {
+          "type": "string"
         }
       }
     },
     "job_runtime_plugin": {
       "type": "object",
-      "required": ["job_runtime"],
+      "required": ["enabled"],
       "properties": {
-        "metadata": {
-          "type": "object",
-          "additionalProperties": true
+        "enabled": {
+          "type": "boolean"
         },
-        "job_runtime": {
-          "type": ["null", "object"],
+        "tracking": {
+          "type": "boolean"
+        },
+        "chart": {
+          "type": "object",
           "additionalProperties": true,
           "properties": {
             "width": {
