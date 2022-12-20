@@ -18,9 +18,9 @@ const staticServers: { [key: string]: { [key: string]: http.Server } } = {};
 const tableHbs: string =
   '| Name | Link | Commit | Status |\n' +
   '| :--- | :--- | :--: | :-----: |\n' +
-  '{{#each tasks}}\n' +
-  '{{#if this.static_hosting.status ~}}\n' +
-  '| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.static_hosting.link }}) | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status }}} |\n' +
+  '{{#each plugins.static_hosting }}\n' +
+  '{{#if this.status ~}}\n' +
+  '| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.link }}) | {{ this.sha }} | {{{ this.status }}} |\n' +
   '{{/if ~}}\n' +
   '{{/each}}';
 
@@ -55,12 +55,12 @@ async function runServersAndGetLinkUpdate(
   const port = (staticServers[taskId][localPath].address() as AddressInfo).port;
 
   return {
-    tasks: {
-      [taskId]: {
-        static_hosting: {
-          sha: 'local',
-          link: `http://localhost:${port}/${fileName ? fileName : ''}`,
-          status: '✅'
+    plugins: {
+      static_hosting: {
+        [taskId]: {
+            sha: 'local',
+            link: `http://localhost:${port}/${fileName ? fileName : ''}`,
+            status: '✅'
         }
       }
     }
@@ -82,40 +82,36 @@ export async function getDashboard(req: express.Request, res: express.Response) 
 
     let links = {};
 
-    if (schema.tasks !== undefined) {
+    if (schema.plugins?.static_hosting !== undefined) {
       const staticHostingTaskIds = new Set();
 
-      for (const taskId in schema.tasks) {
-        const task = schema.tasks[taskId];
-        if ('static_hosting' in schema.tasks[taskId]) {
-          staticHostingTaskIds.add(taskId);
+      for (const taskId in schema.plugins?.static_hosting) {
+        staticHostingTaskIds.add(taskId);
 
-          const hostingTask = task as StaticHostingPlugin;
-          const localPath = hostingTask.static_hosting.path;
+        const task = schema.plugins.static_hosting[taskId] as StaticHostingPlugin;
+        const localPath = task.path;
+        const absolutePath = path.join(getGitRoot(), localPath);
 
-          const absolutePath = path.join(getGitRoot(), localPath);
+        let linkUpdate;
 
-          let linkUpdate;
+        if (fs.existsSync(absolutePath)) {
+          const indexPath = path.join(absolutePath, 'index.html');
 
-          if (fs.existsSync(absolutePath)) {
-            const indexPath = path.join(absolutePath, 'index.html');
-
-            if (fs.lstatSync(absolutePath).isFile()) {
-              linkUpdate = await runServersAndGetLinkUpdate(
-                staticServers,
-                taskId,
-                localPath,
-                path.dirname(absolutePath),
-                path.basename(absolutePath)
-              );
-            } else if (fs.existsSync(indexPath)) {
-              linkUpdate = await runServersAndGetLinkUpdate(staticServers, taskId, localPath, absolutePath, undefined);
-            }
+          if (fs.lstatSync(absolutePath).isFile()) {
+            linkUpdate = await runServersAndGetLinkUpdate(
+              staticServers,
+              taskId,
+              localPath,
+              path.dirname(absolutePath),
+              path.basename(absolutePath)
+            );
+          } else if (fs.existsSync(indexPath)) {
+            linkUpdate = await runServersAndGetLinkUpdate(staticServers, taskId, localPath, absolutePath, undefined);
           }
+        }
 
-          if (linkUpdate) {
-            links = deepmerge(links, linkUpdate);
-          }
+        if (linkUpdate) {
+          links = deepmerge(links, linkUpdate);
         }
       }
 
