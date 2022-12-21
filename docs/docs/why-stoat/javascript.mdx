@@ -112,11 +112,11 @@ During the CLI setup process, an action should have been appended to your GitHub
 ```yaml title=".github/workflows/ci.yaml"
 ...
 - name: Generate storybook
- run: yarn build-storybook
+  run: yarn build-storybook
 
 - name: Run stoat action
- uses: stoat-dev/stoat-action@v0
- if: always()
+  uses: stoat-dev/stoat-action@v0
+  if: always()
 ```
 
 ### 3. Configure Stoat

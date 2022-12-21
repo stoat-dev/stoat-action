@@ -32,24 +32,24 @@ This YAML file has a few sections:
 
    ```yaml title="static_hosting"
    plugins:
-      static_hosting:
-        docs:
-          metadata:
-            name: Documentation
-          path: build/static-docs
+     static_hosting:
+       docs:
+         metadata:
+           name: Documentation
+         path: build/static-docs
    ```
 
    ```yaml title="json"
    plugins:
-      json:
-        docs:
-          path: build/build_metadata.json
+     json:
+       docs:
+         path: build/build_metadata.json
    ```
    
    ```yaml title="job_runtime"
    plugins:
-        job_runtime:
-          enabled: true
+     job_runtime:
+       enabled: true
    ```
 
 ##  Debugging
