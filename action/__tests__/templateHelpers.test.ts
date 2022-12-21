@@ -19,19 +19,13 @@ const template2Path = '__tests__/templates/template2.jinja2';
 const template2 = 'template2';
 
 const staticHosting1: StaticHostingPlugin = {
-  static_hosting: {
-    path: 'path1'
-  }
+  path: 'path1'
 };
 const staticHosting2: StaticHostingPlugin = {
-  static_hosting: {
-    path: 'path2'
-  }
+  path: 'path2'
 };
 const json1: JsonPlugin = {
-  json: {
-    path: 'path1'
-  }
+  path: 'path1'
 };
 
 describe('Read local template', () => {
@@ -72,15 +66,19 @@ describe('Read remote default template', () => {
   };
   const stoatConfigWithOnePlugin: StoatConfigSchema = {
     version: 1,
-    tasks: {
-      plugin1: staticHosting1
+    plugins: {
+      static_hosting: {
+        plugin1: staticHosting1
+      }
     }
   };
   const stoatConfigWithMultiPlugins: StoatConfigSchema = {
     version: 1,
-    tasks: {
-      plugin1: staticHosting1,
-      plugin2: staticHosting2
+    plugins: {
+      static_hosting: {
+        plugin1: staticHosting1,
+        plugin2: staticHosting2
+      }
     }
   };
 
@@ -108,8 +106,10 @@ describe('getPlugins', () => {
     expect(
       getPlugins({
         version: 1,
-        tasks: {
-          plugin1: staticHosting1
+        plugins: {
+          static_hosting: {
+            plugin1: staticHosting1
+          }
         }
       })
     ).toEqual([Plugin.StaticHosting]);
@@ -119,10 +119,14 @@ describe('getPlugins', () => {
     expect(
       getPlugins({
         version: 1,
-        tasks: {
-          plugin1: staticHosting1,
-          plugin2: staticHosting2,
-          plugin3: json1
+        plugins: {
+          static_hosting: {
+            plugin1: staticHosting1,
+            plugin2: staticHosting2
+          },
+          json: {
+            plugin3: json1
+          }
         }
       }).sort()
     ).toEqual([Plugin.Json, Plugin.StaticHosting].sort());

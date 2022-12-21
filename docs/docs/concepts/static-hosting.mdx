@@ -18,18 +18,20 @@ Sample task configuration:
 ---
 version: 1
 enabled: true
-tasks:
-  docs:
-    metadata:
-      name: Documentation
-    static_hosting:
+plugins:
+  static_hosting:
+    docs:
+      metadata:
+        name: Documentation
       path: build/static-docs
 ```
+
+Here, `docs` is the user-chosen task id. This should be unique across all of the configured plugins.
 
 The `metadata` key can contain any information that you want to use for [templating](./templating).
 However, the `name` key is optionally used by the default template to show the list of statically hosted build artifacts.
 
-The `static_hosting` key contains the required `path`. This path is specified from the root of the Git repository and can
+The `docs` key contains the required `path`. This path is specified from the root of the Git repository and can
 either reference a file or a directory.
 
 After Stoat [aggregates](./aggregation) build data to render the comment, something like this will be used for templating:
@@ -37,11 +39,11 @@ After Stoat [aggregates](./aggregation) build data to render the comment, someth
 ---
 version: 1
 enabled: true
-tasks:
-  docs:
-    metadata:
-      name: Documentation
-    static_hosting:
+plugins:
+  static_hosting:
+    docs:
+      metadata:
+        name: Documentation
       path: build/static-docs
       sha: "1848b03dd4b58c8f8485d51a2157af4904e4073f"
       link: "https://some-path-here.stoat.page"
@@ -51,16 +53,16 @@ tasks:
 As you can see, Stoat adds on some information that allows you to access the hosted artifact or view information about the build that produced the artifact.
 Note that all information in your metadata field will be passed through.
 
-That means, in your [comment template](./templating) you can use any metadata value or value under `static_hosting` to render the comment.
+That means, in your [comment template](./templating) you can use any metadata value or value under the task id `docs` to render the comment.
 
 For example, the following template could be used to add a link to the file in the Stoat comment:
 ```handlebars
-[{{ tasks.docs.metadata.name }}]({{ tasks.docs.static_hosting.link }})
+[{{ plugins.static_hosting.docs.metadata.name }}]({{ plugins.static_hosting.docs.link }})
 ```
 
 Or, if the uploaded file was an [image that could be embedded](../tutorials/preview-images), the following template could be used to render the image inline:
 ```handlebars
-![{{ tasks.taskid.metadata.name }}]({{ tasks.taskid.static_hosting.link }})
+![{{ plugins.static_hosting.taskid.metadata.name }}]({{ plugins.static_hosting.taskid.link }})
 ```
 
 ## Default template
@@ -76,9 +78,9 @@ Under the hood, this uses the following template:
 
 | Name | Link | Commit | Status |
 | :--- | :--- | :--: | :-----: |
-{{#each tasks}}
-{{#if this.static_hosting.status ~}}
-| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.static_hosting.link }}) | {{ this.static_hosting.sha }} | {{{ this.static_hosting.status }}} |
+{{#each plugins.static_hosting}}
+{{#if this.status ~}}
+| **{{#if this.metadata.name}}{{{ this.metadata.name }}}{{else}}{{ @key }}{{/if}}** | [Visit]({{ this.link }}) | {{ this.sha }} | {{{ this.status }}} |
 {{/if ~}}
 {{/each}}
 ```

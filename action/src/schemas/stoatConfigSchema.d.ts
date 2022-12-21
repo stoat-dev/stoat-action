@@ -5,42 +5,42 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type TaskPlugin = StaticHostingPlugin | JsonPlugin | JobRuntimePlugin;
-
 export interface StoatConfigSchema {
   version: number;
   enabled?: boolean;
   comment_template_file?: string;
-  tasks?: {
-    [k: string]: TaskPlugin;
+  plugins?: {
+    static_hosting?: StaticHostingPluginMap;
+    json?: JsonPluginMap;
+    job_runtime?: JobRuntimePlugin;
+    [k: string]: unknown;
   };
   [k: string]: unknown;
+}
+export interface StaticHostingPluginMap {
+  [k: string]: StaticHostingPlugin;
 }
 export interface StaticHostingPlugin {
   metadata?: {
     [k: string]: unknown;
   };
-  static_hosting: {
-    path: string;
-    [k: string]: unknown;
-  };
+  path: string;
   [k: string]: unknown;
+}
+export interface JsonPluginMap {
+  [k: string]: JsonPlugin;
 }
 export interface JsonPlugin {
   metadata?: {
     [k: string]: unknown;
   };
-  json: {
-    path: string;
-    [k: string]: unknown;
-  };
+  path: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePlugin {
-  metadata?: {
-    [k: string]: unknown;
-  };
-  job_runtime: null | {
+  enabled: boolean;
+  tracking?: boolean;
+  chart?: {
     width?: number;
     height?: number;
     [k: string]: unknown;

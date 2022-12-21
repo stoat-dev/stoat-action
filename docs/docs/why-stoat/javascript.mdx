@@ -112,11 +112,11 @@ During the CLI setup process, an action should have been appended to your GitHub
 ```yaml title=".github/workflows/ci.yaml"
 ...
 - name: Generate storybook
- run: yarn build-storybook
+  run: yarn build-storybook
 
 - name: Run stoat action
- uses: stoat-dev/stoat-action@v0
- if: always()
+  uses: stoat-dev/stoat-action@v0
+  if: always()
 ```
 
 ### 3. Configure Stoat
@@ -127,26 +127,24 @@ Update `.stoat/config.yaml` and paste in the following content:
 ---
 version: 1
 enabled: true
-tasks:
-  merged-test-coverage:
-    static_hosting:
+plugins:
+  job_runtime:
+    enabled: true
+  static_hosting:
+    merged-test-coverage:
       path: coverage/merged/lcov-report
-  storybook:
-    static_hosting:
+    storybook:
       path: storybook-static
-  cypress-video:
-    static_hosting:
+    cypress-video:
       path: cypress/videos/spec.js.mp4
-  build-time:
-    job_runtime:
 ```
 
 The Stoat config is a YAML file that contains a list of tasks. Each task contains one Stoat plugin. In the example above, we have four tasks:
 
+- Setting the `job_runtime` plugin to `enabled` reports the time it takes to run every GitHub job. The build data is tracked by the Stoat action attached to the `ci` job.
 - Task `merged-test-coverage` looks for the test coverage report under `coverage/merged/lcov-report`, and uses the Stoat `static_hosting` plugin to upload it to the Stoat server. The entire directory will be uploaded, so the preview will include all the HTML, JavaScript, and CSS files.
 - Task `storybook` is very similar. It looks for the static Storybook build under `storybook-static`, and uploads them to the Stoat server.
 - Same for the `cypress-video` task. The only difference is that this task uploads a single file instead of a directory.
-- Task `build-time` is a different type of task. It uses the `job_runtime` plugin, which tracks and reports the time it takes to run every GitHub job. It is added here to show you the extensibility of the Stoat ecosystem. This functionality is fulfilled by the same Stoat action attached to the `ci` job.
 
 ### 4. That's It!
 
@@ -162,25 +160,23 @@ The Stoat comment is also highly customizable. For example, currently, in each r
 ```yaml title=".stoat/config.yaml"
 version: 1
 enabled: true
-tasks:
-  merged-test-coverage:
-    # The metadata and name fields are newly added here.
-    metadata:
-      name: Test coverage report
-    static_hosting:
+plugins:
+  job_runtime:
+    enabled: true
+  static_hosting:
+    merged-test-coverage:
+      # The metadata and name fields are newly added here.
+      metadata:
+        name: Test coverage report
       path: coverage/merged/lcov-report
-  storybook:
-    metadata:
-      name: Storybook
-    static_hosting:
+    storybook:
+      metadata:
+        name: Storybook
       path: storybook-static
-  cypress-video:
-    metadata:
-      name: Cypress video
-    static_hosting:
+    cypress-video:
+      metadata:
+        name: Cypress video
       path: cypress/videos/spec.js.mp4
-  build-time:
-    job_runtime:
 ```
 
 Commit and push the change.

@@ -17,7 +17,7 @@ const runStaticHostingPlugin = async (
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
 
-  const pathToUpload = resolve(taskConfig.static_hosting.path);
+  const pathToUpload = resolve(taskConfig.path);
   core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
 
   if (!fs.existsSync(pathToUpload)) {

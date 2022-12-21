@@ -36,9 +36,7 @@ describe('static hosting plugin', () => {
   for (const path of ['', '.', './', '__tests__/..', '../action']) {
     it(`forbids upload of project root directory (path = "${path}")`, async () => {
       const taskConfig: StaticHostingPlugin = {
-        static_hosting: {
-          path
-        }
+        path
       };
       expect(async () => await runStaticHostingPlugin('test-task', taskConfig, githubActionRun, 1)).not.toThrow();
       const lastCallArguments = stdoutWriteSpy.mock.calls.pop();

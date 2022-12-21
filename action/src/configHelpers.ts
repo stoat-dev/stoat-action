@@ -23,28 +23,5 @@ export async function getTypedStoatConfig(stoatConfig: any): Promise<StoatConfig
     throw new Error('Failed to validate Stoat config file!');
   }
 
-  return processNullPluginConfig(stoatConfig as StoatConfigSchema);
+  return stoatConfig as StoatConfigSchema;
 }
-
-/**
- * This function updates the config in place. If any of the plugin configs
- * are null, this function replaces the null value with an empty object.
- * This is necessary because when any plugin config is null, the deepmerge
- * on the server side will replace the null value with the last object value
- * without merging multiple objects.
- */
-export const processNullPluginConfig = (stoatConfig: StoatConfigSchema): StoatConfigSchema => {
-  if (stoatConfig.tasks === undefined) {
-    return stoatConfig;
-  }
-
-  const tasks = stoatConfig.tasks || {};
-  for (const taskPlugin of Object.values(tasks)) {
-    for (const [pluginField, pluginValue] of Object.entries(taskPlugin)) {
-      if (pluginValue === null) {
-        taskPlugin[pluginField] = {};
-      }
-    }
-  }
-  return stoatConfig;
-};

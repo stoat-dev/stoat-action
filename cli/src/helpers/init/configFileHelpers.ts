@@ -7,18 +7,18 @@ import { findStoatConfigPath, getGitRoot } from '../pathHelpers';
 import { GhJob } from './stoatActionHelpers';
 
 const defaultStoatConfigFile =
-  `
+`
 ---
 version: 1
 enabled: true
-#tasks:
-#  your-unique-identifier:
-#    metadata:
-#      name: "Name of artifact you're hosting, such as Code Coverage Report"
-#    static_hosting:
+plugins:
+  job_runtime:
+    enabled: true
+#  static_hosting:
+#    your_unique_id:
+#      metadata:
+#        name: "Name of artifact you're hosting, such as Code Coverage Report"
 #      path: path/from/git/root/to/directory/to/host
-#  job-runtime:
-#    job_runtime: {}
 `.trim() + '\n';
 
 export function createConfigFile() {

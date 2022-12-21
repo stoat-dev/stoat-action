@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["version", "updated_at"],
+  "required": ["version"],
   "additionalProperties": true,
   "properties": {
     "version": {
@@ -13,20 +13,23 @@
     "comment_template_file": {
       "type": "string"
     },
+    "plugins": {
+      "type": "object",
+      "properties": {
+        "static_hosting": {
+          "$ref": "#/definitions/static_hosting_plugin_rendered_map"
+        },
+        "json": {
+          "$ref": "#/definitions/json_plugin_rendered_map"
+        },
+        "job_runtime": {
+          "$ref": "#/definitions/job_runtime_plugin_rendered"
+        }
+      }
+    },
     "updated_at": {
       "type": "string",
       "format": "date-time"
-    },
-    "tasks": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "oneOf": [
-          { "$ref": "#/definitions/static_hosting_plugin_rendered" },
-          { "$ref": "#/definitions/json_plugin_rendered" },
-          { "$ref": "#/definitions/job_runtime_plugin_rendered" }
-        ]
-      }
     },
     "views": {
       "type": "object",
@@ -59,96 +62,85 @@
     }
   },
   "definitions": {
+    "static_hosting_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/static_hosting_plugin_rendered"
+      }
+    },
     "static_hosting_plugin_rendered": {
       "type": "object",
-      "required": ["static_hosting"],
+      "required": ["path", "link", "sha", "status"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "static_hosting": {
-          "type": "object",
-          "required": ["path", "link", "sha", "status"],
-          "properties": {
-            "path": {
-              "type": "string"
-            },
-            "link": {
-              "type": "string"
-            },
-            "sha": {
-              "type": "string"
-            },
-            "status": {
-              "type": "string"
-            }
-          }
+        "path": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
         }
+      }
+    },
+    "json_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/json_plugin_rendered"
       }
     },
     "json_plugin_rendered": {
       "type": "object",
-      "required": ["json"],
+      "required": ["path", "value"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "json": {
+        "path": {
+          "type": "string"
+        },
+        "value": {
           "type": "object",
-          "required": ["path", "value"],
-          "properties": {
-            "path": {
-              "type": "string"
-            },
-            "value": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          }
+          "additionalProperties": true
         }
       }
     },
     "job_runtime_plugin_rendered": {
       "type": "object",
-      "required": ["job_runtime"],
+      "required": ["width", "height", "runtime"],
       "properties": {
-        "metadata": {
-          "type": "object",
-          "additionalProperties": true
+        "width": {
+          "type": "integer"
         },
-        "job_runtime": {
-          "type": "object",
-          "additionalProperties": true,
-          "required": ["width", "height", "runtime"],
-          "properties": {
-            "width": {
-              "type": "integer"
-            },
-            "height": {
-              "type": "integer"
-            },
-            "runtime": {
-              "type": "array",
-              "item": {
-                "type": "object",
-                "additionalProperties": true,
-                "required": ["workflow", "job", "sha", "runtime_seconds"],
-                "properties": {
-                  "workflow": {
-                    "type": "string"
-                  },
-                  "job": {
-                    "type": "string"
-                  },
-                  "sha": {
-                    "type": "string"
-                  },
-                  "runtime_seconds": {
-                    "type": "number"
-                  }
-                }
+        "height": {
+          "type": "integer"
+        },
+        "runtime": {
+          "type": "array",
+          "item": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["workflow", "job", "sha", "runtime_seconds"],
+            "properties": {
+              "workflow": {
+                "type": "string"
+              },
+              "job": {
+                "type": "string"
+              },
+              "sha": {
+                "type": "string"
+              },
+              "runtime_seconds": {
+                "type": "number"
               }
             }
           }

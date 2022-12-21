@@ -16,7 +16,7 @@ const runJsonPlugin = async (
   core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
   core.info(`[${taskId}] Current directory: ${process.cwd()}`);
 
-  const jsonToUpload = taskConfig.json.path;
+  const jsonToUpload = taskConfig.path;
   if (!fs.existsSync(jsonToUpload)) {
     core.warning(
       `[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`

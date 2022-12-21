@@ -25,15 +25,17 @@ describe('runPlugins', () => {
     const stoatConfig: StoatConfigSchema = {
       version: 1,
       enabled: true,
-      tasks: {
-        staticHostingTask1: {
-          static_hosting: { path: 'path1' }
+      plugins: {
+        static_hosting: {
+          staticHostingTask1: {
+            path: 'path1'
+          },
+          staticHostingTask2: {
+            path: 'path2'
+          }
         },
-        staticHostingTask2: {
-          static_hosting: { path: 'path2' }
-        },
-        jobRuntimeTask: {
-          job_runtime: null
+        job_runtime: {
+          enabled: true
         }
       }
     };
@@ -47,15 +49,39 @@ describe('runPlugins', () => {
     const stoatConfig: StoatConfigSchema = {
       version: 1,
       enabled: true,
-      tasks: {
-        staticHostingTask1: {
-          static_hosting: { path: 'path1' }
+      plugins: {
+        static_hosting: {
+          staticHostingTask1: {
+            path: 'path1'
+          }
         }
       }
     };
     await runPlugins(stoatConfig, {} as GithubActionRun, 1);
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(1);
+    expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not run the job runtime plugin when set to tracking disabled', async () => {
+    const stoatConfig: StoatConfigSchema = {
+      version: 1,
+      enabled: true,
+      plugins: {
+        static_hosting: {
+          staticHostingTask1: {
+            path: 'path1'
+          }
+        },
+        job_runtime: {
+          enabled: true,
+          tracking: false
+        }
+      }
+    };
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
+    expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
+    expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(0);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
   });
 });

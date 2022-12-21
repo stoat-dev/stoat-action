@@ -28540,7 +28540,7 @@ var jsYaml = {
 
 
 ;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"tasks":{"type":"object","additionalProperties":{"$ref":"#/definitions/task_plugin"}}},"definitions":{"task_plugin":{"type":"object","oneOf":[{"$ref":"#/definitions/static_hosting_plugin"},{"$ref":"#/definitions/json_plugin"},{"$ref":"#/definitions/job_runtime_plugin"}]},"static_hosting_plugin":{"type":"object","required":["static_hosting"],"properties":{"metadata":{"type":"object","additionalProperties":true},"static_hosting":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"json_plugin":{"type":"object","required":["json"],"properties":{"metadata":{"type":"object","additionalProperties":true},"json":{"type":"object","required":["path"],"properties":{"path":{"type":"string"}}}}},"job_runtime_plugin":{"type":"object","required":["job_runtime"],"properties":{"metadata":{"type":"object","additionalProperties":true},"job_runtime":{"type":["null","object"],"additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28571,30 +28571,9 @@ function getTypedStoatConfig(stoatConfig) {
             core.error(((_a = validate.errors) !== null && _a !== void 0 ? _a : []).map((e) => e.message).join('; '));
             throw new Error('Failed to validate Stoat config file!');
         }
-        return processNullPluginConfig(stoatConfig);
+        return stoatConfig;
     });
 }
-/**
- * This function updates the config in place. If any of the plugin configs
- * are null, this function replaces the null value with an empty object.
- * This is necessary because when any plugin config is null, the deepmerge
- * on the server side will replace the null value with the last object value
- * without merging multiple objects.
- */
-const processNullPluginConfig = (stoatConfig) => {
-    if (stoatConfig.tasks === undefined) {
-        return stoatConfig;
-    }
-    const tasks = stoatConfig.tasks || {};
-    for (const taskPlugin of Object.values(tasks)) {
-        for (const [pluginField, pluginValue] of Object.entries(taskPlugin)) {
-            if (pluginValue === null) {
-                taskPlugin[pluginField] = {};
-            }
-        }
-    }
-    return stoatConfig;
-};
 
 ;// CONCATENATED MODULE: ./src/plugins/helpers.ts
 var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -28683,7 +28662,7 @@ const MAX_CHARACTERS = 1024;
 const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
-    const jsonToUpload = taskConfig.json.path;
+    const jsonToUpload = taskConfig.path;
     if (!external_fs_default().existsSync(jsonToUpload)) {
         core.warning(`[${taskId}] JSON file to upload does not exist; it may be built in a different action: ${jsonToUpload}`);
         return;
@@ -28863,7 +28842,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
-    const pathToUpload = (0,external_path_.resolve)(taskConfig.static_hosting.path);
+    const pathToUpload = (0,external_path_.resolve)(taskConfig.path);
     core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
     if (!external_fs_default().existsSync(pathToUpload)) {
         core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
@@ -28916,27 +28895,20 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 
-
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
-    let hasJobRuntime = false;
-    for (const [taskId, taskConfig] of Object.entries(stoatConfig.tasks || {})) {
-        if ('static_hosting' in taskConfig) {
+    var _a, _b, _c, _d;
+    if ('static_hosting' in (stoatConfig.plugins || {})) {
+        for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
             yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
-        else if ('json' in taskConfig) {
+    }
+    if ('json' in (stoatConfig.plugins || {})) {
+        for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.json)) {
             yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
-        else if ('job_runtime' in taskConfig) {
-            hasJobRuntime = true;
-            yield jobRuntime_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
-        }
-        else {
-            core.warning(`Unknown plugin: ${taskId}`);
-        }
     }
-    if (!hasJobRuntime) {
-        const defaultJobRuntimeConfig = { job_runtime: {} };
-        yield jobRuntime_plugin('default-job-runtime', defaultJobRuntimeConfig, githubActionRun, stoatConfigFileId);
+    if (((_b = (_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.job_runtime) === null || _b === void 0 ? void 0 : _b.tracking) === true || ((_d = (_c = stoatConfig.plugins) === null || _c === void 0 ? void 0 : _c.job_runtime) === null || _d === void 0 ? void 0 : _d.tracking) === undefined) {
+        yield jobRuntime_plugin('stoat_job_runtime', stoatConfig.plugins.job_runtime, githubActionRun, stoatConfigFileId);
     }
 });
 
@@ -29081,16 +29053,15 @@ const getRemoteDefaultTemplate = (ghOwner, ghRepo, stoatConfig) => templateHelpe
     return { template, format };
 });
 const getPlugins = (stoatConfig) => {
-    if (!stoatConfig.tasks) {
-        return [];
-    }
     const plugins = new Set();
-    for (const task of Object.values(stoatConfig.tasks)) {
-        if ('static_hosting' in task) {
-            plugins.add(Plugin.StaticHosting);
-        }
-        if ('json' in task) {
-            plugins.add(Plugin.Json);
+    for (const [pluginField, pluginValue] of Object.entries(stoatConfig.plugins || {})) {
+        if (Object.keys(pluginValue || {}).length > 0) {
+            if (pluginField === 'static_hosting') {
+                plugins.add(Plugin.StaticHosting);
+            }
+            if (pluginField === 'json') {
+                plugins.add(Plugin.Json);
+            }
         }
     }
     return Array.from(plugins);

@@ -37,10 +37,10 @@ to learn how to embed the video directly in the Stoat comment as an image.
     ---
     version: 1
     enabled: true
-    tasks:
-      your-video-preview-id:
-       static_hosting:
-         path: path/to/video.mp4
+    plugins:
+      static_hosting:
+        your-video-preview-id:
+          path: path/to/video.mp4
     ```
 
    If you create a pull request, you should now have a link to the generated video in the Stoat comment after the build completes.
