@@ -37,13 +37,13 @@ Here's an example of a Stoat comment with a link to a hosted Storybook generated
      ---
      version: 1
      enabled: true
-     tasks:
-       # unique task id for your Storybook preview
-       storybook:
-         metadata:
-           # the display name for your Storybook preview
-           name: "Storybook"
-         static_hosting:
+     plugins:
+       static_hosting:
+         # unique task id for your Storybook preview
+         storybook:
+           metadata:
+             # the display name for your Storybook preview
+             name: "Storybook"
            # path to the Storybook build output
            path: storybook-static
     ```

@@ -89,9 +89,9 @@ In contrast, here is the equivalent Stoat config, Stoat template, and example Gi
 version: 1
 enabled: true
 comment_template_file: ".stoat/template.hbs"
-tasks:
-  post-comment:
-    json:
+plugins:
+  json:
+    post-comment:
       # The post-comment outputs a JSON file with the information that we want to post to the PR.
       path: output.json
 ```
@@ -104,7 +104,7 @@ tasks:
 ```
 
 ```handlebars title=".stoat/template.hbs"
-The information is: {{ tasks.post-comment.json.value.information }}
+The information is: {{ plugins.json.post-comment.value.information }}
 ```
 
 Four GitHub action steps are replaced with the one Stoat action and a small amount of config. 

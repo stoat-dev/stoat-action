@@ -13,9 +13,9 @@ The following is the order of objects merged together:
    Here is an example partial config produced by a `app-test-coverage` task that configures the `static_hosting` plugin:
    ```json
    {
-      "tasks": {
-        "app-test-coverage": {
-          "static_hosting": {
+      "plugins": {
+        "static_hosting": {
+          "app-test-coverage": {
             "sha": "1848b03dd4b58c8f8485d51a2157af4904e4073f",
             "link": "https://stoat-dev--examples--1848b03--app-test-c-4590.stoat.page",
             "status": "✅"
@@ -52,15 +52,15 @@ Modifying the `.stoat/config.yaml` file to include a task that uses the `json` p
 version: 1
 enabled: true
 comment_template_file: ".stoat/template.hbs"
-tasks:
-  time:
-    json:
+plugins:
+  json:
+    time:
       path: time.json
 ```
 
 Then let's edit the `.stoat/template.hbs` template file to only show the build time:
 ```
-Build Time: {{#if tasks.time.json.value }}{{ tasks.time.json.value.seconds }} seconds{{else}}🔄{{/if}}
+Build Time: {{#if plugins.json.time.value }}{{ plugins.json.time.value.seconds }} seconds{{else}}🔄{{/if}}
 ```
 
 Note that we can't depend on the value being available instantly since the template can render before all required build steps complete, so

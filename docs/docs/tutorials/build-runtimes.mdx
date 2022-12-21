@@ -37,16 +37,14 @@ In the future, you will be able to compare the build runtime with your default b
             if: always()
     ```
 
-3. To enable tracking build runtimes, add a new task for the `job_runtime` plugin in your `.stoat/config.yaml` file:
+3. To enable tracking build runtimes, enable the `job_runtime` plugin in your `.stoat/config.yaml` file:
     ```yaml title=".stoat/config.yaml"
     ---
     version: 1
     enabled: true
-    tasks:
-      # name of the job runtime task
-      build-time-history:
-        # set this key to select the job_runtime plugin
-        job_runtime:
+    plugins:
+      job_runtime:
+        enabled: true
     ```
 
 4. That's it. Next time you create a pull request, you should see a line plot of action runtimes in the pinned comment.

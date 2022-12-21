@@ -20,9 +20,10 @@ This YAML file has a few sections:
 2. `enabled` (optional) - The enabled flag defaults to `true`. The purpose of this flag is to allow you to easily disable Stoat repo-wide.
 3. `comment_template_file` (optional) - When not specified, this uses a remote version of a standard template. We will regularly update the contents of this remote version to include
    improvements for our core set of plugins. You can view a description of the [current default remote v1 template](https://www.stoat.dev/api/templates?stoatConfigVersion=1) via our API.
-4. `tasks` (optional) - This is a mapping of a unique task identifier to a task (the configuration for a plugin). 
-   Stoat has a [static hosting](./static-hosting), [job runtime](../tutorials/build-runtimes), and [raw json](./aggregation) plugins.
-   Each task has a user-defined task id (the key in the `tasks` mapping), which is used to reference the outputs in the [comment template](./templating).
+4. `plugins` (optional) - This is a mapping of a plugin to the configuration for a plugin. 
+   Stoat has [static hosting](./static-hosting), [job runtime](../tutorials/build-runtimes), and [raw json](./aggregation) plugins.
+   Some plugins like job runtime are configured for the entire repo, while other plugins like [static hosting](./static-hosting) and [raw json](./aggregation) are configured for specific tasks, or plugin instances.
+   Each task has a user-defined task id, which is used to reference the outputs in the [comment template](./templating).
    Each task can also specify a `metadata` key.
    Our default templates for `static_hosting` use the value for a `name` within `metadata` to label links.
    However, for your own templating convenience, you can store any data with any structure within `metadata`.
@@ -30,25 +31,25 @@ This YAML file has a few sections:
    Here are examples of tasks for each of the plugin types:
 
    ```yaml title="static_hosting"
-   tasks:
-      docs:
-        metadata:
-          name: Documentation
-        static_hosting:
+   plugins:
+      static_hosting:
+        docs:
+          metadata:
+            name: Documentation
           path: build/static-docs
    ```
 
    ```yaml title="json"
-   tasks:
-      docs:
-        json:
+   plugins:
+      json:
+        docs:
           path: build/build_metadata.json
    ```
    
    ```yaml title="job_runtime"
-   tasks:
-      build-time-history:
+   plugins:
         job_runtime:
+          enabled: true
    ```
 
 ##  Debugging

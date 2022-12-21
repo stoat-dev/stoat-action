@@ -48,12 +48,12 @@ In this tutorial we will show how to add a [Jest](https://jestjs.io/) test cover
     ---
     version: 1
     enabled: true
-    tasks:
-      jest:
-        metadata:
-          # a name for the Jest task
-          name: "Jest Coverage"
-        static_hosting:
+    plugins:
+      static_hosting:
+        jest:
+          metadata:
+            # a name for the Jest task
+            name: "Jest Coverage"
           # path to the Jest coverage report
           path: coverage/lcov-report
     ```

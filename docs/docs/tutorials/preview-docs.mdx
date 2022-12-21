@@ -46,12 +46,12 @@ In this tutorial we will show how to add a Docusaurus static preview to the Stoa
     ---
     version: 1
     enabled: true
-    tasks:
-      docusaurus:
-        metadata:
-          # a name for the Docusaurus task
-          name: "Documentation"
-        static_hosting:
+    plugins:
+      static_hosting:
+        docusaurus:
+          metadata:
+            # a name for the Docusaurus task
+            name: "Documentation"
           # path to the Docusaurus build
           path: build
     ```
