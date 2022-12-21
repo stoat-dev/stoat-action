@@ -77,9 +77,8 @@ Say yes for every job you want to track job runtimes for. Merge these changes in
 
 ### That's it!
 
-You will now see build runtimes tracked in your PRs! Stoat is capable of quite a bit more.
-
-[Visit our docs for more information »](https://docs.stoat.dev/)
+You will now see build runtimes tracked in your PRs! Stoat is capable of quite a bit more. 
+[Check out our docs for more information »](https://docs.stoat.dev/)
 
 ## How to Use Stoat
 
