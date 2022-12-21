@@ -47,7 +47,7 @@
 
 ## Quick Start
 
-You can add GitHub job runtime charts to your PR comments in just two minutes!
+You can view a chart of GitHub job runtimes in a PR comments in just two minutes!
 
 ### 1. Install GitHub Application
 
