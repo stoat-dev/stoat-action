@@ -7,7 +7,7 @@
   <br>
 </h1>
 
-<h4 align="center">Turn a comment in every pull request into your developer dashboard.</h4>
+<h4 align="center">Turn pull request comments into developer dashboards.</h4>
 
 <p align="center">
   <a href="https://github.com/stoat-dev/stoat-action/actions/workflows/test-action.yaml">
