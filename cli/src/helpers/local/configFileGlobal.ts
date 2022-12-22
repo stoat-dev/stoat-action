@@ -1,15 +1,12 @@
 import chalk from 'chalk';
-import fs, {FSWatcher, readFileSync, WatchEventType} from 'fs';
+import fs, { FSWatcher, readFileSync, WatchEventType } from 'fs';
 import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
 import { StoatConfigSchema } from '../../../../action/src/schemas/stoatConfigSchema';
-import {
-  getRemoteDefaultTemplate,
-  getTemplateFormat
-} from '../../../../action/src/templateHelpers';
+import { getRemoteDefaultTemplate, getTemplateFormat } from '../../../../action/src/templateHelpers';
 import { Template } from '../../../../action/src/types';
 
-import {findGitRoot, findStoatConfigPath} from '../pathHelpers';
-import path from "path";
+import { findGitRoot, findStoatConfigPath } from '../pathHelpers';
+import path from 'path';
 
 // supports reading the local template from a subdirectory
 const getLocalTemplate = (commentTemplatePath: string): Template => {
@@ -21,11 +18,7 @@ const getLocalTemplate = (commentTemplatePath: string): Template => {
 };
 
 // supports reading the local template from a subdirectory if necessary
-const getTemplate = async (
-    ghOwner: string,
-    ghRepo: string,
-    stoatConfig: StoatConfigSchema
-): Promise<Template> => {
+const getTemplate = async (ghOwner: string, ghRepo: string, stoatConfig: StoatConfigSchema): Promise<Template> => {
   const { comment_template_file } = stoatConfig;
   if (comment_template_file === undefined || comment_template_file === '') {
     return getRemoteDefaultTemplate(ghOwner, ghRepo, stoatConfig);
@@ -38,16 +31,19 @@ interface TemplateWatcher {
   fileWatcher: FSWatcher | undefined;
 }
 
-const getTemplateWatcher = async (oldTemplateWatcher: TemplateWatcher, commentTemplateFile: string): Promise<TemplateWatcher> => {
-  if(oldTemplateWatcher !== undefined) {
-    if(oldTemplateWatcher.commentTemplateFile === commentTemplateFile) {
+const getTemplateWatcher = async (
+  oldTemplateWatcher: TemplateWatcher,
+  commentTemplateFile: string
+): Promise<TemplateWatcher> => {
+  if (oldTemplateWatcher !== undefined) {
+    if (oldTemplateWatcher.commentTemplateFile === commentTemplateFile) {
       return oldTemplateWatcher;
     } else {
       oldTemplateWatcher.fileWatcher?.close();
     }
   }
 
-  if(commentTemplateFile === undefined || commentTemplateFile === '') {
+  if (commentTemplateFile === undefined || commentTemplateFile === '') {
     return {
       commentTemplateFile: commentTemplateFile,
       fileWatcher: undefined
@@ -86,7 +82,7 @@ export default class ConfigFileGlobal {
   }
 
   static getSchema() {
-    return this.schema; 
+    return this.schema;
   }
 
   static getTemplate() {
