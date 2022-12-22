@@ -15,7 +15,7 @@
     "build": "ncc build --source-map --license licenses.txt",
     "local": "yarn build && npm i -g",
     "test": "jest --coverage",
-    "prepare": "cd .. && husky install action/.husky"
+    "prepare": "cd .. && husky install cli/.husky"
   },
   "repository": {
     "type": "git",
