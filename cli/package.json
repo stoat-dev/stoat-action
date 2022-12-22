@@ -1,6 +1,6 @@
 {
   "name": "stoat",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Stoat CLI",
   "main": "src/index.ts",
   "bin": {
@@ -15,7 +15,7 @@
     "build": "ncc build --source-map --license licenses.txt",
     "local": "yarn build && npm i -g",
     "test": "jest --coverage",
-    "prepare": "cd .. && husky install action/.husky"
+    "prepare": "cd .. && husky install cli/.husky"
   },
   "repository": {
     "type": "git",
