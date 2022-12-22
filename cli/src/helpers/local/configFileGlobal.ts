@@ -86,7 +86,7 @@ export default class ConfigFileGlobal {
   }
 
   static getSchema() {
-    return this.schema;
+    return this.schema; 
   }
 
   static getTemplate() {
