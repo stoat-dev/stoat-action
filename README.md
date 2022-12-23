@@ -42,7 +42,7 @@
 </p>
 
 <p align="center">
-<img src="https://stoat-dev--static.stoat.page/screenshot-python.png" alt="screenshot" width="600">
+<img src="https://stoat-dev--static.stoat.page/screenshot-readme.png" alt="screenshot" width="600">
 </p>
 
 ## Quick Start
@@ -77,7 +77,9 @@ Say yes for every job you want to track job runtimes for. Merge these changes in
 
 ### That's it!
 
-You will now see build runtimes tracked in your PRs! 
+You will now see build runtimes tracked in your PRs! Here's what the build history looks like after multiple default branch builds and commits in a PR:
+
+<img src="https://stoat-dev--static.stoat.page/screenshot-graph.png" alt="screenshot" width="400">
 
 Stoat is capable of quite a bit more. [Check out our docs for more information »](https://docs.stoat.dev/)
 
