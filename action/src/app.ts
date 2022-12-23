@@ -10,7 +10,7 @@ import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
 
-// a
+// b
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,

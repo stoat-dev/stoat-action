@@ -17,4 +17,4 @@ export default async () => {
   await promptAddingStoatActions();
   console.log(chalk.green(exitMessage));
 };
-// a
+// b
