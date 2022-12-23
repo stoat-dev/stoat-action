@@ -5,4 +5,4 @@ export default function Home() {
   return <Redirect to="/docs/intro" />;
 }
 
-// b
+// c
