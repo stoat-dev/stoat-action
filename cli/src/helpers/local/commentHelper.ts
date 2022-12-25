@@ -7,8 +7,8 @@ import { marked } from 'marked';
 import { AddressInfo } from 'net';
 import path from 'path';
 import portfinder from 'portfinder';
-import { StaticHostingPlugin } from '../../../../action/src/schemas/stoatConfigSchema';
 
+import { StaticHostingPlugin } from '../../../../action/src/schemas/stoatConfigSchema';
 import { getGitRoot } from '../pathHelpers';
 import ConfigFileGlobal from './configFileGlobal';
 
@@ -58,9 +58,9 @@ async function runServersAndGetLinkUpdate(
     plugins: {
       static_hosting: {
         [taskId]: {
-            sha: 'local',
-            link: `http://localhost:${port}/${fileName ? fileName : ''}`,
-            status: '✅'
+          sha: 'local',
+          link: `http://localhost:${port}/${fileName ? fileName : ''}`,
+          status: '✅'
         }
       }
     }

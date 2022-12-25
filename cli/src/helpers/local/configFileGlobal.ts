@@ -1,12 +1,12 @@
 import chalk from 'chalk';
-import fs, { FSWatcher, readFileSync, WatchEventType } from 'fs';
+import fs, { FSWatcher, WatchEventType, readFileSync } from 'fs';
+import path from 'path';
+
 import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
 import { StoatConfigSchema } from '../../../../action/src/schemas/stoatConfigSchema';
 import { getRemoteDefaultTemplate, getTemplateFormat } from '../../../../action/src/templateHelpers';
 import { Template } from '../../../../action/src/types';
-
 import { findGitRoot, findStoatConfigPath } from '../pathHelpers';
-import path from 'path';
 
 // supports reading the local template from a subdirectory
 const getLocalTemplate = (commentTemplatePath: string): Template => {
