@@ -2,7 +2,15 @@
   "name": "stoat",
   "version": "0.0.8",
   "description": "Stoat CLI",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "public/**/*"
+  ],
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
   "bin": {
     "stoat": "./dist/index.js"
   },
