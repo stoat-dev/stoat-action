@@ -20,7 +20,7 @@
     "format-check": "prettier --check '**/*.{ts,js,json}'",
     "lint": "eslint src/**/*.ts",
     "create": "npm run build && npm run test",
-    "build": "ncc build --source-map --license licenses.txt",
+    "build": "ncc build src/index.ts --source-map --license licenses.txt",
     "local": "yarn build && npm i -g",
     "test": "jest --coverage",
     "prepare": "cd .. && husky install cli/.husky"
