@@ -22,7 +22,7 @@
         "json": {
           "$ref": "#/definitions/json_plugin_map"
         },
-        "image_diff": {
+        "img_diff": {
           "$ref": "#/definitions/image_diff_plugin_map"
         },
         "job_runtime": {
@@ -84,7 +84,10 @@
           "type": "object",
           "additionalProperties": true
         },
-        "file": {
+        "path": {
+          "type": "string"
+        },
+        "baseline": {
           "type": "string"
         }
       }
