@@ -24,6 +24,6 @@ plugins:
   image_diff:
     compare_logo_image:
       metadata:
-        name: Logo Image
+        name: Logo
       path: docs/static/img/logo-128.png
       baseline: https://stoat-dev--static.stoat.page/branding/128.png
