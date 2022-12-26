@@ -47,9 +47,9 @@ const runJsonPlugin = async (
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
+    ghToken,
     taskId,
     stoatConfigFileId,
-    ghToken,
     value
   };
   await submitPartialConfig<UploadJsonRequest>(taskId, 'jsons', requestBody);

@@ -28,9 +28,9 @@ const runJobRuntimePlugin = async (
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
+    ghToken,
     taskId,
     stoatConfigFileId,
-    ghToken,
     ghWorkflow,
     ghJob: ghJob.name,
     runtimeSeconds

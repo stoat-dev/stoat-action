@@ -1,5 +1,12 @@
-import { JobRuntimePlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
+import {
+  ImageDiffPlugin,
+  JobRuntimePlugin,
+  JsonPlugin,
+  StaticHostingPlugin,
+  StoatConfigSchema
+} from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
+import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';
 import { runJsonPlugin } from './json';
 import { runStaticHostingPlugin } from './staticHosting';
@@ -18,6 +25,12 @@ export const runPlugins = async (
   if (stoatConfig.plugins?.json !== undefined) {
     for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.json)) {
       await runJsonPlugin(taskId, taskConfig as JsonPlugin, githubActionRun, stoatConfigFileId);
+    }
+  }
+
+  if (stoatConfig.plugins?.image_diff !== undefined) {
+    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.image_diff)) {
+      await runImageDiffPlugin(taskId, taskConfig as ImageDiffPlugin, githubActionRun, stoatConfigFileId);
     }
   }
 

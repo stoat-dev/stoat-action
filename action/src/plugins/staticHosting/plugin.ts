@@ -49,9 +49,9 @@ const runStaticHostingPlugin = async (
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
+    ghToken,
     taskId,
     stoatConfigFileId,
-    ghToken,
     hostingUrl
   };
   await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
