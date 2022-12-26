@@ -98,6 +98,12 @@ export interface UploadJsonRequest extends UploadPartialConfigRequest {
   value: object;
 }
 
+export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
+  fileUrl: string;
+  baselineUrl: string;
+  diffUrl: string;
+}
+
 export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
   ghWorkflow: string;
   ghJob: string;
