@@ -27,6 +27,9 @@ const staticHosting2: StaticHostingPlugin = {
 const json1: JsonPlugin = {
   path: 'path1'
 };
+const imageDiff1: JsonPlugin = {
+  path: 'path1'
+};
 
 describe('Read local template', () => {
   test('getTemplate', async () => {
@@ -52,8 +55,14 @@ describe('Read local template', () => {
   });
 
   test('getLocalTemplate', () => {
-    expect(getLocalTemplate(template1Path)).toEqual({ template: template1, format: TemplateFormat.Handlebars });
-    expect(getLocalTemplate(template2Path)).toEqual({ template: template2, format: TemplateFormat.Jinja2 });
+    expect(getLocalTemplate(template1Path)).toEqual({
+      template: template1,
+      format: TemplateFormat.Handlebars
+    });
+    expect(getLocalTemplate(template2Path)).toEqual({
+      template: template2,
+      format: TemplateFormat.Jinja2
+    });
   });
 });
 
@@ -67,18 +76,13 @@ describe('Read remote default template', () => {
   const stoatConfigWithOnePlugin: StoatConfigSchema = {
     version: 1,
     plugins: {
-      static_hosting: {
-        plugin1: staticHosting1
-      }
+      static_hosting: { plugin1: staticHosting1 }
     }
   };
   const stoatConfigWithMultiPlugins: StoatConfigSchema = {
     version: 1,
     plugins: {
-      static_hosting: {
-        plugin1: staticHosting1,
-        plugin2: staticHosting2
-      }
+      static_hosting: { plugin1: staticHosting1, plugin2: staticHosting2 }
     }
   };
 
@@ -107,9 +111,7 @@ describe('getPlugins', () => {
       getPlugins({
         version: 1,
         plugins: {
-          static_hosting: {
-            plugin1: staticHosting1
-          }
+          static_hosting: { plugin1: staticHosting1 }
         }
       })
     ).toEqual([Plugin.StaticHosting]);
@@ -120,15 +122,11 @@ describe('getPlugins', () => {
       getPlugins({
         version: 1,
         plugins: {
-          static_hosting: {
-            plugin1: staticHosting1,
-            plugin2: staticHosting2
-          },
-          json: {
-            plugin3: json1
-          }
+          static_hosting: { plugin1: staticHosting1, plugin2: staticHosting2 },
+          json: { plugin3: json1 },
+          image_diff: { plugin4: imageDiff1 }
         }
       }).sort()
-    ).toEqual([Plugin.Json, Plugin.StaticHosting].sort());
+    ).toEqual([Plugin.Json, Plugin.StaticHosting, Plugin.ImageDiff].sort());
   });
 });

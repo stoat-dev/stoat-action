@@ -27,7 +27,9 @@ export type GithubActionRun = {
 // These types are copied from src/common/types.ts.
 export enum Plugin {
   StaticHosting = 'static_hosting',
-  Json = 'json'
+  Json = 'json',
+  ImageDiff = 'image_diff',
+  JobRuntime = 'job_runtime'
 }
 
 export enum TemplateFormat {
