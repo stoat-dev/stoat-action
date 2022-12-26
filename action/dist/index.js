@@ -33920,6 +33920,8 @@ var Plugin;
 (function (Plugin) {
     Plugin["StaticHosting"] = "static_hosting";
     Plugin["Json"] = "json";
+    Plugin["ImageDiff"] = "image_diff";
+    Plugin["JobRuntime"] = "job_runtime";
 })(Plugin || (Plugin = {}));
 var TemplateFormat;
 (function (TemplateFormat) {
@@ -33998,11 +34000,10 @@ const getPlugins = (stoatConfig) => {
     const plugins = new Set();
     for (const [pluginField, pluginValue] of Object.entries(stoatConfig.plugins || {})) {
         if (Object.keys(pluginValue || {}).length > 0) {
-            if (pluginField === 'static_hosting') {
-                plugins.add(Plugin.StaticHosting);
-            }
-            if (pluginField === 'json') {
-                plugins.add(Plugin.Json);
+            for (const pluginName of Object.values(Plugin)) {
+                if (pluginField === pluginName) {
+                    plugins.add(pluginName);
+                }
             }
         }
     }
