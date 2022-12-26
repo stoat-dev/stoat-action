@@ -2,17 +2,25 @@
   "name": "stoat",
   "version": "0.0.8",
   "description": "Stoat CLI",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "public/**/*"
+  ],
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
   "bin": {
     "stoat": "./dist/index.js"
   },
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "format": "prettier --write '**/*.{ts,json}'",
-    "format-check": "prettier --check '**/*.{ts,json}'",
+    "format": "prettier --write '**/*.{ts,js,json}'",
+    "format-check": "prettier --check '**/*.{ts,js,json}'",
     "lint": "eslint src/**/*.ts",
     "create": "npm run build && npm run test",
-    "build": "ncc build --source-map --license licenses.txt",
+    "build": "ncc build src/index.ts --source-map --license licenses.txt",
     "local": "yarn build && npm i -g",
     "test": "jest --coverage",
     "prepare": "cd .. && husky install cli/.husky"
@@ -52,6 +60,7 @@
     "prettier": "2.8.1"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.0.0",
     "@types/js-yaml": "^4.0.5",
     "@types/marked": "^4.0.8",
     "@types/node": "^18.11.13",

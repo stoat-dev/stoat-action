@@ -1,5 +1,3 @@
-import * as core from '@actions/core';
-
 import { JobRuntimePlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
 import { runJobRuntimePlugin } from './jobRuntime';
@@ -11,14 +9,14 @@ export const runPlugins = async (
   githubActionRun: GithubActionRun,
   stoatConfigFileId: number
 ): Promise<void> => {
-  if ('static_hosting' in (stoatConfig.plugins || {})) {
-    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins!.static_hosting!)) {
+  if (stoatConfig.plugins?.static_hosting !== undefined) {
+    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
       await runStaticHostingPlugin(taskId, taskConfig as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
     }
   }
 
-  if ('json' in (stoatConfig.plugins || {})) {
-    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins!.json!)) {
+  if (stoatConfig.plugins?.json !== undefined) {
+    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.json)) {
       await runJsonPlugin(taskId, taskConfig as JsonPlugin, githubActionRun, stoatConfigFileId);
     }
   }
@@ -26,7 +24,7 @@ export const runPlugins = async (
   if (stoatConfig.plugins?.job_runtime?.tracking === true || stoatConfig.plugins?.job_runtime?.tracking === undefined) {
     await runJobRuntimePlugin(
       'stoat_job_runtime',
-      stoatConfig.plugins!.job_runtime as JobRuntimePlugin,
+      stoatConfig.plugins?.job_runtime as JobRuntimePlugin,
       githubActionRun,
       stoatConfigFileId
     );

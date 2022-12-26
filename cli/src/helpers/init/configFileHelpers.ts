@@ -7,7 +7,7 @@ import { findStoatConfigPath, getGitRoot } from '../pathHelpers';
 import { GhJob } from './stoatActionHelpers';
 
 const defaultStoatConfigFile =
-`
+  `
 ---
 version: 1
 enabled: true

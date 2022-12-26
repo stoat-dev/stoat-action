@@ -28896,19 +28896,19 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
-    if ('static_hosting' in (stoatConfig.plugins || {})) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    if (((_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.static_hosting) !== undefined) {
         for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
             yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
     }
-    if ('json' in (stoatConfig.plugins || {})) {
+    if (((_b = stoatConfig.plugins) === null || _b === void 0 ? void 0 : _b.json) !== undefined) {
         for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.json)) {
             yield json_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
     }
-    if (((_b = (_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.job_runtime) === null || _b === void 0 ? void 0 : _b.tracking) === true || ((_d = (_c = stoatConfig.plugins) === null || _c === void 0 ? void 0 : _c.job_runtime) === null || _d === void 0 ? void 0 : _d.tracking) === undefined) {
-        yield jobRuntime_plugin('stoat_job_runtime', stoatConfig.plugins.job_runtime, githubActionRun, stoatConfigFileId);
+    if (((_d = (_c = stoatConfig.plugins) === null || _c === void 0 ? void 0 : _c.job_runtime) === null || _d === void 0 ? void 0 : _d.tracking) === true || ((_f = (_e = stoatConfig.plugins) === null || _e === void 0 ? void 0 : _e.job_runtime) === null || _f === void 0 ? void 0 : _f.tracking) === undefined) {
+        yield jobRuntime_plugin('stoat_job_runtime', (_g = stoatConfig.plugins) === null || _g === void 0 ? void 0 : _g.job_runtime, githubActionRun, stoatConfigFileId);
     }
 });
 

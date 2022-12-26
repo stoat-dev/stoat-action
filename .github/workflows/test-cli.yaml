@@ -47,6 +47,8 @@ jobs:
         run: |
           yarn build
           yarn test
+      - name: Check format
+        run: yarn format-check
       - name: Run Stoat Action
         uses: ./
         if: always()
