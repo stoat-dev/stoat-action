@@ -22,7 +22,7 @@
         "json": {
           "$ref": "#/definitions/json_plugin_map"
         },
-        "img_diff": {
+        "image_diff": {
           "$ref": "#/definitions/image_diff_plugin_map"
         },
         "job_runtime": {

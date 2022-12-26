@@ -12,7 +12,7 @@ export interface StoatConfigSchema {
   plugins?: {
     static_hosting?: StaticHostingPluginMap;
     json?: JsonPluginMap;
-    img_diff?: ImageDiffPluginMap;
+    image_diff?: ImageDiffPluginMap;
     job_runtime?: JobRuntimePlugin;
     [k: string]: unknown;
   };
