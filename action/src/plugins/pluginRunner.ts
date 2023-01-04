@@ -6,19 +6,12 @@ import { runStaticHostingPlugin } from './staticHosting';
 
 export const runPlugins = async (
   stoatConfig: StoatConfigSchema,
-  stepsSucceeded: boolean,
   githubActionRun: GithubActionRun,
   stoatConfigFileId: number
 ): Promise<void> => {
   if (stoatConfig.plugins?.static_hosting !== undefined) {
     for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
-      await runStaticHostingPlugin(
-        taskId,
-        taskConfig as StaticHostingPlugin,
-        githubActionRun,
-        stoatConfigFileId,
-        stepsSucceeded
-      );
+      await runStaticHostingPlugin(taskId, taskConfig as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
     }
   }
 

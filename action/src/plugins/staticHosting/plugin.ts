@@ -10,9 +10,8 @@ import { createSignedUrl, uploadPath } from './helpers';
 const runStaticHostingPlugin = async (
   taskId: string,
   taskConfig: StaticHostingPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
-  stoatConfigFileId: number,
-  stepsSucceeded: boolean
+  { ghToken, ghRepository: { repo, owner }, ghSha, stepsSucceeded }: GithubActionRun,
+  stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
   const currentDirectory = process.cwd();

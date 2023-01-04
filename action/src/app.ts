@@ -116,7 +116,8 @@ async function run(stoatConfig: any) {
     ghRunId: parseInt(core.getInput('run_id')),
     ghRunNumber: parseInt(core.getInput('run_number')),
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
-    ghToken: token
+    ghToken: token,
+    stepsSucceeded: stepsSucceeded
   };
 
   core.info('Loading template...');
@@ -125,7 +126,7 @@ async function run(stoatConfig: any) {
 
   core.info('Uploading workflow outputs...');
   const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
-  await runPlugins(typedStoatConfig, stepsSucceeded, githubActionRun, stoatConfigFileId);
+  await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
 }
 
 (async () => {

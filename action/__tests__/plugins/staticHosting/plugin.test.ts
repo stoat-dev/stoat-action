@@ -20,7 +20,8 @@ describe('static hosting plugin', () => {
     ghRunId: 1000,
     ghRunNumber: 2000,
     ghRunAttempt: 1,
-    ghToken: 'token'
+    ghToken: 'token',
+    stepsSucceeded: true
   };
 
   let stdoutWriteSpy: ReturnType<ModuleMocker['spyOn']>;
@@ -38,7 +39,7 @@ describe('static hosting plugin', () => {
       const taskConfig: StaticHostingPlugin = {
         path
       };
-      expect(async () => await runStaticHostingPlugin('test-task', taskConfig, githubActionRun, 1, true)).not.toThrow();
+      expect(async () => await runStaticHostingPlugin('test-task', taskConfig, githubActionRun, 1)).not.toThrow();
       const lastCallArguments = stdoutWriteSpy.mock.calls.pop();
       expect(lastCallArguments.length).toBe(1);
       expect(lastCallArguments[0]).toContain('project root directory cannot be uploaded for hosting');

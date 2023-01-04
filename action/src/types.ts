@@ -22,6 +22,7 @@ export type GithubActionRun = {
   ghRunNumber: number;
   ghRunAttempt: number;
   ghToken: string;
+  stepsSucceeded: boolean;
 };
 
 // These types are copied from src/common/types.ts.

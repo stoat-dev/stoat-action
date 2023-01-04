@@ -39,7 +39,7 @@ describe('runPlugins', () => {
         }
       }
     };
-    await runPlugins(stoatConfig, true, {} as GithubActionRun, 1);
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(2);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(1);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
@@ -57,7 +57,7 @@ describe('runPlugins', () => {
         }
       }
     };
-    await runPlugins(stoatConfig, true, {} as GithubActionRun, 1);
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(1);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
@@ -79,7 +79,7 @@ describe('runPlugins', () => {
         }
       }
     };
-    await runPlugins(stoatConfig, true, {} as GithubActionRun, 1);
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(0);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
