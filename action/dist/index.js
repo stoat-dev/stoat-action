@@ -28838,7 +28838,7 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId, stepsSucceeded) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -28873,7 +28873,8 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         taskId,
         stoatConfigFileId,
         ghToken,
-        hostingUrl
+        hostingUrl,
+        status: stepsSucceeded ? '✅' : '❌'
     };
     yield submitPartialConfig(taskId, 'static_hostings', requestBody);
 });
@@ -28895,11 +28896,11 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 
-const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
+const runPlugins = (stoatConfig, stepsSucceeded, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g;
     if (((_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.static_hosting) !== undefined) {
         for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
-            yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
+            yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId, stepsSucceeded);
         }
     }
     if (((_b = stoatConfig.plugins) === null || _b === void 0 ? void 0 : _b.json) !== undefined) {
@@ -29180,7 +29181,7 @@ function run(stoatConfig) {
         const commentTemplate = yield getTemplate(owner, repo, typedStoatConfig);
         core.info('Uploading workflow outputs...');
         const stoatConfigFileId = yield uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
-        yield runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
+        yield runPlugins(typedStoatConfig, stepsSucceeded, githubActionRun, stoatConfigFileId);
     });
 }
 (() => app_awaiter(void 0, void 0, void 0, function* () {
