@@ -38,7 +38,7 @@ describe('static hosting plugin', () => {
       const taskConfig: StaticHostingPlugin = {
         path
       };
-      expect(async () => await runStaticHostingPlugin('test-task', taskConfig, githubActionRun, 1)).not.toThrow();
+      expect(async () => await runStaticHostingPlugin('test-task', taskConfig, githubActionRun, 1, true)).not.toThrow();
       const lastCallArguments = stdoutWriteSpy.mock.calls.pop();
       expect(lastCallArguments.length).toBe(1);
       expect(lastCallArguments[0]).toContain('project root directory cannot be uploaded for hosting');

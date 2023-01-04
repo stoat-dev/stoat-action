@@ -92,6 +92,7 @@ export interface UploadPartialConfigResponse {
 
 export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
   hostingUrl: string;
+  status: string;
 }
 
 export interface UploadJsonRequest extends UploadPartialConfigRequest {

@@ -11,7 +11,8 @@ const runStaticHostingPlugin = async (
   taskId: string,
   taskConfig: StaticHostingPlugin,
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
-  stoatConfigFileId: number
+  stoatConfigFileId: number,
+  stepsSucceeded: boolean
 ) => {
   core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
   const currentDirectory = process.cwd();
@@ -52,7 +53,8 @@ const runStaticHostingPlugin = async (
     taskId,
     stoatConfigFileId,
     ghToken,
-    hostingUrl
+    hostingUrl,
+    status: stepsSucceeded ? '✅' : '❌'
   };
   await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
 };

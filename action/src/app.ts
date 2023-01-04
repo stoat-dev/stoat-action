@@ -125,7 +125,7 @@ async function run(stoatConfig: any) {
 
   core.info('Uploading workflow outputs...');
   const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
-  await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
+  await runPlugins(typedStoatConfig, stepsSucceeded, githubActionRun, stoatConfigFileId);
 }
 
 (async () => {
