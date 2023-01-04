@@ -22,6 +22,7 @@ export type GithubActionRun = {
   ghRunNumber: number;
   ghRunAttempt: number;
   ghToken: string;
+  stepsSucceeded: boolean;
 };
 
 // These types are copied from src/common/types.ts.
@@ -92,6 +93,7 @@ export interface UploadPartialConfigResponse {
 
 export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
   hostingUrl: string;
+  status: string;
 }
 
 export interface UploadJsonRequest extends UploadPartialConfigRequest {

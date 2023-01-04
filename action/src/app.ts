@@ -116,7 +116,8 @@ async function run(stoatConfig: any) {
     ghRunId: parseInt(core.getInput('run_id')),
     ghRunNumber: parseInt(core.getInput('run_number')),
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
-    ghToken: token
+    ghToken: token,
+    stepsSucceeded: stepsSucceeded
   };
 
   core.info('Loading template...');
