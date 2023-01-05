@@ -78,7 +78,6 @@ function getRelevantJobs(dir: string): GhJob[] {
           }
         }
       } catch (e) {
-        console.error(e);
         console.warn(chalk.yellow(`Skipping workflow ${filename}: invalid YAML`));
       }
     }
