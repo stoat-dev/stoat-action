@@ -5,7 +5,7 @@ import * as yaml from 'js-yaml';
 import path from 'path';
 
 import { getGitRoot } from '../pathHelpers';
-import { addStoatActionToYaml } from './configFileHelpers';
+import { addStoatActionToYaml, isOnPushOrPull } from './configFileHelpers';
 
 export interface GhJob {
   name: string;
@@ -63,7 +63,7 @@ function getRelevantJobs(dir: string): GhJob[] {
       try {
         const workflow: any = yaml.load(contents);
 
-        if (('jobs' in workflow && 'on' in workflow && 'pull_request' in workflow.on) || 'push' in workflow.on) {
+        if ('jobs' in workflow && 'on' in workflow && isOnPushOrPull(workflow.on)) {
           for (const job in workflow.jobs) {
             if ('steps' in workflow.jobs[job]) {
               const steps = workflow.jobs[job].steps as any[];
@@ -78,6 +78,7 @@ function getRelevantJobs(dir: string): GhJob[] {
           }
         }
       } catch (e) {
+        console.error(e);
         console.warn(chalk.yellow(`Skipping workflow ${filename}: invalid YAML`));
       }
     }
