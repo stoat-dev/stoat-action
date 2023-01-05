@@ -68,3 +68,15 @@ export function addStoatActionToYaml(job: GhJob): string {
 
   return yamlLines.join('\n');
 }
+
+export function isOnPushOrPull(on: any) {
+  if (String(on) === on) {
+    return on === 'pull_request' || on === 'push';
+  } else if (Array.isArray(on)) {
+    return on.includes('pull_request') || on.includes('push');
+  } else if (Object(on) === on) {
+    return 'pull_request' in on || 'push' in on;
+  } else {
+    return false;
+  }
+}
