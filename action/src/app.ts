@@ -53,8 +53,9 @@ async function run(stoatConfig: any) {
     core.info(`Detected pull request number: ${pullRequestNumber}`);
   }
 
-  core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
+  // this is not the build's merge commit SHA
   const repoSha = core.getInput('actual_sha');
+  core.info(`Repo SHA: ${repoSha}`);
 
   const ghBranch = core.getInput('pr_branch_name');
   await waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
