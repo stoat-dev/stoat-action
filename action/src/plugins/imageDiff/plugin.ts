@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
+import _ from 'lodash';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
@@ -20,13 +21,11 @@ const runImageDiffPlugin = async (
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
 
-  if (!isFileExist(taskConfig.path)) {
-    core.warning(`[${taskId}] No file found for image path: ${taskConfig.path}; skipping image diff`);
+  if (!isFileExist(taskId, 'image', taskConfig.image)) {
     return;
   }
   // TODO: when baseline is undefined, default to the path on main branch
-  if (!isFileExist(taskConfig.baseline)) {
-    core.warning(`[${taskId}] Baseline image not found, skipping image diff`);
+  if (!isFileExist(taskId, 'baseline', taskConfig.baseline)) {
     return;
   }
 
@@ -35,7 +34,7 @@ const runImageDiffPlugin = async (
   const diffPath = `${currentDirectory}/${uuid}-diff.png`;
   core.info(`[${taskId}] Creating image diff to ${diffPath}...`);
   const baselineImage = PNG.sync.read(fs.readFileSync(taskConfig.baseline));
-  const currentImage = PNG.sync.read(fs.readFileSync(taskConfig.path));
+  const currentImage = PNG.sync.read(fs.readFileSync(taskConfig.image));
   const { width, height } = baselineImage;
   const diffImage = new PNG({ width, height });
   pixelmatch(baselineImage.data, currentImage.data, diffImage.data, width, height, { threshold: 0.1 });
@@ -53,8 +52,8 @@ const runImageDiffPlugin = async (
   });
 
   // upload three images
-  core.info(`[${taskId}] Uploading ${taskConfig.path} to ${objectPath}...`);
-  await uploadPath(signedUrl, fields, taskConfig.path, objectPath);
+  core.info(`[${taskId}] Uploading ${taskConfig.image} to ${objectPath}...`);
+  await uploadPath(signedUrl, fields, taskConfig.image, objectPath);
   core.info(`[${taskId}] Uploaded ${taskConfig.baseline} to ${objectPath}...`);
   await uploadPath(signedUrl, fields, taskConfig.baseline, objectPath);
   core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
@@ -68,15 +67,23 @@ const runImageDiffPlugin = async (
     ghToken,
     taskId,
     stoatConfigFileId,
-    imageUrl: `${hostingUrl}/${basename(taskConfig.path)}`,
+    imageUrl: `${hostingUrl}/${basename(taskConfig.image)}`,
     baselineUrl: `${hostingUrl}/${basename(taskConfig.baseline)}`,
     diffUrl: `${hostingUrl}/${basename(diffPath)}`
   };
   await submitPartialConfig<UploadImageDiffRequest>(taskId, 'image_diffs', requestBody);
 };
 
-export const isFileExist = (path?: string): boolean => {
-  return path !== undefined && fs.existsSync(path);
+export const isFileExist = (taskId: string, pathType: string, path?: string): boolean => {
+  if (path === undefined) {
+    core.warning(`[${taskId}] ${_.capitalize(pathType)} path is undefined`);
+    return false;
+  }
+  if (!fs.existsSync(path)) {
+    core.warning(`[${taskId}] No file found at ${pathType} path: ${path}`);
+    return false;
+  }
+  return true;
 };
 
 export default runImageDiffPlugin;

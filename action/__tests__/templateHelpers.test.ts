@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import { ImageDiffPlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
 import {
   getLocalTemplate,
   getPlugins,
@@ -27,8 +27,9 @@ const staticHosting2: StaticHostingPlugin = {
 const json1: JsonPlugin = {
   path: 'path1'
 };
-const imageDiff1: JsonPlugin = {
-  path: 'path1'
+const imageDiff1: ImageDiffPlugin = {
+  image: 'path1',
+  baseline: 'baseline1'
 };
 
 describe('Read local template', () => {

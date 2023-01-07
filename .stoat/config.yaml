@@ -25,5 +25,5 @@ plugins:
     compare_logo_image:
       metadata:
         name: Logo
-      path: docs/static/img/logo-128.png
+      image: docs/static/img/logo-128.png
       baseline: docs/build/baseline-logo-128.png
