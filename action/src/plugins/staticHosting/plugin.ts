@@ -10,7 +10,7 @@ import { createSignedUrl, uploadPath } from './helpers';
 const runStaticHostingPlugin = async (
   taskId: string,
   taskConfig: StaticHostingPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
+  { ghToken, ghRepository: { repo, owner }, ghSha, stepsSucceeded }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
@@ -52,7 +52,8 @@ const runStaticHostingPlugin = async (
     ghToken,
     taskId,
     stoatConfigFileId,
-    hostingUrl
+    hostingUrl,
+    status: stepsSucceeded ? '✅' : '❌'
   };
   await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
 };

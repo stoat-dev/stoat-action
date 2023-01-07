@@ -33774,7 +33774,7 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -33809,7 +33809,8 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghToken,
         taskId,
         stoatConfigFileId,
-        hostingUrl
+        hostingUrl,
+        status: stepsSucceeded ? '✅' : '❌'
     };
     yield submitPartialConfig(taskId, 'static_hostings', requestBody);
 });
@@ -34116,7 +34117,8 @@ function run(stoatConfig) {
             ghRunId: parseInt(core.getInput('run_id')),
             ghRunNumber: parseInt(core.getInput('run_number')),
             ghRunAttempt: parseInt(core.getInput('run_attempt')),
-            ghToken: token
+            ghToken: token,
+            stepsSucceeded: stepsSucceeded
         };
         core.info('Loading template...');
         const { owner, repo } = githubActionRun.ghRepository;

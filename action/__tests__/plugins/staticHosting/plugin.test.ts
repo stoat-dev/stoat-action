@@ -20,7 +20,8 @@ describe('static hosting plugin', () => {
     ghRunId: 1000,
     ghRunNumber: 2000,
     ghRunAttempt: 1,
-    ghToken: 'token'
+    ghToken: 'token',
+    stepsSucceeded: true
   };
 
   let stdoutWriteSpy: ReturnType<ModuleMocker['spyOn']>;
