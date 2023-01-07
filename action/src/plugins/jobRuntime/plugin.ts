@@ -10,7 +10,7 @@ const runJobRuntimePlugin = async (
   { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
-  core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+  core.info(`[${taskId}] Running job runtime plugin (stoat config ${stoatConfigFileId})`);
 
   if (!ghJob) {
     core.warning(`[${taskId}] No job information found for job run`);

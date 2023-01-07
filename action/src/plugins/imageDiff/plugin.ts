@@ -18,7 +18,7 @@ const runImageDiffPlugin = async (
   { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
-  core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+  core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
 
