@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
+import Jimp from 'jimp';
 import _ from 'lodash';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
@@ -29,15 +30,34 @@ const runImageDiffPlugin = async (
     return;
   }
 
-  // create diff image
+  // read image
   const uuid = randomUUID();
+  const imagePath = `${currentDirectory}/${uuid}-image.png`;
+  await Jimp.read(taskConfig.image, (error, image) => {
+    if (error) {
+      throw error;
+    }
+    image.write(imagePath);
+  });
+  const imagePng = PNG.sync.read(fs.readFileSync(imagePath));
+  const { width, height } = imagePng;
+
+  // read baseline and resize
+  const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
+  await Jimp.read(taskConfig.baseline, (error, image) => {
+    if (error) {
+      throw error;
+    }
+    image.resize(width, height).write(baselinePath);
+  });
+  const baselinePng = PNG.sync.read(fs.readFileSync(baselinePath));
+
+  // create diff
   const diffPath = `${currentDirectory}/${uuid}-diff.png`;
   core.info(`[${taskId}] Creating image diff to ${diffPath}...`);
-  const baselineImage = PNG.sync.read(fs.readFileSync(taskConfig.baseline));
-  const currentImage = PNG.sync.read(fs.readFileSync(taskConfig.image));
-  const { width, height } = baselineImage;
+
   const diffImage = new PNG({ width, height });
-  pixelmatch(baselineImage.data, currentImage.data, diffImage.data, width, height, { threshold: 0.1 });
+  pixelmatch(baselinePng.data, imagePng.data, diffImage.data, width, height, { threshold: 0.1 });
   fs.writeFileSync(diffPath, PNG.sync.write(diffImage));
   core.info(`[${taskId}] Created image diff`);
 
@@ -52,10 +72,10 @@ const runImageDiffPlugin = async (
   });
 
   // upload three images
-  core.info(`[${taskId}] Uploading ${taskConfig.image} to ${objectPath}...`);
-  await uploadPath(signedUrl, fields, taskConfig.image, objectPath);
-  core.info(`[${taskId}] Uploaded ${taskConfig.baseline} to ${objectPath}...`);
-  await uploadPath(signedUrl, fields, taskConfig.baseline, objectPath);
+  core.info(`[${taskId}] Uploading ${imagePath} to ${objectPath}...`);
+  await uploadPath(signedUrl, fields, imagePath, objectPath);
+  core.info(`[${taskId}] Uploaded ${baselinePath} to ${objectPath}...`);
+  await uploadPath(signedUrl, fields, baselinePath, objectPath);
   core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
   await uploadPath(signedUrl, fields, diffPath, objectPath);
 
@@ -67,8 +87,8 @@ const runImageDiffPlugin = async (
     ghToken,
     taskId,
     stoatConfigFileId,
-    imageUrl: `${hostingUrl}/${basename(taskConfig.image)}`,
-    baselineUrl: `${hostingUrl}/${basename(taskConfig.baseline)}`,
+    imageUrl: `${hostingUrl}/${basename(imagePath)}`,
+    baselineUrl: `${hostingUrl}/${basename(baselinePath)}`,
     diffUrl: `${hostingUrl}/${basename(diffPath)}`
   };
   await submitPartialConfig<UploadImageDiffRequest>(taskId, 'image_diffs', requestBody);
