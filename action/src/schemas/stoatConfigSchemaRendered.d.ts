@@ -12,6 +12,7 @@ export interface StoatConfigSchemaRendered {
   plugins?: {
     static_hosting?: StaticHostingPluginRenderedMap;
     json?: JsonPluginRenderedMap;
+    image_diff?: ImageDiffPluginRenderedMap;
     job_runtime?: JobRuntimePluginRendered;
     [k: string]: unknown;
   };
@@ -55,6 +56,20 @@ export interface JsonPluginRendered {
   value: {
     [k: string]: unknown;
   };
+  [k: string]: unknown;
+}
+export interface ImageDiffPluginRenderedMap {
+  [k: string]: ImageDiffPluginRendered;
+}
+export interface ImageDiffPluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  image?: string;
+  baseline?: string;
+  image_url: string;
+  baseline_url: string;
+  diff_url: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {

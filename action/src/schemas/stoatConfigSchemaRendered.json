@@ -22,6 +22,9 @@
         "json": {
           "$ref": "#/definitions/json_plugin_rendered_map"
         },
+        "image_diff": {
+          "$ref": "#/definitions/image_diff_plugin_rendered_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin_rendered"
         }
@@ -110,6 +113,38 @@
         "value": {
           "type": "object",
           "additionalProperties": true
+        }
+      }
+    },
+    "image_diff_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/image_diff_plugin_rendered"
+      }
+    },
+    "image_diff_plugin_rendered": {
+      "type": "object",
+      "required": ["image_url", "baseline_url", "diff_url"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "string"
+        },
+        "baseline": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "baseline_url": {
+          "type": "string"
+        },
+        "diff_url": {
+          "type": "string"
         }
       }
     },
