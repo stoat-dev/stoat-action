@@ -45,7 +45,7 @@ export interface ImageDiffPlugin {
   metadata?: {
     [k: string]: unknown;
   };
-  path: string;
+  image: string;
   baseline: string;
   [k: string]: unknown;
 }

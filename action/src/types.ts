@@ -103,7 +103,7 @@ export interface UploadJsonRequest extends UploadPartialConfigRequest {
 }
 
 export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
-  fileUrl: string;
+  imageUrl: string;
   baselineUrl: string;
   diffUrl: string;
 }

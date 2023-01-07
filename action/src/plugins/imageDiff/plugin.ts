@@ -68,7 +68,7 @@ const runImageDiffPlugin = async (
     ghToken,
     taskId,
     stoatConfigFileId,
-    fileUrl: `${hostingUrl}/${basename(taskConfig.path)}`,
+    imageUrl: `${hostingUrl}/${basename(taskConfig.path)}`,
     baselineUrl: `${hostingUrl}/${basename(taskConfig.baseline)}`,
     diffUrl: `${hostingUrl}/${basename(diffPath)}`
   };

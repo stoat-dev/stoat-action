@@ -78,13 +78,13 @@
     },
     "image_diff_plugin": {
       "type": "object",
-      "required": ["path", "baseline"],
+      "required": ["image", "baseline"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "path": {
+        "image": {
           "type": "string"
         },
         "baseline": {
