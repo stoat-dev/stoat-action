@@ -75,11 +75,10 @@ export const getPlugins = (stoatConfig: StoatConfigSchema): Plugin[] => {
   const plugins: Set<Plugin> = new Set<Plugin>();
   for (const [pluginField, pluginValue] of Object.entries(stoatConfig.plugins || {})) {
     if (Object.keys(pluginValue || {}).length > 0) {
-      if (pluginField === 'static_hosting') {
-        plugins.add(Plugin.StaticHosting);
-      }
-      if (pluginField === 'json') {
-        plugins.add(Plugin.Json);
+      for (const pluginName of Object.values(Plugin)) {
+        if (pluginField === pluginName) {
+          plugins.add(pluginName);
+        }
       }
     }
   }

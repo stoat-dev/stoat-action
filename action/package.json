@@ -39,7 +39,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "form-data": "^4.0.0",
     "handlebars": "^4.7.7",
-    "mime-types": "^2.1.35"
+    "jimp": "^0.16.2",
+    "mime-types": "^2.1.35",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^6.0.0"
   },
   "devDependencies": {
     "@octokit/openapi-types": "^14.0.0",
@@ -48,6 +51,8 @@
     "@types/js-yaml": "^4.0.5",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^18.11.18",
+    "@types/pixelmatch": "^5.2.4",
+    "@types/pngjs": "^6.0.1",
     "@vercel/ncc": "^0.36.0",
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",

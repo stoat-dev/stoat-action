@@ -28,7 +28,9 @@ export type GithubActionRun = {
 // These types are copied from src/common/types.ts.
 export enum Plugin {
   StaticHosting = 'static_hosting',
-  Json = 'json'
+  Json = 'json',
+  ImageDiff = 'image_diff',
+  JobRuntime = 'job_runtime'
 }
 
 export enum TemplateFormat {
@@ -98,6 +100,12 @@ export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
 
 export interface UploadJsonRequest extends UploadPartialConfigRequest {
   value: object;
+}
+
+export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
+  imageUrl: string;
+  baselineUrl: string;
+  diffUrl: string;
 }
 
 export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {

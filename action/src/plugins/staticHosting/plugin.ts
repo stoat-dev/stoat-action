@@ -49,9 +49,9 @@ const runStaticHostingPlugin = async (
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
+    ghToken,
     taskId,
     stoatConfigFileId,
-    ghToken,
     hostingUrl,
     status: stepsSucceeded ? '✅' : '❌'
   };

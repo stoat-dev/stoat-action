@@ -22,6 +22,9 @@
         "json": {
           "$ref": "#/definitions/json_plugin_map"
         },
+        "image_diff": {
+          "$ref": "#/definitions/image_diff_plugin_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
         }
@@ -63,6 +66,28 @@
           "additionalProperties": true
         },
         "path": {
+          "type": "string"
+        }
+      }
+    },
+    "image_diff_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/image_diff_plugin"
+      }
+    },
+    "image_diff_plugin": {
+      "type": "object",
+      "required": ["image", "baseline"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "string"
+        },
+        "baseline": {
           "type": "string"
         }
       }

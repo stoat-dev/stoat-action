@@ -21,3 +21,9 @@ plugins:
       metadata:
         name: Documentation
       path: docs/build
+  image_diff:
+    compare_logo_image:
+      metadata:
+        name: Logo
+      image: docs/static/img/logo-128.png
+      baseline: docs/build/baseline-logo-128.png

@@ -46,6 +46,9 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Download baseline logo image
+        run: curl https://stoat-dev--static.stoat.page/branding/128.png -o build/baseline-logo-128.png
+
       - name: Run Stoat Action
         uses: ./
         if: always()
