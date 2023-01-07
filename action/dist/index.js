@@ -31693,9 +31693,15 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
-    // TODO: default to the path on main branch
-    checkFile(taskId, 'baseline', taskConfig.baseline);
-    checkFile(taskId, 'path', taskConfig.path);
+    if (!isFileExist(taskConfig.path)) {
+        core.warning(`[${taskId}] No file found for image path: ${taskConfig.path}; skipping image diff`);
+        return;
+    }
+    // TODO: when baseline is undefined, default to the path on main branch
+    if (!isFileExist(taskConfig.baseline)) {
+        core.warning(`[${taskId}] Baseline image not found, skipping image diff`);
+        return;
+    }
     // create diff image
     const uuid = (0,external_crypto_.randomUUID)();
     const diffPath = `${currentDirectory}/${uuid}-diff.png`;
@@ -31737,13 +31743,8 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     };
     yield submitPartialConfig(taskId, 'image_diffs', requestBody);
 });
-const checkFile = (taskId, fileType, path) => {
-    if (path === undefined) {
-        throw new Error(`[${taskId}] Missing ${fileType} image path in ${taskId} task config`);
-    }
-    if (!external_fs_default().existsSync(path)) {
-        throw new Error(`[${taskId}] No file found at ${path}`);
-    }
+const isFileExist = (path) => {
+    return path !== undefined && external_fs_default().existsSync(path);
 };
 /* harmony default export */ const imageDiff_plugin = (runImageDiffPlugin);
 

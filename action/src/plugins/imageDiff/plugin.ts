@@ -20,9 +20,15 @@ const runImageDiffPlugin = async (
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
 
-  // TODO: default to the path on main branch
-  checkFile(taskId, 'baseline', taskConfig.baseline);
-  checkFile(taskId, 'path', taskConfig.path);
+  if (!isFileExist(taskConfig.path)) {
+    core.warning(`[${taskId}] No file found for image path: ${taskConfig.path}; skipping image diff`);
+    return;
+  }
+  // TODO: when baseline is undefined, default to the path on main branch
+  if (!isFileExist(taskConfig.baseline)) {
+    core.warning(`[${taskId}] Baseline image not found, skipping image diff`);
+    return;
+  }
 
   // create diff image
   const uuid = randomUUID();
@@ -69,13 +75,8 @@ const runImageDiffPlugin = async (
   await submitPartialConfig<UploadImageDiffRequest>(taskId, 'image_diffs', requestBody);
 };
 
-export const checkFile = (taskId: string, fileType: string, path?: string) => {
-  if (path === undefined) {
-    throw new Error(`[${taskId}] Missing ${fileType} image path in ${taskId} task config`);
-  }
-  if (!fs.existsSync(path)) {
-    throw new Error(`[${taskId}] No file found at ${path}`);
-  }
+export const isFileExist = (path?: string): boolean => {
+  return path !== undefined && fs.existsSync(path);
 };
 
 export default runImageDiffPlugin;
