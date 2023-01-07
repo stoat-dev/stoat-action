@@ -86090,7 +86090,7 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
-    core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
     if (!isFileExist(taskId, 'image', taskConfig.image)) {
@@ -86103,8 +86103,10 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     // read image
     const uuid = (0,external_crypto_.randomUUID)();
     const imagePath = `${currentDirectory}/${uuid}-image.png`;
+    core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
     yield dist_default().read(taskConfig.image, (error, image) => {
         if (error) {
+            core.error(`[${taskId}] Error reading image: ${error}`);
             throw error;
         }
         image.write(imagePath);
@@ -86113,8 +86115,10 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     const { width, height } = imagePng;
     // read baseline and resize
     const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
+    core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
     yield dist_default().read(taskConfig.baseline, (error, image) => {
         if (error) {
+            core.error(`[${taskId}] Error reading baseline: ${error}`);
             throw error;
         }
         image.resize(width, height).write(baselinePath);
@@ -86186,7 +86190,7 @@ var jobRuntime_plugin_awaiter = (undefined && undefined.__awaiter) || function (
 
 
 const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => jobRuntime_plugin_awaiter(void 0, void 0, void 0, function* () {
-    core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
+    core.info(`[${taskId}] Running job runtime plugin (stoat config ${stoatConfigFileId})`);
     if (!ghJob) {
         core.warning(`[${taskId}] No job information found for job run`);
         return;

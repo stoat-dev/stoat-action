@@ -33,8 +33,10 @@ const runImageDiffPlugin = async (
   // read image
   const uuid = randomUUID();
   const imagePath = `${currentDirectory}/${uuid}-image.png`;
+  core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
   await Jimp.read(taskConfig.image, (error, image) => {
     if (error) {
+      core.error(`[${taskId}] Error reading image: ${error}`);
       throw error;
     }
     image.write(imagePath);
@@ -44,8 +46,10 @@ const runImageDiffPlugin = async (
 
   // read baseline and resize
   const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
+  core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
   await Jimp.read(taskConfig.baseline, (error, image) => {
     if (error) {
+      core.error(`[${taskId}] Error reading baseline: ${error}`);
       throw error;
     }
     image.resize(width, height).write(baselinePath);
