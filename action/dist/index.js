@@ -86102,27 +86102,31 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     }
     // read image
     const uuid = (0,external_crypto_.randomUUID)();
-    const imagePath = `${currentDirectory}/${uuid}-image.png`;
+    const filename = (0,external_path_.basename)(taskConfig.image).split('.')[0];
+    const imagePath = `${currentDirectory}/${uuid}-image-${filename}.png`;
     core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
-    yield dist_default().read(taskConfig.image, (error, image) => {
+    yield dist_default().read(external_fs_default().readFileSync(taskConfig.image), (error, image) => {
         if (error) {
             core.error(`[${taskId}] Error reading image: ${error}`);
             throw error;
         }
         image.write(imagePath);
     });
+    core.info(`[${taskId}] Converted image ${taskConfig.image} to ${imagePath}`);
     const imagePng = png/* PNG.sync.read */.y.sync.read(external_fs_default().readFileSync(imagePath));
     const { width, height } = imagePng;
+    core.info(`Image size: ${width} x ${height}`);
     // read baseline and resize
     const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
     core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
-    yield dist_default().read(taskConfig.baseline, (error, image) => {
+    yield dist_default().read(external_fs_default().readFileSync(taskConfig.baseline), (error, image) => {
         if (error) {
             core.error(`[${taskId}] Error reading baseline: ${error}`);
             throw error;
         }
         image.resize(width, height).write(baselinePath);
     });
+    core.info(`[${taskId}] Converted baseline ${taskConfig.baseline} to ${baselinePath}`);
     const baselinePng = png/* PNG.sync.read */.y.sync.read(external_fs_default().readFileSync(baselinePath));
     // create diff
     const diffPath = `${currentDirectory}/${uuid}-diff.png`;
