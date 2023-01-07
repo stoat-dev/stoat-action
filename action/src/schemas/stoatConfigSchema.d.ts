@@ -46,7 +46,7 @@ export interface ImageDiffPlugin {
     [k: string]: unknown;
   };
   path: string;
-  baseline?: string;
+  baseline: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePlugin {

@@ -78,7 +78,7 @@
     },
     "image_diff_plugin": {
       "type": "object",
-      "required": ["path"],
+      "required": ["path", "baseline"],
       "properties": {
         "metadata": {
           "type": "object",

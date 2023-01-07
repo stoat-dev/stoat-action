@@ -1,7 +1,6 @@
 import * as core from '@actions/core';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
-import download from 'image-downloader';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
@@ -21,22 +20,15 @@ const runImageDiffPlugin = async (
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
 
-  // get baseline image
-  if (!taskConfig.baseline) {
-    throw new Error(`[${taskId}] Missing baseline image URL in ${taskId} task config`);
-  }
-  const uuid = randomUUID();
-  const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
-  core.info(`[${taskId}] Downloading baseline image to ${baselinePath}...`);
-  const baselineImageFile = await download.image({
-    url: taskConfig.baseline,
-    dest: baselinePath
-  });
+  // TODO: default to the path on main branch
+  checkFile(taskId, 'baseline', taskConfig.baseline);
+  checkFile(taskId, 'path', taskConfig.path);
 
   // create diff image
+  const uuid = randomUUID();
   const diffPath = `${currentDirectory}/${uuid}-diff.png`;
   core.info(`[${taskId}] Creating image diff to ${diffPath}...`);
-  const baselineImage = PNG.sync.read(fs.readFileSync(baselinePath));
+  const baselineImage = PNG.sync.read(fs.readFileSync(taskConfig.baseline));
   const currentImage = PNG.sync.read(fs.readFileSync(taskConfig.path));
   const { width, height } = baselineImage;
   const diffImage = new PNG({ width, height });
@@ -57,8 +49,8 @@ const runImageDiffPlugin = async (
   // upload three images
   core.info(`[${taskId}] Uploading ${taskConfig.path} to ${objectPath}...`);
   await uploadPath(signedUrl, fields, taskConfig.path, objectPath);
-  core.info(`[${taskId}] Uploaded ${baselinePath} to ${objectPath}...`);
-  await uploadPath(signedUrl, fields, baselinePath, objectPath);
+  core.info(`[${taskId}] Uploaded ${taskConfig.baseline} to ${objectPath}...`);
+  await uploadPath(signedUrl, fields, taskConfig.baseline, objectPath);
   core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
   await uploadPath(signedUrl, fields, diffPath, objectPath);
 
@@ -71,10 +63,19 @@ const runImageDiffPlugin = async (
     taskId,
     stoatConfigFileId,
     fileUrl: `${hostingUrl}/${basename(taskConfig.path)}`,
-    baselineUrl: `${hostingUrl}/${basename(baselinePath)}`,
+    baselineUrl: `${hostingUrl}/${basename(taskConfig.baseline)}`,
     diffUrl: `${hostingUrl}/${basename(diffPath)}`
   };
   await submitPartialConfig<UploadImageDiffRequest>(taskId, 'image_diffs', requestBody);
+};
+
+export const checkFile = (taskId: string, fileType: string, path?: string) => {
+  if (path === undefined) {
+    throw new Error(`[${taskId}] Missing ${fileType} image path in ${taskId} task config`);
+  }
+  if (!fs.existsSync(path)) {
+    throw new Error(`[${taskId}] No file found at ${path}`);
+  }
 };
 
 export default runImageDiffPlugin;
