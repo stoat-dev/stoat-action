@@ -35,13 +35,13 @@ const runImageDiffPlugin = async (
   const filename = basename(taskConfig.image).split('.')[0];
   const imagePath = `${currentDirectory}/${uuid}-image-${filename}.png`;
   core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
-  await Jimp.read(fs.readFileSync(taskConfig.image), (error, image) => {
-    if (error) {
-      core.error(`[${taskId}] Error reading image: ${error}`);
-      throw error;
-    }
-    image.write(imagePath);
-  });
+  try {
+    const imageFile = await Jimp.read(taskConfig.image);
+    await imageFile.writeAsync(imagePath);
+  } catch (error) {
+    core.error(`[${taskId}] Failed to read image ${taskConfig.image}: ${error}`);
+    return;
+  }
   core.info(`[${taskId}] Converted image ${taskConfig.image} to ${imagePath}`);
   const imagePng = PNG.sync.read(fs.readFileSync(imagePath));
   const { width, height } = imagePng;
@@ -50,13 +50,13 @@ const runImageDiffPlugin = async (
   // read baseline and resize
   const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
   core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
-  await Jimp.read(fs.readFileSync(taskConfig.baseline), (error, image) => {
-    if (error) {
-      core.error(`[${taskId}] Error reading baseline: ${error}`);
-      throw error;
-    }
-    image.resize(width, height).write(baselinePath);
-  });
+  try {
+    const baselineFile = await Jimp.read(taskConfig.baseline);
+    await baselineFile.resize(width, height).writeAsync(baselinePath);
+  } catch (error) {
+    core.error(`[${taskId}] Failed to read baseline ${taskConfig.baseline}: ${error}`);
+    return;
+  }
   core.info(`[${taskId}] Converted baseline ${taskConfig.baseline} to ${baselinePath}`);
   const baselinePng = PNG.sync.read(fs.readFileSync(baselinePath));
 

@@ -86105,13 +86105,14 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     const filename = (0,external_path_.basename)(taskConfig.image).split('.')[0];
     const imagePath = `${currentDirectory}/${uuid}-image-${filename}.png`;
     core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
-    yield dist_default().read(external_fs_default().readFileSync(taskConfig.image), (error, image) => {
-        if (error) {
-            core.error(`[${taskId}] Error reading image: ${error}`);
-            throw error;
-        }
-        image.write(imagePath);
-    });
+    try {
+        const imageFile = yield dist_default().read(taskConfig.image);
+        yield imageFile.writeAsync(imagePath);
+    }
+    catch (error) {
+        core.error(`[${taskId}] Failed to read image ${taskConfig.image}: ${error}`);
+        return;
+    }
     core.info(`[${taskId}] Converted image ${taskConfig.image} to ${imagePath}`);
     const imagePng = png/* PNG.sync.read */.y.sync.read(external_fs_default().readFileSync(imagePath));
     const { width, height } = imagePng;
@@ -86119,13 +86120,14 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     // read baseline and resize
     const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
     core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
-    yield dist_default().read(external_fs_default().readFileSync(taskConfig.baseline), (error, image) => {
-        if (error) {
-            core.error(`[${taskId}] Error reading baseline: ${error}`);
-            throw error;
-        }
-        image.resize(width, height).write(baselinePath);
-    });
+    try {
+        const baselineFile = yield dist_default().read(taskConfig.baseline);
+        yield baselineFile.resize(width, height).writeAsync(baselinePath);
+    }
+    catch (error) {
+        core.error(`[${taskId}] Failed to read baseline ${taskConfig.baseline}: ${error}`);
+        return;
+    }
     core.info(`[${taskId}] Converted baseline ${taskConfig.baseline} to ${baselinePath}`);
     const baselinePng = png/* PNG.sync.read */.y.sync.read(external_fs_default().readFileSync(baselinePath));
     // create diff
@@ -86585,8 +86587,9 @@ function run(stoatConfig) {
         else {
             core.info(`Detected pull request number: ${pullRequestNumber}`);
         }
-        core.info(`Fetching repo's SHA (not the build's merge commit SHA)...`);
+        // this is not the build's merge commit SHA
         const repoSha = core.getInput('actual_sha');
+        core.info(`Repo SHA: ${repoSha}`);
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
         core.info('Checking if prior steps succeeded...');
