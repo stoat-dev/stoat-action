@@ -39,7 +39,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "form-data": "^4.0.0",
     "handlebars": "^4.7.7",
-    "image-downloader": "^4.3.0",
     "mime-types": "^2.1.35",
     "pixelmatch": "^5.3.0",
     "pngjs": "^6.0.0"
