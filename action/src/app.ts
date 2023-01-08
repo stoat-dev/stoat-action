@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import * as fs from 'fs';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
@@ -9,6 +10,11 @@ import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
+import {runStaticHostingPlugin} from "./plugins/staticHosting";
+import {StaticHostingPlugin} from "./schemas/stoatConfigSchema";
+
+const k8s = require('@kubernetes/client-node');
+
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -128,6 +134,35 @@ async function run(stoatConfig: any) {
   core.info('Uploading workflow outputs...');
   const stoatConfigFileId = await uploadWorkflowOutputs(typedStoatConfig, commentTemplate, githubActionRun);
   await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
+
+  core.info('Checking Kubernetes plugin...');
+  const namespaces = core.getInput("kubernetes").split(",");
+
+  if(namespaces.length > 0) {
+    const kc = new k8s.KubeConfig();
+    kc.loadFromDefault();
+    const kube = kc.makeApiClient(k8s.CoreV1Api);
+
+    kube.listNamespacedPod()
+        .then((res :any ) => {
+          // tslint:disable-next-line:no-console
+          console.log(res.body);
+        });
+
+    // todo: check if you can connect first
+
+    const logPath = await fs.promises.mkdtemp('/tmp/');
+
+    // then go through all the pods and collect paths generated
+    for (const namespace of namespaces) {
+      const pods = await kube.api.v1.namespaces(namespace).get().pods.get();
+      // download logs
+    }
+
+    // generate index.html file
+
+    await runStaticHostingPlugin("kubernetes-logs", { metadata: { name: "Kubernetes Logs"}, path: logPath } as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
+  }
 }
 
 (async () => {

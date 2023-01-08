@@ -21,6 +21,11 @@ plugins:
       metadata:
         name: Documentation
       path: docs/build
+#    todo: remove
+    kube-logs:
+      metadata:
+        name: Kubernetes Logs
+      path: action/logs
   image_diff:
     compare_logo_image:
       metadata:

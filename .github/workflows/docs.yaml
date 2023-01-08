@@ -1,54 +1,54 @@
-name: Docs
-
-# why isn't this just on: push: ?
-# because we want to test different build patterns, that's why
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
-      - '.stoat/**'
-      - '.github/workflows/docs.yaml'
-  pull_request:
-    paths:
-      - 'docs/**'
-      - '.stoat/**'
-      - '.github/workflows/docs.yaml'
-
-defaults:
-  run:
-    working-directory: docs
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Setup cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/docs/node_modules
-          key: ${{ runner.os }}-node-16-${{ hashFiles('docs/yarn.lock') }}
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build
-        run: yarn build
-
-      - name: Download baseline logo image
-        run: curl https://stoat-dev--static.stoat.page/branding/128.png -o build/baseline-logo-128.png
-
-      - name: Run Stoat Action
-        uses: ./
-        if: always()
+#name: Docs
+#
+## why isn't this just on: push: ?
+## because we want to test different build patterns, that's why
+#on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'docs/**'
+#      - '.stoat/**'
+#      - '.github/workflows/docs.yaml'
+#  pull_request:
+#    paths:
+#      - 'docs/**'
+#      - '.stoat/**'
+#      - '.github/workflows/docs.yaml'
+#
+#defaults:
+#  run:
+#    working-directory: docs
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Set up Node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#
+#      - name: Setup cache
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ${{ github.workspace }}/docs/node_modules
+#          key: ${{ runner.os }}-node-16-${{ hashFiles('docs/yarn.lock') }}
+#
+#      - name: Install dependencies
+#        run: yarn install
+#
+#      - name: Build
+#        run: yarn build
+#
+#      - name: Download baseline logo image
+#        run: curl https://stoat-dev--static.stoat.page/branding/128.png -o build/baseline-logo-128.png
+#
+#      - name: Run Stoat Action
+#        uses: ./
+#        if: always()
