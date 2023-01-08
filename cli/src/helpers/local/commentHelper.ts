@@ -1,3 +1,4 @@
+import cors from 'cors';
 import { deepmerge } from 'deepmerge-ts';
 import express from 'express';
 import fs from 'fs';
@@ -27,6 +28,7 @@ const tableHbs: string =
 async function createServer(localPath: string): Promise<http.Server> {
   const port = await portfinder.getPortPromise();
   const expressApp = express();
+  expressApp.use(cors());
   expressApp.use(express.static(localPath));
   return expressApp.listen(port);
 }
