@@ -114,7 +114,7 @@ function convertToFileTree(loggables: KubeLoggable[]): FileTree {
         })
     );
 
-    const logsListingPath = path.join(rootLogDir, "logs.json");
+    const logsListingPath = path.join(rootLogDir, "filetree.json");
     fs.writeFileSync(logsListingPath, JSON.stringify(convertToFileTree(loggables)));
 
 })();
