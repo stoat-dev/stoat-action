@@ -26,6 +26,7 @@ export interface StaticHostingPlugin {
     [k: string]: unknown;
   };
   path: string;
+  file_viewer?: boolean;
   [k: string]: unknown;
 }
 export interface JsonPluginMap {

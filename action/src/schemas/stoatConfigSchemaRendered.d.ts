@@ -40,6 +40,7 @@ export interface StaticHostingPluginRendered {
     [k: string]: unknown;
   };
   path: string;
+  file_viewer?: boolean;
   link: string;
   sha: string;
   status: string;

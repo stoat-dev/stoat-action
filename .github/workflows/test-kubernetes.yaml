@@ -45,6 +45,9 @@ jobs:
         run: |
           kubectl apply -f ../kubernetes/whalesay.yaml
           sleep 30
+      - name: Dump Kubernetes Logs
+        run: |
+          yarn script scripts/testKube.ts
       - name: Run Stoat Action
         uses: ./
         if: always()

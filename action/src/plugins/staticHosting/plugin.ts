@@ -52,7 +52,7 @@ const runStaticHostingPlugin = async (
     ghToken,
     taskId,
     stoatConfigFileId,
-    hostingUrl,
+    hostingUrl: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
     status: stepsSucceeded ? '✅' : '❌'
   };
   await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);

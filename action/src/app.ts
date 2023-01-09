@@ -1,20 +1,19 @@
 import * as core from '@actions/core';
-import * as fs from 'fs';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
+import * as fs from 'fs';
 
 import { uploadWorkflowOutputs } from './commentHelpers';
 import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
 import { runPlugins } from './plugins/pluginRunner';
+import { runStaticHostingPlugin } from './plugins/staticHosting';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
+import { StaticHostingPlugin } from './schemas/stoatConfigSchema';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
-import {runStaticHostingPlugin} from "./plugins/staticHosting";
-import {StaticHostingPlugin} from "./schemas/stoatConfigSchema";
 
 const k8s = require('@kubernetes/client-node');
-
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -136,18 +135,17 @@ async function run(stoatConfig: any) {
   await runPlugins(typedStoatConfig, githubActionRun, stoatConfigFileId);
 
   core.info('Checking Kubernetes plugin...');
-  const namespaces = core.getInput("kubernetes").split(",");
+  const namespaces = core.getInput('kubernetes').split(',');
 
-  if(namespaces.length > 0) {
+  if (namespaces.length > 0) {
     const kc = new k8s.KubeConfig();
     kc.loadFromDefault();
     const kube = kc.makeApiClient(k8s.CoreV1Api);
 
-    kube.listNamespacedPod()
-        .then((res :any ) => {
-          // tslint:disable-next-line:no-console
-          console.log(res.body);
-        });
+    kube.listNamespacedPod().then((res: any) => {
+      // tslint:disable-next-line:no-console
+      console.log(res.body);
+    });
 
     // todo: check if you can connect first
 
@@ -161,7 +159,12 @@ async function run(stoatConfig: any) {
 
     // generate index.html file
 
-    await runStaticHostingPlugin("kubernetes-logs", { metadata: { name: "Kubernetes Logs"}, path: logPath } as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
+    await runStaticHostingPlugin(
+      'kubernetes-logs',
+      { metadata: { name: 'Kubernetes Logs' }, path: logPath } as StaticHostingPlugin,
+      githubActionRun,
+      stoatConfigFileId
+    );
   }
 }
 
