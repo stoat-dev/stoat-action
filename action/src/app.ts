@@ -10,8 +10,6 @@ import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
 
-const k8s = require('@kubernetes/client-node');
-
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
   repository: Repository,
