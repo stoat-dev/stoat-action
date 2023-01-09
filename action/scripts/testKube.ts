@@ -110,7 +110,7 @@ function convertToFileTree(loggables: KubeLoggable[]): FileTree {
         .log(loggable.namespace, loggable.pod, loggable.container, fileStream, logOptions)
         .catch((error: any) => {
           console.log(error);
-          // process.exit(1);
+          // process.exit(1); // todo: debug why so many of these are unavailable
         });
     })
   );

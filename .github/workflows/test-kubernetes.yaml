@@ -47,6 +47,7 @@ jobs:
       - name: Run whalesay
         run: |
           kubectl apply -f ../kubernetes/whalesay.yaml
+          kubectl apply -f ../kubernetes/postgres.yaml
           sleep 30
       - name: Dump Kubernetes Logs
         run: |
