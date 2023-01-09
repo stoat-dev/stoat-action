@@ -97,7 +97,15 @@ export async function getDashboard(req: express.Request, res: express.Response) 
 
         let linkUpdate;
 
-        if (fs.existsSync(absolutePath)) {
+        if ('file_viewer' in task && task.file_viewer) {
+          linkUpdate = await runServersAndGetLinkUpdate(
+            staticServers,
+            taskId,
+            localPath,
+            absolutePath,
+            (port) => `https://www.stoat.dev/file-viewer?root=http://localhost:${port}/`
+          );
+        } else if (fs.existsSync(absolutePath)) {
           const indexPath = path.join(absolutePath, 'index.html');
           if (fs.lstatSync(absolutePath).isFile()) {
             linkUpdate = await runServersAndGetLinkUpdate(
