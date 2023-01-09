@@ -2,7 +2,6 @@ import { V1Container, V1Pod } from '@kubernetes/client-node';
 import { V1PodList } from '@kubernetes/client-node/dist/gen/model/v1PodList';
 import * as fs from 'fs';
 import http from 'http';
-import { contain } from 'jimp';
 import * as path from 'path';
 
 const k8s = require('@kubernetes/client-node');
