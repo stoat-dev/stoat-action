@@ -1,3 +1,4 @@
+import cors from 'cors';
 import { deepmerge } from 'deepmerge-ts';
 import express from 'express';
 import fs from 'fs';
@@ -25,8 +26,10 @@ const tableHbs: string =
   '{{/each}}';
 
 async function createServer(localPath: string): Promise<http.Server> {
+  console.log(`Creating server for: ${localPath}`);
   const port = await portfinder.getPortPromise();
   const expressApp = express();
+  expressApp.use(cors());
   expressApp.use(express.static(localPath));
   return expressApp.listen(port);
 }
@@ -36,7 +39,7 @@ async function runServersAndGetLinkUpdate(
   taskId: string,
   localPath: string,
   directoryToHost: string,
-  fileName?: string
+  portToLink: (port: number) => string
 ) {
   if (taskId in staticServers) {
     if (localPath in staticServers[taskId]) {
@@ -59,7 +62,7 @@ async function runServersAndGetLinkUpdate(
       static_hosting: {
         [taskId]: {
           sha: 'local',
-          link: `http://localhost:${port}/${fileName ? fileName : ''}`,
+          link: portToLink(port),
           status: '✅'
         }
       }
@@ -94,19 +97,32 @@ export async function getDashboard(req: express.Request, res: express.Response) 
 
         let linkUpdate;
 
-        if (fs.existsSync(absolutePath)) {
+        if ('file_viewer' in task && task.file_viewer) {
+          linkUpdate = await runServersAndGetLinkUpdate(
+            staticServers,
+            taskId,
+            localPath,
+            absolutePath,
+            (port) => `https://www.stoat.dev/file-viewer?root=http://localhost:${port}/`
+          );
+        } else if (fs.existsSync(absolutePath)) {
           const indexPath = path.join(absolutePath, 'index.html');
-
           if (fs.lstatSync(absolutePath).isFile()) {
             linkUpdate = await runServersAndGetLinkUpdate(
               staticServers,
               taskId,
               localPath,
               path.dirname(absolutePath),
-              path.basename(absolutePath)
+              (port) => `http://localhost:${port}/${path.basename(absolutePath)}`
             );
           } else if (fs.existsSync(indexPath)) {
-            linkUpdate = await runServersAndGetLinkUpdate(staticServers, taskId, localPath, absolutePath, undefined);
+            linkUpdate = await runServersAndGetLinkUpdate(
+              staticServers,
+              taskId,
+              localPath,
+              absolutePath,
+              (port) => `http://localhost:${port}/}`
+            );
           }
         }
 

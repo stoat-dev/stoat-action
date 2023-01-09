@@ -46,6 +46,7 @@
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
     "compare-versions": "^5.0.1",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "deepmerge-ts": "^4.2.2",
     "esbuild": "^0.16.4",
@@ -61,6 +62,7 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@types/cors": "^2.8.13",
     "@types/js-yaml": "^4.0.5",
     "@types/marked": "^4.0.8",
     "@types/node": "^18.11.13",

@@ -82,6 +82,9 @@
         "path": {
           "type": "string"
         },
+        "file_viewer": {
+          "type": "boolean"
+        },
         "link": {
           "type": "string"
         },
