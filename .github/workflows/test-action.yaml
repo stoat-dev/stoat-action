@@ -1,62 +1,62 @@
-#name: Test Action
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#      - 'releases/*'
-#    paths:
-#      - 'action/**'
-#      - '.stoat/**'
-#      - '.github/workflows/test-action.yaml'
-#  push:
-#    branches:
-#      - main
-#      - 'releases/*'
-#    paths:
-#      - 'action/**'
-#      - '.stoat/**'
-#      - '.github/workflows/test-action.yaml'
-#
-#defaults:
-#  run:
-#    working-directory: action
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: Setup node
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: '16'
-#      - name: Setup cache
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ${{ github.workspace }}/action/node_modules
-#          key: ${{ runner.os }}-node-16-action-${{ hashFiles('action/yarn.lock') }}
-#      - name: Install dependencies
-#        run: |
-#          yarn install --frozen-lockfile
-#      - name: Build and test stoat action
-#        run: |
-#          yarn all
-#      - name: Compare expected vs actual dist directories
-#        run: |
-#          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-#            echo "Detected uncommitted changes after build.  See status below:"
-#            git diff
-#            exit 1
-#          fi
-#        id: diff
-#      - name: Upload actual dist if it is different
-#        uses: actions/upload-artifact@v3
-#        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
-#        with:
-#          name: dist
-#          path: dist/
-#      - name: Run Stoat Action
-#        uses: ./
-#        if: always()
+name: Test Action
+on:
+  pull_request:
+    branches:
+      - main
+      - 'releases/*'
+    paths:
+      - 'action/**'
+      - '.stoat/**'
+      - '.github/workflows/test-action.yaml'
+  push:
+    branches:
+      - main
+      - 'releases/*'
+    paths:
+      - 'action/**'
+      - '.stoat/**'
+      - '.github/workflows/test-action.yaml'
+
+defaults:
+  run:
+    working-directory: action
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/action/node_modules
+          key: ${{ runner.os }}-node-16-action-${{ hashFiles('action/yarn.lock') }}
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+      - name: Build and test stoat action
+        run: |
+          yarn all
+      - name: Compare expected vs actual dist directories
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+      - name: Upload actual dist if it is different
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        with:
+          name: dist
+          path: dist/
+      - name: Run Stoat Action
+        uses: ./
+        if: always()

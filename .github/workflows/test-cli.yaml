@@ -1,54 +1,54 @@
-#name: Test CLI
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#    paths:
-#      - 'cli/**'
-#      - '.stoat/**'
-#      - '.github/workflows/test-cli.yaml'
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - 'cli/**'
-#      - '.stoat/**'
-#      - '.github/workflows/test-cli.yaml'
-#
-#defaults:
-#  run:
-#    working-directory: cli
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: Setup node
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: '16'
-#      - name: Setup cache
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ${{ github.workspace }}/action/node_modules
-#            ${{ github.workspace }}/cli/node_modules
-#          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('cli/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
-#      - name: Install action dependencies
-#        working-directory: action
-#        run: |
-#          yarn install --frozen-lockfile
-#      - name: Install cli dependencies
-#        run: |
-#          yarn install --frozen-lockfile
-#      - name: Build and test stoat cli
-#        run: |
-#          yarn build
-#          yarn test
-#      - name: Check format
-#        run: yarn format-check
-#      - name: Run Stoat Action
-#        uses: ./
-#        if: always()
+name: Test CLI
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'cli/**'
+      - '.stoat/**'
+      - '.github/workflows/test-cli.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'cli/**'
+      - '.stoat/**'
+      - '.github/workflows/test-cli.yaml'
+
+defaults:
+  run:
+    working-directory: cli
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/action/node_modules
+            ${{ github.workspace }}/cli/node_modules
+          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('cli/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
+      - name: Install action dependencies
+        working-directory: action
+        run: |
+          yarn install --frozen-lockfile
+      - name: Install cli dependencies
+        run: |
+          yarn install --frozen-lockfile
+      - name: Build and test stoat cli
+        run: |
+          yarn build
+          yarn test
+      - name: Check format
+        run: yarn format-check
+      - name: Run Stoat Action
+        uses: ./
+        if: always()
