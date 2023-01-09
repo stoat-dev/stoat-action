@@ -39,8 +39,11 @@ jobs:
       - name: Install action dependencies
         run: |
           yarn install --frozen-lockfile
-      - name: Start Minikube
-        uses: medyagh/setup-minikube@master
+      - name: Setup Minikube
+        uses: manusa/actions-setup-minikube@v2.7.2
+        with:
+          minikube version: 'v1.28.0'
+          kubernetes version: 'v1.25.4'
       - name: Run whalesay
         run: |
           kubectl apply -f ../kubernetes/whalesay.yaml
