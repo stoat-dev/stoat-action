@@ -22,41 +22,41 @@ In this tutorial we will show how to add a Kubernetes log preview to the Stoat c
 
 2. Add both an action to dump logs to some directory using `stoat-dev/kubernetes-log-export-action@v1` the [Stoat Action](https://github.com/stoat-dev/stoat-action) to upload the log outputs to Stoat.
 
- ```yaml title=".github/workflows/kubernetes.yaml"
- # ... cluster initialization ...
+    ```yaml title=".github/workflows/kubernetes.yaml"
+     # ... cluster initialization ...
 
- # ... tests that run on Kubernetes ...
+     # ... tests that run on Kubernetes ...
 
- - name: Dump Kubernetes Logs
-   if: always()
-   uses: stoat-dev/kubernetes-log-export-action@v1
-   with:
-     namespaces: default,kube-system
-     show_timestamps: 'true'
-     output_dir: kube-logs-output
+     - name: Dump Kubernetes Logs
+       if: always()
+       uses: stoat-dev/kubernetes-log-export-action@v1
+       with:
+         namespaces: default,kube-system
+         show_timestamps: 'true'
+         output_dir: kube-logs-output
 
- - name: Run Stoat Action
-   uses: stoat-dev/stoat-action@v0
-   if: always()
-```
+     - name: Run Stoat Action
+       uses: stoat-dev/stoat-action@v0
+       if: always()
+    ```
 
-Note that if you don't include `if: always()` the results will not be captured on test failure.
+    Note that if you don't include `if: always()` the results will not be captured on test failure.
 
 3. Point Stoat at the generated logs by adding a new task that uses the `static_hosting` plugin:
 
- ```yaml title=".stoat/config.yaml"
- ---
- version: 1
- enabled: true
- plugins:
-   static_hosting:
-     kube-logs:
-       metadata:
-         name: "Kubernetes Logs"
-       path: kube-logs-output
-       file_viewer: true
-```
+    ```yaml title=".stoat/config.yaml"
+     ---
+     version: 1
+     enabled: true
+     plugins:
+       static_hosting:
+         kube_logs:
+           metadata:
+             name: "Kubernetes Logs"
+           path: kube-logs-output
+           file_viewer: true
+    ```
 
-Note that this uses the `file_viewer: true` option to provide an interactive log viewing experience.
+    Note that this uses the `file_viewer: true` option to provide an interactive log viewing experience.
 
 4. That's it! Now, every time you open a pull request, Stoat will host the Kubernetes logs and post a comment with a link to the preview. See an example in [this pull request](https://github.com/stoat-dev/kubernetes-log-export-action/pull/1).
