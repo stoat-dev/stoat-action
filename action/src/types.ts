@@ -1,6 +1,8 @@
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
 import { ValuesType } from 'utility-types';
 
+import { StoatConfigSchemaRendered } from './schemas/stoatConfigSchemaRendered';
+
 // this doesn't use the gh prefix since it's used to interact with the github context
 export interface Repository {
   owner: string;
@@ -91,6 +93,10 @@ export interface UploadPartialConfigRequest {
 
 export interface UploadPartialConfigResponse {
   partialConfigId: number;
+}
+
+export interface UploadGenericPartialConfigRequest extends UploadPartialConfigRequest {
+  partialConfig: Pick<StoatConfigSchemaRendered, 'plugins'>;
 }
 
 export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
