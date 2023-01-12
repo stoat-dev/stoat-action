@@ -81916,26 +81916,31 @@ const getDevServerBase = (branchName) => {
     return `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
 };
 const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, function* () {
-    if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
-        return PROD_API_URL_BASE;
-    }
-    const branchName = core.getInput('pr_branch_name');
-    if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-        return PROD_API_URL_BASE;
-    }
-    const devApiUrlBase = getDevServerBase(branchName);
-    try {
-        const response = yield node_ponyfill_default()(devApiUrlBase);
-        if (response.ok) {
-            return devApiUrlBase;
-        }
-        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
-    }
-    catch (e) {
-        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
-    }
-    core.warning(`Fall back to ${PROD_API_URL_BASE}`);
-    return PROD_API_URL_BASE;
+    // TODO: revert the change
+    // if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
+    //   return PROD_API_URL_BASE;
+    // }
+    //
+    // const branchName = core.getInput('pr_branch_name');
+    // if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+    //   return PROD_API_URL_BASE;
+    // }
+    //
+    // const devApiUrlBase = getDevServerBase(branchName);
+    //
+    // try {
+    //   const response = await fetch(devApiUrlBase);
+    //   if (response.ok) {
+    //     return devApiUrlBase;
+    //   }
+    //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+    // } catch (e) {
+    //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
+    // }
+    //
+    // core.warning(`Fall back to ${PROD_API_URL_BASE}`);
+    // return PROD_API_URL_BASE;
+    return 'https://stoat-git-liren-airbyte-connector-plugin-stoat-dev.vercel.app/';
 });
 /**
  * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.

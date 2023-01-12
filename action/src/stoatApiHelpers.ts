@@ -23,29 +23,31 @@ export const getDevServerBase = (branchName: string): string => {
 };
 
 export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
-  if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
-    return PROD_API_URL_BASE;
-  }
-
-  const branchName = core.getInput('pr_branch_name');
-  if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-    return PROD_API_URL_BASE;
-  }
-
-  const devApiUrlBase = getDevServerBase(branchName);
-
-  try {
-    const response = await fetch(devApiUrlBase);
-    if (response.ok) {
-      return devApiUrlBase;
-    }
-    core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
-  } catch (e) {
-    core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
-  }
-
-  core.warning(`Fall back to ${PROD_API_URL_BASE}`);
-  return PROD_API_URL_BASE;
+  // TODO: revert the change
+  // if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
+  //   return PROD_API_URL_BASE;
+  // }
+  //
+  // const branchName = core.getInput('pr_branch_name');
+  // if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+  //   return PROD_API_URL_BASE;
+  // }
+  //
+  // const devApiUrlBase = getDevServerBase(branchName);
+  //
+  // try {
+  //   const response = await fetch(devApiUrlBase);
+  //   if (response.ok) {
+  //     return devApiUrlBase;
+  //   }
+  //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+  // } catch (e) {
+  //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
+  // }
+  //
+  // core.warning(`Fall back to ${PROD_API_URL_BASE}`);
+  // return PROD_API_URL_BASE;
+  return 'https://stoat-git-liren-airbyte-connector-plugin-stoat-dev.vercel.app/';
 };
 
 /**
