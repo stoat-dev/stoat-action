@@ -86630,19 +86630,12 @@ function run(stoatConfig) {
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
-        // It is different from the job name in the job list response. So we cannot use it to
-        // search for the job information. We use job run id instead.
-        // References:
-        // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
-        // https://docs.github.com/en/actions/learn-github-actions/environment-variables
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
+        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
         // TODO: remove this
         core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
         core.info(`Current job ID: ${ghJobId}`);
-        core.info(`Current run ID: ${ghJobRunId}`);
         if (ghJob === undefined) {
             core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
