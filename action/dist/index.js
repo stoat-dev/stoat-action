@@ -86635,12 +86635,12 @@ function run(stoatConfig) {
             run_id: github.context.runId
         });
         const ghJobId = github.context.job;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
+        const ghJobRunId = github.context.runId;
+        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status !== 'completed');
         if (ghJob !== undefined) {
             core.info(`Current job: ${ghJobId} (run id: ${ghJob.name})`);
         }
         else {
-            const ghJobRunId = github.context.runId;
             core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
         core.info('Checking if prior steps succeeded...');
