@@ -86632,7 +86632,7 @@ function run(stoatConfig) {
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
+        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress');
         // TODO: remove this
         core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
         core.info(`Current job ID: ${ghJobId}`);
