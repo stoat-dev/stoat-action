@@ -61,6 +61,9 @@ async function run(stoatConfig: any) {
   await waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
 
   core.info('Checking if prior steps succeeded...');
+  // When this variable is true, it means:
+  // - There is no "failure" conclusion.
+  // - When a step has continue-on-error and failed, it is not counted as a failure.
   let stepsSucceeded = true;
 
   const jobListResponse = await octokit.rest.actions.listJobsForWorkflowRun({
@@ -76,8 +79,8 @@ async function run(stoatConfig: any) {
     core.info(`Inspecting job "${job.name}"`);
     for (const step of job.steps || []) {
       core.info(`-- Step "${step.name}": ${step.conclusion}`);
-      if (step.conclusion !== null && step.conclusion !== 'skipped') {
-        stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
+      if (step.conclusion === 'failure') {
+        stepsSucceeded = false;
       }
     }
   }
