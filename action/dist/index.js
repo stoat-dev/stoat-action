@@ -86603,6 +86603,9 @@ function run(stoatConfig) {
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
         core.info('Checking if prior steps succeeded...');
+        // When this variable is true, it means:
+        // - There is no "failure" conclusion.
+        // - When a step has continue-on-error and failed, it is not counted as a failure.
         let stepsSucceeded = true;
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
@@ -86616,8 +86619,8 @@ function run(stoatConfig) {
             core.info(`Inspecting job "${job.name}"`);
             for (const step of job.steps || []) {
                 core.info(`-- Step "${step.name}": ${step.conclusion}`);
-                if (step.conclusion !== null && step.conclusion !== 'skipped') {
-                    stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
+                if (step.conclusion === 'failure') {
+                    stepsSucceeded = false;
                 }
             }
         }
