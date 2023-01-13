@@ -81916,26 +81916,31 @@ const getDevServerBase = (branchName) => {
     return `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
 };
 const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, function* () {
-    if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
-        return PROD_API_URL_BASE;
-    }
-    const branchName = core.getInput('pr_branch_name');
-    if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
-        return PROD_API_URL_BASE;
-    }
-    const devApiUrlBase = getDevServerBase(branchName);
-    try {
-        const response = yield node_ponyfill_default()(devApiUrlBase);
-        if (response.ok) {
-            return devApiUrlBase;
-        }
-        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
-    }
-    catch (e) {
-        core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
-    }
-    core.warning(`Fall back to ${PROD_API_URL_BASE}`);
-    return PROD_API_URL_BASE;
+    // TODO: revert the change
+    // if (ghOwner !== STOAT_ORG || !INTERNAL_REPOS.includes(ghRepo)) {
+    //   return PROD_API_URL_BASE;
+    // }
+    //
+    // const branchName = core.getInput('pr_branch_name');
+    // if (branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
+    //   return PROD_API_URL_BASE;
+    // }
+    //
+    // const devApiUrlBase = getDevServerBase(branchName);
+    //
+    // try {
+    //   const response = await fetch(devApiUrlBase);
+    //   if (response.ok) {
+    //     return devApiUrlBase;
+    //   }
+    //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${response.status} - ${response.statusText}`);
+    // } catch (e) {
+    //   core.warning(`Testing connection to "${devApiUrlBase}" failed: ${e}`);
+    // }
+    //
+    // core.warning(`Fall back to ${PROD_API_URL_BASE}`);
+    // return PROD_API_URL_BASE;
+    return 'https://stoat-git-liren-airbyte-connector-plugin-stoat-dev.vercel.app/';
 });
 /**
  * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
@@ -86211,6 +86216,7 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         core.warning(`[${taskId}] No job information found for job run`);
         return;
     }
+    core.info(`[${taskId}] Current job: ${JSON.stringify(ghJob)}`);
     const startedAt = new Date(ghJob.started_at);
     const now = new Date();
     const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
@@ -86247,7 +86253,7 @@ var json_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisAr
 
 
 
-const MAX_CHARACTERS = 1024;
+const MAX_CHARACTERS = 10240;
 const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
@@ -86624,15 +86630,12 @@ function run(stoatConfig) {
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
-        // It is different from the job name in the job list response. So we cannot use it to
-        // search for the job information. We use job run id instead.
-        // References:
-        // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
-        // https://docs.github.com/en/actions/learn-github-actions/environment-variables
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
+        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
+        // TODO: remove this
+        core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
+        core.info(`Current job ID: ${ghJobId}`);
         if (ghJob === undefined) {
             core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
@@ -86648,7 +86651,7 @@ function run(stoatConfig) {
             ghRunNumber: parseInt(core.getInput('run_number')),
             ghRunAttempt: parseInt(core.getInput('run_attempt')),
             ghToken: token,
-            stepsSucceeded: stepsSucceeded
+            stepsSucceeded
         };
         core.info('Loading template...');
         const { owner, repo } = githubActionRun.ghRepository;

@@ -5,7 +5,7 @@ import { JsonPlugin } from '../../schemas/stoatConfigSchema';
 import { GithubActionRun, UploadJsonRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
-const MAX_CHARACTERS = 1024;
+const MAX_CHARACTERS = 10240;
 
 const runJsonPlugin = async (
   taskId: string,
