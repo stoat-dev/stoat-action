@@ -86543,22 +86543,20 @@ const getPlugins = (stoatConfig) => {
 ;// CONCATENATED MODULE: ./src/workflowHelpers.ts
 
 /**
- * @return true if:
- * - There is no "failure" conclusion.
- * - When a step has continue-on-error and failed, it is not counted as a failure.
+ * Log prior steps and return whether prior steps have succeeded. Return true
+ * if there is no step with "failure" conclusion. Note that when a step has
+ * continue-on-error and failed, it is not counted as a failure.
  */
-const logPriorSteps = (jobs) => {
+const logPriorSteps = (job) => {
+    if (job === undefined) {
+        return true;
+    }
     let stepsSucceeded = true;
-    // todo: in the future we may want to determine which job we're currently in
-    // with matrix jobs and such this can be difficult to determine
-    // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
-    for (const job of jobs) {
-        core.info(`Inspecting job "${job.name}"`);
-        for (const step of job.steps || []) {
-            core.info(`-- Step "${step.name}": ${step.conclusion}`);
-            if (step.conclusion === 'failure') {
-                stepsSucceeded = false;
-            }
+    core.info(`Inspecting job "${job.name}"`);
+    for (const step of job.steps || []) {
+        core.info(`-- Step "${step.name}": ${step.conclusion}`);
+        if (step.conclusion === 'failure') {
+            stepsSucceeded = false;
         }
     }
     return stepsSucceeded;
@@ -86627,28 +86625,24 @@ function run(stoatConfig) {
         core.info(`Repo SHA: ${repoSha}`);
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
-        core.info('Checking if prior steps succeeded...');
+        core.info(`Fetching commit timestamp...`);
+        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+        // find the current job
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
-        const stepsSucceeded = logPriorSteps(jobListResponse.data.jobs);
-        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-        core.info(`Fetching commit timestamp...`);
-        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
-        // It is different from the job name in the job list response. So we cannot use it to
-        // search for the job information. We use job run id instead.
-        // References:
-        // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
-        // https://docs.github.com/en/actions/learn-github-actions/environment-variables
         const ghJobId = github.context.job;
-        const ghJobRunId = github.context.runId;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
+        const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
         if (ghJob === undefined) {
-            core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+            const ghJobRunId = github.context.runId;
+            core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
+        core.info(`Current job: ${ghJobId} (run id ${ghJobId})`);
+        core.info('Checking if prior steps succeeded...');
+        const stepsSucceeded = logPriorSteps(ghJob);
+        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch,
