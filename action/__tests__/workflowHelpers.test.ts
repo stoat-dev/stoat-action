@@ -19,7 +19,7 @@ describe('logPriorSteps', () => {
     expect(logPriorSteps(jobs)).toBe(true);
   });
 
-  it('returns false when there is a failure conclusion', () => {
+  it('returns false when there is failure conclusion', () => {
     const jobs = [
       {
         name: 'test',

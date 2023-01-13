@@ -6,7 +6,7 @@ import * as core from "@actions/core";
  * - There is no "failure" conclusion.
  * - When a step has continue-on-error and failed, it is not counted as a failure.
  */
-export const logPriorSteps = (jobs: Partial<GithubJob>[]): boolean => {
+export const logPriorSteps = (jobs: GithubJob[]): boolean => {
   let stepsSucceeded = true;
   // todo: in the future we may want to determine which job we're currently in
   // with matrix jobs and such this can be difficult to determine
