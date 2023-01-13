@@ -86644,7 +86644,7 @@ function run(stoatConfig) {
         // from github.context can be used to find the job.
         const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status !== 'completed');
         if (ghJob !== undefined) {
-            core.info(`Current job: ${ghJobId} (run id: ${ghJob.name})`);
+            core.info(`Current job: ${JSON.stringify(ghJob)}`);
         }
         else {
             core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);

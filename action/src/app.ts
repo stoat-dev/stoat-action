@@ -83,7 +83,7 @@ async function run(stoatConfig: any) {
     (j) => j.run_id === ghJobRunId && j.status !== 'completed'
   );
   if (ghJob !== undefined) {
-    core.info(`Current job: ${ghJobId} (run id: ${ghJob.name})`);
+    core.info(`Current job: ${JSON.stringify(ghJob)}`);
   } else {
     core.warning(
       `Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(
