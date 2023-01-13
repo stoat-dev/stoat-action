@@ -61,36 +61,32 @@ async function run(stoatConfig: any) {
   const ghBranch = core.getInput('pr_branch_name');
   await waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
 
-  core.info('Checking if prior steps succeeded...');
+  core.info(`Fetching commit timestamp...`);
+  const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+
+  // find the current job
   const jobListResponse = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     run_id: github.context.runId
   });
-  const stepsSucceeded = logPriorSteps(jobListResponse.data.jobs);
-  core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-
-  core.info(`Fetching commit timestamp...`);
-  const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-  // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
-  // It is different from the job name in the job list response. So we cannot use it to
-  // search for the job information. We use job run id instead.
-  // References:
-  // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
-  // https://docs.github.com/en/actions/learn-github-actions/environment-variables
   const ghJobId = github.context.job;
-  const ghJobRunId = github.context.runId;
-  const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
-
+  const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
   if (ghJob === undefined) {
+    const ghJobRunId = github.context.runId;
     core.warning(
-      `Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(
+      `Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(
         jobListResponse.data.jobs,
         null,
         2
       )}`
     );
   }
+  core.info(`Current job: ${ghJobId} (run id ${ghJobId})`);
+
+  core.info('Checking if prior steps succeeded...');
+  const stepsSucceeded = logPriorSteps(ghJob);
+  core.info(`Prior steps succeeded: ${stepsSucceeded}`);
 
   const githubActionRun: GithubActionRun = {
     ghRepository: github.context.repo,
