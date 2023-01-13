@@ -86540,6 +86540,30 @@ const getPlugins = (stoatConfig) => {
     return Array.from(plugins);
 };
 
+;// CONCATENATED MODULE: ./src/workflowHelpers.ts
+
+/**
+ * @return true if:
+ * - There is no "failure" conclusion.
+ * - When a step has continue-on-error and failed, it is not counted as a failure.
+ */
+const logPriorSteps = (jobs) => {
+    let stepsSucceeded = true;
+    // todo: in the future we may want to determine which job we're currently in
+    // with matrix jobs and such this can be difficult to determine
+    // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
+    for (const job of jobs) {
+        core.info(`Inspecting job "${job.name}"`);
+        for (const step of job.steps || []) {
+            core.info(`-- Step "${step.name}": ${step.conclusion}`);
+            if (step.conclusion === 'failure') {
+                stepsSucceeded = false;
+            }
+        }
+    }
+    return stepsSucceeded;
+};
+
 ;// CONCATENATED MODULE: ./src/app.ts
 var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -86550,6 +86574,7 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -86603,27 +86628,12 @@ function run(stoatConfig) {
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
         core.info('Checking if prior steps succeeded...');
-        // When this variable is true, it means:
-        // - There is no "failure" conclusion.
-        // - When a step has continue-on-error and failed, it is not counted as a failure.
-        let stepsSucceeded = true;
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
-        // todo: in the future we may want to determine which job we're currently in
-        // with matrix jobs and such this can be difficult to determine
-        // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
-        for (const job of jobListResponse.data.jobs) {
-            core.info(`Inspecting job "${job.name}"`);
-            for (const step of job.steps || []) {
-                core.info(`-- Step "${step.name}": ${step.conclusion}`);
-                if (step.conclusion === 'failure') {
-                    stepsSucceeded = false;
-                }
-            }
-        }
+        const stepsSucceeded = logPriorSteps(jobListResponse.data.jobs);
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
@@ -86651,7 +86661,7 @@ function run(stoatConfig) {
             ghRunNumber: parseInt(core.getInput('run_number')),
             ghRunAttempt: parseInt(core.getInput('run_attempt')),
             ghToken: token,
-            stepsSucceeded: stepsSucceeded
+            stepsSucceeded
         };
         core.info('Loading template...');
         const { owner, repo } = githubActionRun.ghRepository;
