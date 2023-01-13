@@ -64,6 +64,8 @@ async function run(stoatConfig: any) {
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
+  core.info(`All env: ${JSON.stringify(process.env, null, 2)}`);
+
   // find the current job
   const jobListResponse = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: github.context.repo.owner,
@@ -72,7 +74,9 @@ async function run(stoatConfig: any) {
   });
   const ghJobId = github.context.job;
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
-  if (ghJob === undefined) {
+  if (ghJob !== undefined) {
+    core.info(`Current job: ${ghJobId} (run id: ${ghJob.name})`);
+  } else {
     const ghJobRunId = github.context.runId;
     core.warning(
       `Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(
@@ -82,7 +86,6 @@ async function run(stoatConfig: any) {
       )}`
     );
   }
-  core.info(`Current job: ${ghJobId} (run id: ${ghJobId})`);
 
   core.info('Checking if prior steps succeeded...');
   const stepsSucceeded = logPriorSteps(ghJob);

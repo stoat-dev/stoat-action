@@ -86627,6 +86627,7 @@ function run(stoatConfig) {
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
         core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+        core.info(`All env: ${JSON.stringify(process.env, null, 2)}`);
         // find the current job
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
@@ -86635,11 +86636,13 @@ function run(stoatConfig) {
         });
         const ghJobId = github.context.job;
         const ghJob = jobListResponse.data.jobs.find((j) => j.name === ghJobId);
-        if (ghJob === undefined) {
+        if (ghJob !== undefined) {
+            core.info(`Current job: ${ghJobId} (run id: ${ghJob.name})`);
+        }
+        else {
             const ghJobRunId = github.context.runId;
             core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
-        core.info(`Current job: ${ghJobId} (run id: ${ghJobId})`);
         core.info('Checking if prior steps succeeded...');
         const stepsSucceeded = logPriorSteps(ghJob);
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);
