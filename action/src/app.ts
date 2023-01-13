@@ -72,10 +72,13 @@ async function run(stoatConfig: any) {
   });
   const ghJobId = github.context.job;
   const ghJobRunId = github.context.runId;
-  // There is no accurate way to find the current running job if a job
-  // has a custom name. This is because job.name can vary. It is either
-  // the job id or the job name. When a job has a custom name, nothing
-  // in the github.context can help us find it.
+  // There is no accurate way to find the current running job. To do that,
+  // we need to use an identifier from the github.context and search for
+  // it in the job list. When the job has no custom name, this works, because
+  // both github.context.job and job.name are job ids. However, when the job
+  // has a custom name or there are matrix variants, job.name refers to the
+  // custom name or a name with the matrix variants. In that case, nothing
+  // from github.context can be used to find the job.
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find(
     (j) => j.run_id === ghJobRunId && j.status !== 'completed'
   );
