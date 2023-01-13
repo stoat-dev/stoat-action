@@ -23,7 +23,6 @@ defaults:
 
 jobs:
   build:
-    name: Build Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
