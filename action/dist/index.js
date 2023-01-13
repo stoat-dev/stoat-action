@@ -86216,6 +86216,7 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         core.warning(`[${taskId}] No job information found for job run`);
         return;
     }
+    core.info(`[${taskId}] Current job: ${JSON.stringify(ghJob)}`);
     const startedAt = new Date(ghJob.started_at);
     const now = new Date();
     const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
