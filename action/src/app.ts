@@ -9,6 +9,7 @@ import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
+import { logPriorSteps } from './workflowHelpers';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -61,30 +62,12 @@ async function run(stoatConfig: any) {
   await waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
 
   core.info('Checking if prior steps succeeded...');
-  // When this variable is true, it means:
-  // - There is no "failure" conclusion.
-  // - When a step has continue-on-error and failed, it is not counted as a failure.
-  let stepsSucceeded = true;
-
   const jobListResponse = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     run_id: github.context.runId
   });
-
-  // todo: in the future we may want to determine which job we're currently in
-  // with matrix jobs and such this can be difficult to determine
-  // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
-  for (const job of jobListResponse.data.jobs) {
-    core.info(`Inspecting job "${job.name}"`);
-    for (const step of job.steps || []) {
-      core.info(`-- Step "${step.name}": ${step.conclusion}`);
-      if (step.conclusion === 'failure') {
-        stepsSucceeded = false;
-      }
-    }
-  }
-
+  const stepsSucceeded = logPriorSteps(jobListResponse.data.jobs);
   core.info(`Prior steps succeeded: ${stepsSucceeded}`);
 
   core.info(`Fetching commit timestamp...`);
@@ -121,7 +104,7 @@ async function run(stoatConfig: any) {
     ghRunNumber: parseInt(core.getInput('run_number')),
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
     ghToken: token,
-    stepsSucceeded: stepsSucceeded
+    stepsSucceeded
   };
 
   core.info('Loading template...');
