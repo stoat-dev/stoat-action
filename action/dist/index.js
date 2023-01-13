@@ -16195,7 +16195,7 @@ function checkContextTypes(it, types) {
             strictTypesError(it, `type "${t}" not allowed by context "${it.dataTypes.join(",")}"`);
         }
     });
-    narrowSchemaTypes(it, types);
+    it.dataTypes = it.dataTypes.filter((t) => includesType(types, t));
 }
 function checkMultipleTypes(it, ts) {
     if (ts.length > 1 && !(ts.length === 2 && ts.includes("null"))) {
@@ -16219,16 +16219,6 @@ function hasApplicableType(schTs, kwdT) {
 }
 function includesType(ts, t) {
     return ts.includes(t) || (t === "integer" && ts.includes("number"));
-}
-function narrowSchemaTypes(it, withTypes) {
-    const ts = [];
-    for (const t of it.dataTypes) {
-        if (includesType(withTypes, t))
-            ts.push(t);
-        else if (withTypes.includes("integer") && t === "number")
-            ts.push("integer");
-    }
-    it.dataTypes = ts;
 }
 function strictTypesError(it, msg) {
     const schemaPath = it.schemaEnv.baseId + it.errSchemaPath;
@@ -86589,6 +86579,7 @@ function run(stoatConfig) {
         core.info('Initializing Octokit...');
         const token = core.getInput('token');
         const octokit = github.getOctokit(token);
+        core.info('fetched status: ' + core.getInput('job_status'));
         core.info('Fetching current pull request number...');
         const pullRequestNumber = yield getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
         if (pullRequestNumber === null) {

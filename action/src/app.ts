@@ -44,6 +44,8 @@ async function run(stoatConfig: any) {
   const token = core.getInput('token');
   const octokit = github.getOctokit(token);
 
+  core.info('fetched status: ' + core.getInput('job_status'));
+
   core.info('Fetching current pull request number...');
   const pullRequestNumber = await getCurrentPullRequestNumber(octokit, github.context.repo, github.context.sha);
 
