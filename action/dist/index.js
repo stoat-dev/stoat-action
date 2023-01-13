@@ -86639,7 +86639,7 @@ function run(stoatConfig) {
             const ghJobRunId = github.context.runId;
             core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
-        core.info(`Current job: ${ghJobId} (run id ${ghJobId})`);
+        core.info(`Current job: ${ghJobId} (run id: ${ghJobId})`);
         core.info('Checking if prior steps succeeded...');
         const stepsSucceeded = logPriorSteps(ghJob);
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);

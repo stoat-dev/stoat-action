@@ -82,7 +82,7 @@ async function run(stoatConfig: any) {
       )}`
     );
   }
-  core.info(`Current job: ${ghJobId} (run id ${ghJobId})`);
+  core.info(`Current job: ${ghJobId} (run id: ${ghJobId})`);
 
   core.info('Checking if prior steps succeeded...');
   const stepsSucceeded = logPriorSteps(ghJob);
