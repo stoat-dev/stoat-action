@@ -86540,28 +86540,6 @@ const getPlugins = (stoatConfig) => {
     return Array.from(plugins);
 };
 
-;// CONCATENATED MODULE: ./src/workflowHelpers.ts
-
-/**
- * Log prior steps and return whether prior steps have succeeded. Return true
- * if there is no step with "failure" conclusion. Note that when a step has
- * continue-on-error and failed, it is not counted as a failure.
- */
-const logPriorSteps = (job) => {
-    if (job === undefined) {
-        return true;
-    }
-    let stepsSucceeded = true;
-    core.info(`Inspecting job "${job.name}"`);
-    for (const step of job.steps || []) {
-        core.info(`-- Step "${step.name}": ${step.conclusion}`);
-        if (step.conclusion === 'failure') {
-            stepsSucceeded = false;
-        }
-    }
-    return stepsSucceeded;
-};
-
 ;// CONCATENATED MODULE: ./src/app.ts
 var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -86572,7 +86550,6 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-
 
 
 
@@ -86644,14 +86621,13 @@ function run(stoatConfig) {
         // can be used to find the job.
         const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress');
         if (ghJob !== undefined) {
-            core.info(`Current job from list: ${JSON.stringify(ghJob)}`);
-            core.info(`Current job from input: ${core.getInput('job')}`);
+            core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
         }
         else {
             core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         }
         core.info('Checking if prior steps succeeded...');
-        const stepsSucceeded = logPriorSteps(ghJob);
+        const stepsSucceeded = core.getInput('job_status') !== 'failure';
         core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         const githubActionRun = {
             ghRepository: github.context.repo,

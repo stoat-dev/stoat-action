@@ -9,7 +9,6 @@ import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
-import { logPriorSteps } from './workflowHelpers';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -83,8 +82,7 @@ async function run(stoatConfig: any) {
     (j) => j.run_id === ghJobRunId && j.status === 'in_progress'
   );
   if (ghJob !== undefined) {
-    core.info(`Current job from list: ${JSON.stringify(ghJob)}`);
-    core.info(`Current job from input: ${core.getInput('job')}`);
+    core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
   } else {
     core.warning(
       `Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(
@@ -96,7 +94,7 @@ async function run(stoatConfig: any) {
   }
 
   core.info('Checking if prior steps succeeded...');
-  const stepsSucceeded = logPriorSteps(ghJob);
+  const stepsSucceeded = core.getInput('job_status') !== 'failure';
   core.info(`Prior steps succeeded: ${stepsSucceeded}`);
 
   const githubActionRun: GithubActionRun = {
