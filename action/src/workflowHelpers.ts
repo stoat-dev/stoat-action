@@ -1,5 +1,6 @@
-import { GithubJob } from "./types";
-import * as core from "@actions/core";
+import * as core from '@actions/core';
+
+import { GithubJob } from './types';
 
 /**
  * @return true if:
