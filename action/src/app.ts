@@ -96,6 +96,11 @@ async function run(stoatConfig: any) {
   const ghJobRunId = github.context.runId;
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
 
+  // TODO: remove this
+  core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
+  core.info(`Current job ID: ${ghJobId}`);
+  core.info(`Current run ID: ${ghJobRunId}`);
+
   if (ghJob === undefined) {
     core.warning(
       `Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(
@@ -118,7 +123,7 @@ async function run(stoatConfig: any) {
     ghRunNumber: parseInt(core.getInput('run_number')),
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
     ghToken: token,
-    stepsSucceeded: stepsSucceeded
+    stepsSucceeded
   };
 
   core.info('Loading template...');
