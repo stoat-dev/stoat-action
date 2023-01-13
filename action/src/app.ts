@@ -64,8 +64,6 @@ async function run(stoatConfig: any) {
   core.info(`Fetching commit timestamp...`);
   const ghCommitTimestamp = await getGhCommitTimestamp(octokit, github.context.repo, repoSha);
 
-  core.info(`All env: ${JSON.stringify(process.env, null, 2)}`);
-
   // find the current job
   const jobListResponse = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: github.context.repo.owner,

@@ -86627,7 +86627,6 @@ function run(stoatConfig) {
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
         core.info(`Fetching commit timestamp...`);
         const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        core.info(`All env: ${JSON.stringify(process.env, null, 2)}`);
         // find the current job
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
