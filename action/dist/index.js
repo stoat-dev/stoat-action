@@ -86608,37 +86608,33 @@ function run(stoatConfig) {
         core.info(`Repo SHA: ${repoSha}`);
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
-        core.info('Checking if prior steps succeeded...');
-        let stepsSucceeded = true;
+        core.info(`Fetching commit timestamp...`);
+        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+        // find the current job
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
-        // todo: in the future we may want to determine which job we're currently in
-        // with matrix jobs and such this can be difficult to determine
-        // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
-        for (const job of jobListResponse.data.jobs) {
-            core.info(`Inspecting job "${job.name}"`);
-            for (const step of job.steps || []) {
-                core.info(`-- Step "${step.name}": ${step.conclusion}`);
-                if (step.conclusion !== null && step.conclusion !== 'skipped') {
-                    stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
-                }
-            }
-        }
-        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-        core.info(`Fetching commit timestamp...`);
-        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
+        // There is no precise way to find the current running job. To do that,
+        // we need to use an identifier from the github.context and search for
+        // it in the job list. Usually this works, because both github.context.job
+        // and job.name are job ids. However, when the job has a custom name or
+        // there are matrix variants, job.name refers to the custom name or a name
+        // with the matrix variants. In those cases, nothing from github.context
+        // can be used to find the job.
         const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress');
-        // TODO: remove this
-        core.info(`All jobs: ${JSON.stringify(jobListResponse.data.jobs)}`);
-        core.info(`Current job ID: ${ghJobId}`);
-        if (ghJob === undefined) {
-            core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        if (ghJob !== undefined) {
+            core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
         }
+        else {
+            core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        }
+        core.info('Checking if prior steps succeeded...');
+        const stepsSucceeded = core.getInput('job_status') !== 'failure';
+        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch,
