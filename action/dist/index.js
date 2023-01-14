@@ -86219,16 +86219,14 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
     const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
     core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
         `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`);
-    const renderedPlugin = {
-        runtime: [
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { runtime: [
             {
                 sha: ghSha,
                 workflow: ghWorkflow,
                 job: ghJob.name,
                 runtime_seconds: runtimeSeconds
             }
-        ]
-    };
+        ] });
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
