@@ -3,7 +3,8 @@ import fs from 'fs';
 import { basename, resolve } from 'path';
 
 import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun, UploadStaticHostingRequest } from '../../types';
+import { StaticHostingPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from './helpers';
 
@@ -45,17 +46,26 @@ const runStaticHostingPlugin = async (
   await uploadPath(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
-  const requestBody: UploadStaticHostingRequest = {
+  const renderedPlugin: StaticHostingPluginRendered = {
+    ...taskConfig,
+    sha: ghSha,
+    link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
+    status: stepsSucceeded ? '✅' : '❌'
+  };
+  const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
     ghToken,
     taskId,
     stoatConfigFileId,
-    hostingUrl: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
-    status: stepsSucceeded ? '✅' : '❌'
+    partialConfig: {
+      plugins: {
+        static_hosting: { [taskId]: renderedPlugin }
+      }
+    }
   };
-  await submitPartialConfig<UploadStaticHostingRequest>(taskId, 'static_hostings', requestBody);
+  await submitPartialConfig(taskId, requestBody);
 };
 
 export default runStaticHostingPlugin;
