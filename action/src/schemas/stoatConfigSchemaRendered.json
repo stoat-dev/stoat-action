@@ -127,7 +127,7 @@
     },
     "image_diff_plugin_rendered": {
       "type": "object",
-      "required": ["image_url", "baseline_url", "diff_url"],
+      "required": ["image", "baseline", "image_url", "baseline_url", "diff_url"],
       "additionalProperties": true,
       "properties": {
         "metadata": {

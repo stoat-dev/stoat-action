@@ -89,6 +89,7 @@ const runImageDiffPlugin = async (
   await uploadPath(signedUrl, fields, diffPath, objectPath);
 
   const renderedPlugin: ImageDiffPluginRendered = {
+    ...taskConfig,
     sha: ghSha,
     image_url: `${hostingUrl}/${basename(imagePath)}`,
     baseline_url: `${hostingUrl}/${basename(baselinePath)}`,

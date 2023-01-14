@@ -66,8 +66,8 @@ export interface ImageDiffPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
-  image?: string;
-  baseline?: string;
+  image: string;
+  baseline: string;
   image_url: string;
   baseline_url: string;
   diff_url: string;
