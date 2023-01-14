@@ -86238,7 +86238,7 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         stoatConfigFileId,
         partialConfig: {
             plugins: {
-                jobRuntime: renderedPlugin
+                job_runtime: renderedPlugin
             }
         }
     };

@@ -44,7 +44,7 @@ const runJobRuntimePlugin = async (
     stoatConfigFileId,
     partialConfig: {
       plugins: {
-        jobRuntime: renderedPlugin
+        job_runtime: renderedPlugin
       }
     }
   };
