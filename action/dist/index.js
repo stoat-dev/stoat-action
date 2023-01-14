@@ -86602,40 +86602,33 @@ function run(stoatConfig) {
         core.info(`Repo SHA: ${repoSha}`);
         const ghBranch = core.getInput('pr_branch_name');
         yield waitForStoatDevServer(github.context.repo, ghBranch, repoSha);
-        core.info('Checking if prior steps succeeded...');
-        let stepsSucceeded = true;
+        core.info(`Fetching commit timestamp...`);
+        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
+        // find the current job
         const jobListResponse = yield octokit.rest.actions.listJobsForWorkflowRun({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
-        // todo: in the future we may want to determine which job we're currently in
-        // with matrix jobs and such this can be difficult to determine
-        // see https://github.com/actions/toolkit/issues/550 and the other plethora of issues complaining about this
-        for (const job of jobListResponse.data.jobs) {
-            core.info(`Inspecting job "${job.name}"`);
-            for (const step of job.steps || []) {
-                core.info(`-- Step "${step.name}": ${step.conclusion}`);
-                if (step.conclusion !== null && step.conclusion !== 'skipped') {
-                    stepsSucceeded = stepsSucceeded && step.conclusion === 'success';
-                }
-            }
-        }
-        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
-        core.info(`Fetching commit timestamp...`);
-        const ghCommitTimestamp = yield getGhCommitTimestamp(octokit, github.context.repo, repoSha);
-        // The context.job in @actions/github is GITHUB_JOB, which is the job id, not the name.
-        // It is different from the job name in the job list response. So we cannot use it to
-        // search for the job information. We use job run id instead.
-        // References:
-        // https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
-        // https://docs.github.com/en/actions/learn-github-actions/environment-variables
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
-        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId);
-        if (ghJob === undefined) {
-            core.warning(`Could not find job information for "${ghJobRunId}" (${ghJobId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        // There is no precise way to find the current running job. To do that,
+        // we need to use an identifier from the github.context and search for
+        // it in the job list. Usually this works, because both github.context.job
+        // and job.name are job ids. However, when the job has a custom name or
+        // there are matrix variants, job.name refers to the custom name or a name
+        // with the matrix variants. In those cases, nothing from github.context
+        // can be used to find the job.
+        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress');
+        if (ghJob !== undefined) {
+            core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
         }
+        else {
+            core.warning(`Could not find job information for job "${ghJobId}" (job run id ${ghJobRunId}) in the job list: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        }
+        core.info('Checking if prior steps succeeded...');
+        const stepsSucceeded = core.getInput('job_status') !== 'failure';
+        core.info(`Prior steps succeeded: ${stepsSucceeded}`);
         const githubActionRun = {
             ghRepository: github.context.repo,
             ghBranch,
@@ -86648,7 +86641,7 @@ function run(stoatConfig) {
             ghRunNumber: parseInt(core.getInput('run_number')),
             ghRunAttempt: parseInt(core.getInput('run_attempt')),
             ghToken: token,
-            stepsSucceeded: stepsSucceeded
+            stepsSucceeded
         };
         core.info('Loading template...');
         const { owner, repo } = githubActionRun.ghRepository;
