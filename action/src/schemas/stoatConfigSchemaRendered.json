@@ -127,7 +127,7 @@
     },
     "image_diff_plugin_rendered": {
       "type": "object",
-      "required": ["image_url", "baseline_url", "diff_url"],
+      "required": ["image", "baseline", "image_url", "baseline_url", "diff_url"],
       "additionalProperties": true,
       "properties": {
         "metadata": {
@@ -153,35 +153,51 @@
     },
     "job_runtime_plugin_rendered": {
       "type": "object",
-      "required": ["width", "height", "runtime"],
+      "required": ["enabled", "runtime"],
+      "additionalProperties": true,
       "properties": {
-        "width": {
-          "type": "integer"
+        "enabled": {
+          "type": "boolean"
         },
-        "height": {
-          "type": "integer"
+        "tracking": {
+          "type": "boolean"
+        },
+        "chart": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
         },
         "runtime": {
           "type": "array",
-          "item": {
-            "type": "object",
-            "additionalProperties": true,
-            "required": ["workflow", "job", "sha", "runtime_seconds"],
-            "properties": {
-              "workflow": {
-                "type": "string"
-              },
-              "job": {
-                "type": "string"
-              },
-              "sha": {
-                "type": "string"
-              },
-              "runtime_seconds": {
-                "type": "number"
-              }
-            }
+          "items": {
+            "$ref": "#/definitions/job_runtime_entry"
           }
+        }
+      }
+    },
+    "job_runtime_entry": {
+      "type": "object",
+      "required": ["workflow", "job", "sha", "runtime_seconds"],
+      "additionalProperties": true,
+      "properties": {
+        "workflow": {
+          "type": "string"
+        },
+        "job": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "runtime_seconds": {
+          "type": "number"
         }
       }
     }

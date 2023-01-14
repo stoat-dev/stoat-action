@@ -8,7 +8,8 @@ import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
 import { ImageDiffPlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun, UploadImageDiffRequest } from '../../types';
+import { ImageDiffPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from '../staticHosting/helpers';
 
@@ -87,19 +88,29 @@ const runImageDiffPlugin = async (
   core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
   await uploadPath(signedUrl, fields, diffPath, objectPath);
 
+  const renderedPlugin: ImageDiffPluginRendered = {
+    ...taskConfig,
+    sha: ghSha,
+    image_url: `${hostingUrl}/${basename(imagePath)}`,
+    baseline_url: `${hostingUrl}/${basename(baselinePath)}`,
+    diff_url: `${hostingUrl}/${basename(diffPath)}`
+  };
+
   // submit partial config
-  const requestBody: UploadImageDiffRequest = {
+  const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
     ghToken,
     taskId,
     stoatConfigFileId,
-    imageUrl: `${hostingUrl}/${basename(imagePath)}`,
-    baselineUrl: `${hostingUrl}/${basename(baselinePath)}`,
-    diffUrl: `${hostingUrl}/${basename(diffPath)}`
+    partialConfig: {
+      plugins: {
+        image_diff: { [taskId]: renderedPlugin }
+      }
+    }
   };
-  await submitPartialConfig<UploadImageDiffRequest>(taskId, 'image_diffs', requestBody);
+  await submitPartialConfig(taskId, requestBody);
 };
 
 export const isFileExist = (taskId: string, pathType: string, path?: string): boolean => {

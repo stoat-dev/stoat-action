@@ -66,16 +66,28 @@ export interface ImageDiffPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
-  image?: string;
-  baseline?: string;
+  image: string;
+  baseline: string;
   image_url: string;
   baseline_url: string;
   diff_url: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {
-  width: number;
-  height: number;
-  runtime: unknown[];
+  enabled: boolean;
+  tracking?: boolean;
+  chart?: {
+    width?: number;
+    height?: number;
+    [k: string]: unknown;
+  };
+  runtime: JobRuntimeEntry[];
+  [k: string]: unknown;
+}
+export interface JobRuntimeEntry {
+  workflow: string;
+  job: string;
+  sha: string;
+  runtime_seconds: number;
   [k: string]: unknown;
 }
