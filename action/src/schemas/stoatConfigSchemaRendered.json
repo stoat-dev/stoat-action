@@ -153,7 +153,8 @@
     },
     "job_runtime_plugin_rendered": {
       "type": "object",
-      "required": ["width", "height", "runtime"],
+      "required": ["runtime"],
+      "additionalProperties": true,
       "properties": {
         "width": {
           "type": "integer"
@@ -163,25 +164,28 @@
         },
         "runtime": {
           "type": "array",
-          "item": {
-            "type": "object",
-            "additionalProperties": true,
-            "required": ["workflow", "job", "sha", "runtime_seconds"],
-            "properties": {
-              "workflow": {
-                "type": "string"
-              },
-              "job": {
-                "type": "string"
-              },
-              "sha": {
-                "type": "string"
-              },
-              "runtime_seconds": {
-                "type": "number"
-              }
-            }
+          "items": {
+            "$ref": "#/definitions/job_runtime_entry"
           }
+        }
+      }
+    },
+    "job_runtime_entry": {
+      "type": "object",
+      "required": ["workflow", "job", "sha", "runtime_seconds"],
+      "additionalProperties": true,
+      "properties": {
+        "workflow": {
+          "type": "string"
+        },
+        "job": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "runtime_seconds": {
+          "type": "number"
         }
       }
     }

@@ -74,8 +74,15 @@ export interface ImageDiffPluginRendered {
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {
-  width: number;
-  height: number;
-  runtime: unknown[];
+  width?: number;
+  height?: number;
+  runtime: JobRuntimeEntry[];
+  [k: string]: unknown;
+}
+export interface JobRuntimeEntry {
+  workflow: string;
+  job: string;
+  sha: string;
+  runtime_seconds: number;
   [k: string]: unknown;
 }

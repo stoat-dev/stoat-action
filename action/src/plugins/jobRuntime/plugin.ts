@@ -1,7 +1,8 @@
 import * as core from '@actions/core';
 
 import { JobRuntimePlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun, UploadJobRuntimeRequest } from '../../types';
+import { JobRuntimePluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const runJobRuntimePlugin = async (
@@ -24,18 +25,30 @@ const runJobRuntimePlugin = async (
     `[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
       `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`
   );
-  const requestBody: UploadJobRuntimeRequest = {
+  const renderedPlugin: JobRuntimePluginRendered = {
+    runtime: [
+      {
+        sha: ghSha,
+        workflow: ghWorkflow,
+        job: ghJob.name,
+        runtime_seconds: runtimeSeconds
+      }
+    ]
+  };
+  const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
     ghSha,
     ghToken,
     taskId,
     stoatConfigFileId,
-    ghWorkflow,
-    ghJob: ghJob.name,
-    runtimeSeconds
+    partialConfig: {
+      plugins: {
+        jobRuntime: renderedPlugin
+      }
+    }
   };
-  await submitPartialConfig<UploadJobRuntimeRequest>(taskId, 'job_runtimes', requestBody);
+  await submitPartialConfig(taskId, requestBody);
 };
 
 export default runJobRuntimePlugin;
