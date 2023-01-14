@@ -153,14 +153,26 @@
     },
     "job_runtime_plugin_rendered": {
       "type": "object",
-      "required": ["runtime"],
+      "required": ["enabled", "runtime"],
       "additionalProperties": true,
       "properties": {
-        "width": {
-          "type": "integer"
+        "enabled": {
+          "type": "boolean"
         },
-        "height": {
-          "type": "integer"
+        "tracking": {
+          "type": "boolean"
+        },
+        "chart": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
         },
         "runtime": {
           "type": "array",

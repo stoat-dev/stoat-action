@@ -26,6 +26,7 @@ const runJobRuntimePlugin = async (
       `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`
   );
   const renderedPlugin: JobRuntimePluginRendered = {
+    ...taskConfig,
     runtime: [
       {
         sha: ghSha,

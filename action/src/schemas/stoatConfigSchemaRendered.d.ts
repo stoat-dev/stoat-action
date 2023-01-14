@@ -74,8 +74,13 @@ export interface ImageDiffPluginRendered {
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {
-  width?: number;
-  height?: number;
+  enabled: boolean;
+  tracking?: boolean;
+  chart?: {
+    width?: number;
+    height?: number;
+    [k: string]: unknown;
+  };
   runtime: JobRuntimeEntry[];
   [k: string]: unknown;
 }
