@@ -16,7 +16,6 @@ const runJobRuntimePlugin = async (
     core.warning(`[${taskId}] No job information found for job run`);
     return;
   }
-  core.info(`[${taskId}] Current job: ${JSON.stringify(ghJob)}`);
 
   const startedAt = new Date(ghJob.started_at);
   const now = new Date();
