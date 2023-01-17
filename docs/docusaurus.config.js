@@ -113,6 +113,10 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/stoat_dev'
+              },
+              {
+                label: 'Discord',
+                href: 'https://discord.gg/MszYpbabna'
               }
             ]
           },
