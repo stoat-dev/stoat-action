@@ -27,6 +27,9 @@
         },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
+        },
+        "workflow_dispatch": {
+          "$ref": "#/definitions/workflow_dispatch_plugin"
         }
       }
     }
@@ -116,6 +119,18 @@
               "type": "integer"
             }
           }
+        }
+      }
+    },
+    "workflow_dispatch_plugin": {
+      "type": "object",
+      "required": ["workflow_filename"],
+      "properties": {
+        "workflow_filename": {
+          "type": "string"
+        },
+        "workflow_status_key": {
+          "type": "string"
         }
       }
     }

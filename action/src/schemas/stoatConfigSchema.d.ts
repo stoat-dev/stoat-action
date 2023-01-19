@@ -14,6 +14,7 @@ export interface StoatConfigSchema {
     json?: JsonPluginMap;
     image_diff?: ImageDiffPluginMap;
     job_runtime?: JobRuntimePlugin;
+    workflow_dispatch?: WorkflowDispatchPlugin;
     [k: string]: unknown;
   };
   [k: string]: unknown;
@@ -58,5 +59,10 @@ export interface JobRuntimePlugin {
     height?: number;
     [k: string]: unknown;
   };
+  [k: string]: unknown;
+}
+export interface WorkflowDispatchPlugin {
+  workflow_filename: string;
+  workflow_status_key?: string;
   [k: string]: unknown;
 }
