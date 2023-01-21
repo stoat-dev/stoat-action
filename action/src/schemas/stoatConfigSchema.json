@@ -29,7 +29,7 @@
           "$ref": "#/definitions/job_runtime_plugin"
         },
         "workflow_dispatch": {
-          "$ref": "#/definitions/workflow_dispatch_plugin"
+          "$ref": "#/definitions/workflow_dispatch_plugin_map"
         }
       }
     }
@@ -122,15 +122,24 @@
         }
       }
     },
+    "workflow_dispatch_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/workflow_dispatch_plugin"
+      }
+    },
     "workflow_dispatch_plugin": {
       "type": "object",
       "required": ["workflow_filename"],
       "properties": {
-        "workflow_filename": {
+        "filename": {
           "type": "string"
         },
-        "workflow_status_key": {
-          "type": "string"
+        "identifier": {
+          "type": "string",
+          "description": "All workflow related information will be persisted under \"plugins.workflow_dispatch.<task-id>.<identifier>\". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).",
+          "default": "workflow",
+          "examples": ["deployment", "deployment.{{ github.event.inputs.env }}"]
         }
       }
     }
