@@ -35,9 +35,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            ${{ github.workspace }}/types/node_modules
             ${{ github.workspace }}/action/node_modules
-          key: ${{ runner.os }}-node-16-action-${{ hashFiles('action/yarn.lock') }}
-      - name: Install dependencies
+          key: ${{ runner.os }}-node-16-action-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
+      - name: Install types dependencies
+        working-directory: types
+        run: |
+          yarn install --frozen-lockfile
+      - name: Install action dependencies
         run: |
           yarn install --frozen-lockfile
       - name: Build and test stoat action
