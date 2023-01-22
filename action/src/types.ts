@@ -1,7 +1,9 @@
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
 import { ValuesType } from 'utility-types';
 
-import { StoatConfigSchemaRendered } from './schemas/stoatConfigSchemaRendered';
+import { StoatConfigSchemaRendered } from './schemas';
+
+export * from './schemas';
 
 // this doesn't use the gh prefix since it's used to interact with the github context
 export interface Repository {
