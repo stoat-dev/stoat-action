@@ -25,6 +25,9 @@
         "image_diff": {
           "$ref": "#/definitions/image_diff_plugin_rendered_map"
         },
+        "workflow_dispatch": {
+          "$ref": "#/definitions/workflow_dispatch_plugin_rendered_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin_rendered"
         }
@@ -148,6 +151,36 @@
         },
         "diff_url": {
           "type": "string"
+        }
+      }
+    },
+    "workflow_dispatch_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/workflow_dispatch_plugin_rendered"
+      }
+    },
+    "workflow_dispatch_plugin_rendered": {
+      "type": "object",
+      "required": ["filename", "workflow"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "filename": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "All workflow related information will be persisted under \"plugins.workflow_dispatch.<task-id>.<identifier>\". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).",
+          "default": "workflow",
+          "examples": ["deployment", "deployment.{{ github.event.inputs.env }}"]
+        },
+        "workflow": {
+          "type": "string",
+          "description": "The definition of the workflow."
         }
       }
     },

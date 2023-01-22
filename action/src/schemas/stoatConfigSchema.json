@@ -130,7 +130,7 @@
     },
     "workflow_dispatch_plugin": {
       "type": "object",
-      "required": ["workflow_filename"],
+      "required": ["filename"],
       "properties": {
         "filename": {
           "type": "string"

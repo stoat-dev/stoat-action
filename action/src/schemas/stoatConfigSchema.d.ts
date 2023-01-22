@@ -65,7 +65,7 @@ export interface WorkflowDispatchPluginMap {
   [k: string]: WorkflowDispatchPlugin;
 }
 export interface WorkflowDispatchPlugin {
-  filename?: string;
+  filename: string;
   /**
    * All workflow related information will be persisted under "plugins.workflow_dispatch.<task-id>.<identifier>". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).
    */
