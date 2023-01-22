@@ -89,7 +89,11 @@ export interface WorkflowDispatchPluginRendered {
   /**
    * The definition of the workflow.
    */
-  workflow_definition: string;
+  definition: string;
+  /**
+   * The link to trigger the workflow. This link is populated by the server.
+   */
+  dispatch_link?: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {

@@ -31,7 +31,7 @@ const runWorkflowDispatchPlugin = async (
 
   const renderedPlugin: WorkflowDispatchPluginRendered = {
     ...taskConfig,
-    workflow_definition: workflowDefinition
+    definition: workflowDefinition
   };
   const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: githubActionRun.ghRepository.owner,
