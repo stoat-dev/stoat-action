@@ -9,7 +9,7 @@ import { AddressInfo } from 'net';
 import path from 'path';
 import portfinder from 'portfinder';
 
-import { StaticHostingPlugin } from '../../../../action/src/schemas/stoatConfigSchema';
+import { StaticHostingPlugin } from '../../../../types/src/schemas/stoatConfigSchema';
 import { getGitRoot } from '../pathHelpers';
 import ConfigFileGlobal from './configFileGlobal';
 

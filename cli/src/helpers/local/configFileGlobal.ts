@@ -3,13 +3,13 @@ import fs, { FSWatcher, WatchEventType, readFileSync } from 'fs';
 import path from 'path';
 
 import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
-import { StoatConfigSchema } from '../../../../action/src/schemas/stoatConfigSchema';
 import { getRemoteDefaultTemplate, getTemplateFormat } from '../../../../action/src/templateHelpers';
-import { Template } from '../../../../action/src/types';
+import { StoatTemplate } from '../../../../types';
+import { StoatConfigSchema } from '../../../../types/src/schemas/stoatConfigSchema';
 import { findGitRoot, findStoatConfigPath } from '../pathHelpers';
 
 // supports reading the local template from a subdirectory
-const getLocalTemplate = (commentTemplatePath: string): Template => {
+const getLocalTemplate = (commentTemplatePath: string): StoatTemplate => {
   const gitRoot = findGitRoot(process.cwd());
   const fullCommentTemplateFile = path.join(gitRoot, commentTemplatePath);
   const template = readFileSync(fullCommentTemplateFile).toString().trim();
@@ -18,7 +18,7 @@ const getLocalTemplate = (commentTemplatePath: string): Template => {
 };
 
 // supports reading the local template from a subdirectory if necessary
-const getTemplate = async (ghOwner: string, ghRepo: string, stoatConfig: StoatConfigSchema): Promise<Template> => {
+const getTemplate = async (ghOwner: string, ghRepo: string, stoatConfig: StoatConfigSchema): Promise<StoatTemplate> => {
   const { comment_template_file } = stoatConfig;
   if (comment_template_file === undefined || comment_template_file === '') {
     return getRemoteDefaultTemplate(ghOwner, ghRepo, stoatConfig);
@@ -70,7 +70,7 @@ const getTemplateWatcher = async (
 
 export default class ConfigFileGlobal {
   private static schema: StoatConfigSchema | undefined;
-  private static template: Template | undefined;
+  private static template: StoatTemplate | undefined;
   private static templateWatcher: TemplateWatcher;
 
   static async update() {
