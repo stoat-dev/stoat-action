@@ -6,7 +6,7 @@ import {
   StoatTemplate,
   UpdateWorkflowOutputRequest,
   UpdateWorkflowOutputResponse
-} from '../../types';
+} from '../../types/src';
 import { getApiUrlBase } from './stoatApiHelpers';
 import { GithubActionRun } from './types';
 

@@ -1,4 +1,10 @@
-import { ImageDiffPlugin, JobRuntimePlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../../../types';
+import {
+  ImageDiffPlugin,
+  JobRuntimePlugin,
+  JsonPlugin,
+  StaticHostingPlugin,
+  StoatConfigSchema
+} from '../../../types/src';
 import { GithubActionRun } from '../types';
 import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';

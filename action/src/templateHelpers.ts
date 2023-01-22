@@ -9,7 +9,7 @@ import {
   StoatPlugin,
   StoatTemplate,
   StoatTemplateFormat
-} from '../../types';
+} from '../../types/src';
 import { getApiUrlBase } from './stoatApiHelpers';
 
 export const getTemplate = async (

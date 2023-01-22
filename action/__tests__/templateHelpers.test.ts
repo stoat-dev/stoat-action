@@ -3,11 +3,11 @@ import { describe, expect, test } from '@jest/globals';
 import {
   ImageDiffPlugin,
   JsonPlugin,
-  Plugin,
   StaticHostingPlugin,
   StoatConfigSchema,
+  StoatPlugin,
   StoatTemplateFormat
-} from '../../types';
+} from '../../types/src';
 import {
   getLocalTemplate,
   getPlugins,
@@ -121,7 +121,7 @@ describe('getPlugins', () => {
           static_hosting: { plugin1: staticHosting1 }
         }
       })
-    ).toEqual([Plugin.StaticHosting]);
+    ).toEqual([StoatPlugin.StaticHosting]);
   });
 
   test('Multiple plugins', () => {
@@ -134,6 +134,6 @@ describe('getPlugins', () => {
           image_diff: { plugin4: imageDiff1 }
         }
       }).sort()
-    ).toEqual([Plugin.Json, Plugin.StaticHosting, Plugin.ImageDiff].sort());
+    ).toEqual([StoatPlugin.Json, StoatPlugin.StaticHosting, StoatPlugin.ImageDiff].sort());
   });
 });

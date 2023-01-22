@@ -4,8 +4,7 @@ import path from 'path';
 
 import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
 import { getRemoteDefaultTemplate, getTemplateFormat } from '../../../../action/src/templateHelpers';
-import { StoatTemplate } from '../../../../types';
-import { StoatConfigSchema } from '../../../../types/src/schemas/stoatConfigSchema';
+import { StoatTemplate, StoatConfigSchema } from '../../../../types/src';
 import { findGitRoot, findStoatConfigPath } from '../pathHelpers';
 
 // supports reading the local template from a subdirectory
@@ -77,7 +76,7 @@ export default class ConfigFileGlobal {
     const configFilePath = findStoatConfigPath(process.cwd());
     const stoatConfig = readStoatConfig(configFilePath);
     this.schema = await getTypedStoatConfig(stoatConfig);
-    this.template = await getTemplate('', '', this.schema);
+    this.template = await getTemplate('', '', this.schema!);
     this.templateWatcher = await getTemplateWatcher(this.templateWatcher, stoatConfig.comment_template_file);
   }
 

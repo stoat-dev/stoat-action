@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
-import { UploadGenericPartialConfigRequest, UploadPartialConfigResponse } from '../../../types';
+import { UploadGenericPartialConfigRequest, UploadPartialConfigResponse } from '../../../types/src';
 import { getApiUrlBase } from '../stoatApiHelpers';
 
 export const submitPartialConfig = async (taskId: string, requestBody: UploadGenericPartialConfigRequest) => {

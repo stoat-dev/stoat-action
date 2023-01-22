@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 
-import { StaticHostingPlugin } from '../../../../types';
+import { StaticHostingPlugin } from '../../../../types/src';
 import { runStaticHostingPlugin } from '../../../src/plugins/staticHosting';
 import { GithubActionRun, GithubJob } from '../../../src/types';
 

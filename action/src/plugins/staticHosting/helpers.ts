@@ -7,7 +7,7 @@ import fs from 'fs';
 import mime from 'mime-types';
 import { basename, posix, resolve } from 'path';
 
-import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../../../types';
+import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../../../types/src';
 import { getApiUrlBase } from '../../stoatApiHelpers';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
