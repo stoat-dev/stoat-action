@@ -86526,7 +86526,14 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
     });
 }
 
+;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchemaRendered.json
+const stoatConfigSchemaRendered_namespaceObject = {};
+;// CONCATENATED MODULE: ./src/schemas/index.ts
+
+
+
 ;// CONCATENATED MODULE: ./src/types.ts
+
 // These types are copied from src/common/types.ts.
 var Plugin;
 (function (Plugin) {
