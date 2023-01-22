@@ -86466,7 +86466,14 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
     });
 }
 
-;// CONCATENATED MODULE: ../types/dist/plugin.js
+;// CONCATENATED MODULE: ../types/src/schemas/stoatConfigSchemaRendered.json
+const stoatConfigSchemaRendered_namespaceObject = {};
+;// CONCATENATED MODULE: ../types/src/schemas/index.ts
+
+
+
+;// CONCATENATED MODULE: ../types/src/plugin.ts
+// the "Stoat-" prefix is to prevent name clashing
 var StoatPlugin;
 (function (StoatPlugin) {
     StoatPlugin["StaticHosting"] = "static_hosting";
@@ -86476,14 +86483,14 @@ var StoatPlugin;
     StoatPlugin["WorkflowDispatch"] = "workflow_dispatch";
 })(StoatPlugin || (StoatPlugin = {}));
 
-;// CONCATENATED MODULE: ../types/dist/template.js
+;// CONCATENATED MODULE: ../types/src/template.ts
 var StoatTemplateFormat;
 (function (StoatTemplateFormat) {
     StoatTemplateFormat["Handlebars"] = "hbs";
     StoatTemplateFormat["Jinja2"] = "jinja2";
 })(StoatTemplateFormat || (StoatTemplateFormat = {}));
 
-;// CONCATENATED MODULE: ../types/dist/index.js
+;// CONCATENATED MODULE: ../types/src/index.ts
 
 
 
