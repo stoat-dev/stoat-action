@@ -1,5 +1,5 @@
 import { StoatConfigSchemaRendered } from "./schemas";
-import { TemplateFormat } from "./plugin";
+import { TemplateFormat } from "./template";
 
 export type UpdateWorkflowOutputRequest = {
   ghOwner: string;
