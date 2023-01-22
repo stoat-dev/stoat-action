@@ -1,8 +1,12 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 
-import { WorkflowDispatchPlugin, WorkflowDispatchPluginRendered } from '../../schemas';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import {
+  UploadGenericPartialConfigRequest,
+  WorkflowDispatchPlugin,
+  WorkflowDispatchPluginRendered
+} from '../../../../types';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const runWorkflowDispatchPlugin = async (

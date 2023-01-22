@@ -6,7 +6,7 @@ import {
   Plugin,
   StaticHostingPlugin,
   StoatConfigSchema,
-  TemplateFormat
+  StoatTemplateFormat
 } from '../../types';
 import {
   getLocalTemplate,
@@ -46,7 +46,7 @@ describe('Read local template', () => {
         comment_template_file: template1Path
       })
     ).toEqual({
-      format: TemplateFormat.Handlebars,
+      format: StoatTemplateFormat.Handlebars,
       template: template1
     });
 
@@ -56,7 +56,7 @@ describe('Read local template', () => {
         comment_template_file: template2Path
       })
     ).toEqual({
-      format: TemplateFormat.Jinja2,
+      format: StoatTemplateFormat.Jinja2,
       template: template2
     });
   });
@@ -64,11 +64,11 @@ describe('Read local template', () => {
   test('getLocalTemplate', () => {
     expect(getLocalTemplate(template1Path)).toEqual({
       template: template1,
-      format: TemplateFormat.Handlebars
+      format: StoatTemplateFormat.Handlebars
     });
     expect(getLocalTemplate(template2Path)).toEqual({
       template: template2,
-      format: TemplateFormat.Jinja2
+      format: StoatTemplateFormat.Jinja2
     });
   });
 });
@@ -107,8 +107,8 @@ describe('Read remote default template', () => {
 });
 
 test('getTemplateFormat', () => {
-  expect(getTemplateFormat(template1Path)).toEqual(TemplateFormat.Handlebars);
-  expect(getTemplateFormat(template2Path)).toEqual(TemplateFormat.Jinja2);
+  expect(getTemplateFormat(template1Path)).toEqual(StoatTemplateFormat.Handlebars);
+  expect(getTemplateFormat(template2Path)).toEqual(StoatTemplateFormat.Jinja2);
   expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 

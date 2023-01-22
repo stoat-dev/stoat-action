@@ -2,8 +2,8 @@ import * as core from '@actions/core';
 import fs from 'fs';
 import { basename, resolve } from 'path';
 
-import { StaticHostingPlugin, StaticHostingPluginRendered } from '../../schemas';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import { StaticHostingPlugin, StaticHostingPluginRendered, UploadGenericPartialConfigRequest } from '../../../../types';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from './helpers';
 

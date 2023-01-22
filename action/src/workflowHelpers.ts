@@ -7,7 +7,7 @@ import { GithubJob } from './types';
  * if there is no step with "failure" conclusion. Note that when a step has
  * continue-on-error and failed, it is not counted as a failure.
  */
-export const logPriorSteps = (job: GithubJob | undefined): boolean => {
+export const logPriorSteps = (job: Pick<GithubJob, 'name' | 'steps'> | undefined): boolean => {
   if (job === undefined) {
     return true;
   }

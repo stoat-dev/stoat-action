@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 
-import { JobRuntimePlugin, JobRuntimePluginRendered } from '../../schemas';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import { JobRuntimePlugin, JobRuntimePluginRendered, UploadGenericPartialConfigRequest } from '../../../../types';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const runJobRuntimePlugin = async (

@@ -1,13 +1,18 @@
 import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
-import { StoatConfigSchema } from './schemas';
+import {
+  StoatConfigSchema,
+  StoatTemplate,
+  UpdateWorkflowOutputRequest,
+  UpdateWorkflowOutputResponse
+} from '../../types';
 import { getApiUrlBase } from './stoatApiHelpers';
-import { GithubActionRun, Template, UpdateWorkflowOutputRequest, UpdateWorkflowOutputResponse } from './types';
+import { GithubActionRun } from './types';
 
 export const uploadWorkflowOutputs = async (
   stoatConfig: StoatConfigSchema,
-  commentTemplate: Template,
+  commentTemplate: StoatTemplate,
   {
     ghRepository: { owner, repo },
     ghBranch,

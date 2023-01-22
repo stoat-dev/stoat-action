@@ -7,8 +7,8 @@ import fs from 'fs';
 import mime from 'mime-types';
 import { basename, posix, resolve } from 'path';
 
+import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../../../types';
 import { getApiUrlBase } from '../../stoatApiHelpers';
-import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../types';
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);

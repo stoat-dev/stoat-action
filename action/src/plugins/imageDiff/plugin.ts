@@ -7,8 +7,8 @@ import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-import { ImageDiffPlugin, ImageDiffPluginRendered } from '../../schemas';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import { ImageDiffPlugin, ImageDiffPluginRendered, UploadGenericPartialConfigRequest } from '../../../../types';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from '../staticHosting/helpers';
 
