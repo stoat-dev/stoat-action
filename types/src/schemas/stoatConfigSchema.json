@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "comment_template_file": {
+      "type": "string"
+    },
+    "plugins": {
+      "type": "object",
+      "properties": {
+        "static_hosting": {
+          "$ref": "#/definitions/static_hosting_plugin_map"
+        },
+        "json": {
+          "$ref": "#/definitions/json_plugin_map"
+        },
+        "image_diff": {
+          "$ref": "#/definitions/image_diff_plugin_map"
+        },
+        "job_runtime": {
+          "$ref": "#/definitions/job_runtime_plugin"
+        },
+        "workflow_dispatch": {
+          "$ref": "#/definitions/workflow_dispatch_plugin_map"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "static_hosting_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/static_hosting_plugin"
+      }
+    },
+    "static_hosting_plugin": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "path": {
+          "type": "string"
+        },
+        "file_viewer": {
+          "type": "boolean"
+        }
+      }
+    },
+    "json_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/json_plugin"
+      }
+    },
+    "json_plugin": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "image_diff_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/image_diff_plugin"
+      }
+    },
+    "image_diff_plugin": {
+      "type": "object",
+      "required": ["image", "baseline"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "string"
+        },
+        "baseline": {
+          "type": "string"
+        }
+      }
+    },
+    "job_runtime_plugin": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "tracking": {
+          "type": "boolean"
+        },
+        "chart": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "workflow_dispatch_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/workflow_dispatch_plugin"
+      }
+    },
+    "workflow_dispatch_plugin": {
+      "type": "object",
+      "required": ["filename"],
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string",
+          "description": "All workflow related information will be persisted under \"plugins.workflow_dispatch.<task-id>.<identifier>\". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).",
+          "default": "workflow",
+          "examples": ["deployment", "deployment.{{ github.event.inputs.env }}"]
+        }
+      }
+    }
+  }
+}
