@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 
-import { JsonPlugin, JsonPluginRendered } from "../../schemas";
+import { JsonPlugin, JsonPluginRendered } from '../../schemas';
 import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 

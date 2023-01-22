@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-import { JobRuntimePlugin, JobRuntimePluginRendered } from "../../schemas";
+import { JobRuntimePlugin, JobRuntimePluginRendered } from '../../schemas';
 import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 

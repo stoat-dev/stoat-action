@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
-import { StoatConfigSchema } from "./schemas";
+import { StoatConfigSchema } from './schemas';
 import { getApiUrlBase } from './stoatApiHelpers';
 import { GithubActionRun, Template, UpdateWorkflowOutputRequest, UpdateWorkflowOutputResponse } from './types';
 
