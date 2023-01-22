@@ -1,5 +1,6 @@
+import { StoatPlugin } from "./plugin";
 import { StoatConfigSchemaRendered } from "./schemas";
-import { TemplateFormat } from "./template";
+import { StoatTemplateFormat } from "./template";
 
 export type UpdateWorkflowOutputRequest = {
   ghOwner: string;
@@ -50,8 +51,9 @@ export interface UploadPartialConfigResponse {
   partialConfigId: number;
 }
 
-export interface UploadGenericPartialConfigRequest extends UploadPartialConfigRequest {
-  partialConfig: Pick<StoatConfigSchemaRendered, 'plugins'>;
+export interface UploadGenericPartialConfigRequest
+  extends UploadPartialConfigRequest {
+  partialConfig: Pick<StoatConfigSchemaRendered, "plugins">;
 }
 
 export type GetDefaultTemplateRequest = {
@@ -63,12 +65,12 @@ export type GetDefaultTemplateRequest = {
   // the version is sent as a query param,
   // so it is typed as string instead of number
   stoatConfigVersion: string;
-  plugins?: Plugin | Plugin[];
+  plugins?: StoatPlugin | StoatPlugin[];
 };
 
 export type GetDefaultTemplateResponse = {
   stoatConfigVersion: number;
   template: string;
-  format: TemplateFormat;
-  plugins: Plugin[];
+  format: StoatTemplateFormat;
+  plugins: StoatPlugin[];
 };
