@@ -2,7 +2,8 @@ import * as core from '@actions/core';
 import fs from 'fs';
 
 import { WorkflowDispatchPlugin } from '../../schemas/stoatConfigSchema';
-import { GithubActionRun, UploadWorkflowDispatchRequest } from '../../types';
+import { WorkflowDispatchPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const runWorkflowDispatchPlugin = async (
@@ -26,18 +27,26 @@ const runWorkflowDispatchPlugin = async (
     core.error(message);
     return;
   }
-  const workflow = fs.readFileSync(workflowFilename).toString();
+  const workflowDefinition = fs.readFileSync(workflowFilename).toString();
 
-  const requestBody: UploadWorkflowDispatchRequest = {
+  const renderedPlugin: WorkflowDispatchPluginRendered = {
+    ...taskConfig,
+    workflow_definition: workflowDefinition
+  };
+  const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: githubActionRun.ghRepository.owner,
     ghRepo: githubActionRun.ghRepository.repo,
     ghSha: githubActionRun.ghSha,
     ghToken: githubActionRun.ghToken,
     taskId,
     stoatConfigFileId,
-    workflow
+    partialConfig: {
+      plugins: {
+        workflow_dispatch: { [taskId]: renderedPlugin }
+      }
+    }
   };
-  await submitPartialConfig<UploadWorkflowDispatchRequest>(taskId, 'workflow-dispatches', requestBody);
+  await submitPartialConfig(taskId, requestBody);
 };
 
 export default runWorkflowDispatchPlugin;

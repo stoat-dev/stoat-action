@@ -3,7 +3,8 @@ import {
   JobRuntimePlugin,
   JsonPlugin,
   StaticHostingPlugin,
-  StoatConfigSchema
+  StoatConfigSchema,
+  WorkflowDispatchPlugin
 } from '../schemas/stoatConfigSchema';
 import { GithubActionRun } from '../types';
 import { runImageDiffPlugin } from './imageDiff';
@@ -37,7 +38,7 @@ export const runPlugins = async (
 
   if (stoatConfig.plugins?.workflow_dispatch !== undefined) {
     for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.workflow_dispatch)) {
-      await runWorkflowDispatchPlugin(taskId, taskConfig as StaticHostingPlugin, githubActionRun, stoatConfigFileId);
+      await runWorkflowDispatchPlugin(taskId, taskConfig as WorkflowDispatchPlugin, githubActionRun, stoatConfigFileId);
     }
   }
 

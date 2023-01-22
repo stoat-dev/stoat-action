@@ -162,7 +162,7 @@
     },
     "workflow_dispatch_plugin_rendered": {
       "type": "object",
-      "required": ["filename", "workflow"],
+      "required": ["filename", "workflow_definition"],
       "additionalProperties": true,
       "properties": {
         "metadata": {
@@ -178,7 +178,7 @@
           "default": "workflow",
           "examples": ["deployment", "deployment.{{ github.event.inputs.env }}"]
         },
-        "workflow": {
+        "workflow_definition": {
           "type": "string",
           "description": "The definition of the workflow."
         }

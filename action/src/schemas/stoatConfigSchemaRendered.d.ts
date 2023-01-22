@@ -89,7 +89,7 @@ export interface WorkflowDispatchPluginRendered {
   /**
    * The definition of the workflow.
    */
-  workflow: string;
+  workflow_definition: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {

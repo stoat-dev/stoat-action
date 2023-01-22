@@ -32,7 +32,8 @@ export enum Plugin {
   StaticHosting = 'static_hosting',
   Json = 'json',
   ImageDiff = 'image_diff',
-  JobRuntime = 'job_runtime'
+  JobRuntime = 'job_runtime',
+  WorkflowDispatch = 'workflow_dispatch'
 }
 
 export enum TemplateFormat {
@@ -112,10 +113,6 @@ export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
   imageUrl: string;
   baselineUrl: string;
   diffUrl: string;
-}
-
-export interface UploadWorkflowDispatchRequest extends UploadPartialConfigRequest {
-  workflow: string;
 }
 
 export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
