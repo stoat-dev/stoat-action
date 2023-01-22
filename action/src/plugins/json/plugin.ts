@@ -5,7 +5,7 @@ import { JsonPlugin, JsonPluginRendered, UploadGenericPartialConfigRequest } fro
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
-const MAX_CHARACTERS = 10240;
+const MAX_CHARACTERS = 1024;
 
 const runJsonPlugin = async (
   taskId: string,
