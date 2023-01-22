@@ -2,18 +2,11 @@ import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 
 import { getApiUrlBase } from '../stoatApiHelpers';
-import { UploadPartialConfigRequest, UploadPartialConfigResponse } from '../types';
+import { UploadGenericPartialConfigRequest, UploadPartialConfigResponse } from '../types';
 
-export const submitPartialConfig = async <T extends UploadPartialConfigRequest>(
-  taskId: string,
-  apiSuffix: string,
-  requestBody: T
-) => {
+export const submitPartialConfig = async (taskId: string, requestBody: UploadGenericPartialConfigRequest) => {
   core.info(`[${taskId}] Submitting partial config...`);
-  const staticHostingApiUrl = `${await getApiUrlBase(
-    requestBody.ghOwner,
-    requestBody.ghRepo
-  )}/api/plugins/${apiSuffix}`;
+  const staticHostingApiUrl = `${await getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/partial_configs`;
   const response = await fetch(staticHostingApiUrl, {
     method: 'POST',
     body: JSON.stringify(requestBody)

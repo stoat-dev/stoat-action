@@ -22,6 +22,9 @@
     <img src="https://img.shields.io/github/actions/workflow/status/stoat-dev/stoat-action/docs.yaml?branch=main&label=docs"
          alt="docs build status">
   </a>
+  <a href="https://discord.gg/MszYpbabna">
+    <img src="https://img.shields.io/discord/1063258094743863306" alt="discord">
+  </a>
 </p>
 
 <p align="center">

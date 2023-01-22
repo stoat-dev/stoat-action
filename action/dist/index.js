@@ -85946,9 +85946,9 @@ var helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _
 
 
 
-const submitPartialConfig = (taskId, apiSuffix, requestBody) => helpers_awaiter(void 0, void 0, void 0, function* () {
+const submitPartialConfig = (taskId, requestBody) => helpers_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Submitting partial config...`);
-    const staticHostingApiUrl = `${yield getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/plugins/${apiSuffix}`;
+    const staticHostingApiUrl = `${yield getApiUrlBase(requestBody.ghOwner, requestBody.ghRepo)}/api/partial_configs`;
     const response = yield node_ponyfill_default()(staticHostingApiUrl, {
         method: 'POST',
         body: JSON.stringify(requestBody)
@@ -86168,6 +86168,7 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     yield uploadPath(signedUrl, fields, baselinePath, objectPath);
     core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
     yield uploadPath(signedUrl, fields, diffPath, objectPath);
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { sha: ghSha, image_url: `${hostingUrl}/${(0,external_path_.basename)(imagePath)}`, baseline_url: `${hostingUrl}/${(0,external_path_.basename)(baselinePath)}`, diff_url: `${hostingUrl}/${(0,external_path_.basename)(diffPath)}` });
     // submit partial config
     const requestBody = {
         ghOwner: owner,
@@ -86176,11 +86177,13 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
         ghToken,
         taskId,
         stoatConfigFileId,
-        imageUrl: `${hostingUrl}/${(0,external_path_.basename)(imagePath)}`,
-        baselineUrl: `${hostingUrl}/${(0,external_path_.basename)(baselinePath)}`,
-        diffUrl: `${hostingUrl}/${(0,external_path_.basename)(diffPath)}`
+        partialConfig: {
+            plugins: {
+                image_diff: { [taskId]: renderedPlugin }
+            }
+        }
     };
-    yield submitPartialConfig(taskId, 'image_diffs', requestBody);
+    yield submitPartialConfig(taskId, requestBody);
 });
 const isFileExist = (taskId, pathType, path) => {
     if (path === undefined) {
@@ -86222,6 +86225,14 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
     const runtimeSeconds = Math.floor((now.valueOf() - startedAt.valueOf()) / 1000);
     core.info(`[${taskId}] Uploading job runtime for ${ghJob.name}: ` +
         `${runtimeSeconds} (${startedAt.toISOString()} - ${now.toISOString()})`);
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { runtime: [
+            {
+                sha: ghSha,
+                workflow: ghWorkflow,
+                job: ghJob.name,
+                runtime_seconds: runtimeSeconds
+            }
+        ] });
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
@@ -86229,11 +86240,13 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
         ghToken,
         taskId,
         stoatConfigFileId,
-        ghWorkflow,
-        ghJob: ghJob.name,
-        runtimeSeconds
+        partialConfig: {
+            plugins: {
+                job_runtime: renderedPlugin
+            }
+        }
     };
-    yield submitPartialConfig(taskId, 'job_runtimes', requestBody);
+    yield submitPartialConfig(taskId, requestBody);
 });
 /* harmony default export */ const jobRuntime_plugin = (runJobRuntimePlugin);
 
@@ -86278,6 +86291,7 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
         throw Error(message);
     }
     // submit partial config
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { value });
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
@@ -86285,9 +86299,13 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
         ghToken,
         taskId,
         stoatConfigFileId,
-        value
+        partialConfig: {
+            plugins: {
+                json: { [taskId]: renderedPlugin }
+            }
+        }
     };
-    yield submitPartialConfig(taskId, 'jsons', requestBody);
+    yield submitPartialConfig(taskId, requestBody);
 });
 /* harmony default export */ const json_plugin = (runJsonPlugin);
 
@@ -86337,6 +86355,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadPath(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { sha: ghSha, link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl, status: stepsSucceeded ? '✅' : '❌' });
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
@@ -86344,10 +86363,13 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghToken,
         taskId,
         stoatConfigFileId,
-        hostingUrl: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
-        status: stepsSucceeded ? '✅' : '❌'
+        partialConfig: {
+            plugins: {
+                static_hosting: { [taskId]: renderedPlugin }
+            }
+        }
     };
-    yield submitPartialConfig(taskId, 'static_hostings', requestBody);
+    yield submitPartialConfig(taskId, requestBody);
 });
 /* harmony default export */ const staticHosting_plugin = (runStaticHostingPlugin);
 
