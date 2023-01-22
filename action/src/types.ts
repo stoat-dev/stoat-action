@@ -100,29 +100,6 @@ export interface UploadGenericPartialConfigRequest extends UploadPartialConfigRe
   partialConfig: Pick<StoatConfigSchemaRendered, 'plugins'>;
 }
 
-export interface UploadStaticHostingRequest extends UploadPartialConfigRequest {
-  hostingUrl: string;
-  status: string;
-}
-
-export interface UploadJsonRequest extends UploadPartialConfigRequest {
-  value: object;
-}
-
-export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
-  imageUrl: string;
-  baselineUrl: string;
-  diffUrl: string;
-}
-
-export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
-  ghWorkflow: string;
-  ghJob: string;
-  runtimeSeconds: number;
-  width?: number;
-  height?: number;
-}
-
 export type GetDefaultTemplateRequest = {
   /* params for API validation */
   ghOwner: string;
