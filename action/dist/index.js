@@ -2517,7 +2517,7 @@ var _utils = __nccwpck_require__(7403);
 
 var _anyBase = _interopRequireDefault(__nccwpck_require__(5625));
 
-var _mkdirp = _interopRequireDefault(__nccwpck_require__(7773));
+var _mkdirp = _interopRequireDefault(__nccwpck_require__(6186));
 
 var _pixelmatch = _interopRequireDefault(__nccwpck_require__(6478));
 
@@ -4358,115 +4358,6 @@ var _default = promisify;
 exports["default"] = _default;
 module.exports = exports.default;
 //# sourceMappingURL=promisify.js.map
-
-/***/ }),
-
-/***/ 7773:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var path = __nccwpck_require__(1017);
-var fs = __nccwpck_require__(7147);
-var _0777 = parseInt('0777', 8);
-
-module.exports = mkdirP.mkdirp = mkdirP.mkdirP = mkdirP;
-
-function mkdirP (p, opts, f, made) {
-    if (typeof opts === 'function') {
-        f = opts;
-        opts = {};
-    }
-    else if (!opts || typeof opts !== 'object') {
-        opts = { mode: opts };
-    }
-    
-    var mode = opts.mode;
-    var xfs = opts.fs || fs;
-    
-    if (mode === undefined) {
-        mode = _0777
-    }
-    if (!made) made = null;
-    
-    var cb = f || /* istanbul ignore next */ function () {};
-    p = path.resolve(p);
-    
-    xfs.mkdir(p, mode, function (er) {
-        if (!er) {
-            made = made || p;
-            return cb(null, made);
-        }
-        switch (er.code) {
-            case 'ENOENT':
-                /* istanbul ignore if */
-                if (path.dirname(p) === p) return cb(er);
-                mkdirP(path.dirname(p), opts, function (er, made) {
-                    /* istanbul ignore if */
-                    if (er) cb(er, made);
-                    else mkdirP(p, opts, cb, made);
-                });
-                break;
-
-            // In the case of any other error, just see if there's a dir
-            // there already.  If so, then hooray!  If not, then something
-            // is borked.
-            default:
-                xfs.stat(p, function (er2, stat) {
-                    // if the stat fails, then that's super weird.
-                    // let the original error be the failure reason.
-                    if (er2 || !stat.isDirectory()) cb(er, made)
-                    else cb(null, made);
-                });
-                break;
-        }
-    });
-}
-
-mkdirP.sync = function sync (p, opts, made) {
-    if (!opts || typeof opts !== 'object') {
-        opts = { mode: opts };
-    }
-    
-    var mode = opts.mode;
-    var xfs = opts.fs || fs;
-    
-    if (mode === undefined) {
-        mode = _0777
-    }
-    if (!made) made = null;
-
-    p = path.resolve(p);
-
-    try {
-        xfs.mkdirSync(p, mode);
-        made = made || p;
-    }
-    catch (err0) {
-        switch (err0.code) {
-            case 'ENOENT' :
-                made = sync(path.dirname(p), opts, made);
-                sync(p, opts, made);
-                break;
-
-            // In the case of any other error, just see if there's a dir
-            // there already.  If so, then hooray!  If not, then something
-            // is borked.
-            default:
-                var stat;
-                try {
-                    stat = xfs.statSync(p);
-                }
-                catch (err1) /* istanbul ignore next */ {
-                    throw err0;
-                }
-                /* istanbul ignore if */
-                if (!stat.isDirectory()) throw err0;
-                break;
-        }
-    }
-
-    return made;
-};
-
 
 /***/ }),
 
@@ -50999,6 +50890,115 @@ module.exports = mime;
 
 /***/ }),
 
+/***/ 6186:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var path = __nccwpck_require__(1017);
+var fs = __nccwpck_require__(7147);
+var _0777 = parseInt('0777', 8);
+
+module.exports = mkdirP.mkdirp = mkdirP.mkdirP = mkdirP;
+
+function mkdirP (p, opts, f, made) {
+    if (typeof opts === 'function') {
+        f = opts;
+        opts = {};
+    }
+    else if (!opts || typeof opts !== 'object') {
+        opts = { mode: opts };
+    }
+    
+    var mode = opts.mode;
+    var xfs = opts.fs || fs;
+    
+    if (mode === undefined) {
+        mode = _0777
+    }
+    if (!made) made = null;
+    
+    var cb = f || /* istanbul ignore next */ function () {};
+    p = path.resolve(p);
+    
+    xfs.mkdir(p, mode, function (er) {
+        if (!er) {
+            made = made || p;
+            return cb(null, made);
+        }
+        switch (er.code) {
+            case 'ENOENT':
+                /* istanbul ignore if */
+                if (path.dirname(p) === p) return cb(er);
+                mkdirP(path.dirname(p), opts, function (er, made) {
+                    /* istanbul ignore if */
+                    if (er) cb(er, made);
+                    else mkdirP(p, opts, cb, made);
+                });
+                break;
+
+            // In the case of any other error, just see if there's a dir
+            // there already.  If so, then hooray!  If not, then something
+            // is borked.
+            default:
+                xfs.stat(p, function (er2, stat) {
+                    // if the stat fails, then that's super weird.
+                    // let the original error be the failure reason.
+                    if (er2 || !stat.isDirectory()) cb(er, made)
+                    else cb(null, made);
+                });
+                break;
+        }
+    });
+}
+
+mkdirP.sync = function sync (p, opts, made) {
+    if (!opts || typeof opts !== 'object') {
+        opts = { mode: opts };
+    }
+    
+    var mode = opts.mode;
+    var xfs = opts.fs || fs;
+    
+    if (mode === undefined) {
+        mode = _0777
+    }
+    if (!made) made = null;
+
+    p = path.resolve(p);
+
+    try {
+        xfs.mkdirSync(p, mode);
+        made = made || p;
+    }
+    catch (err0) {
+        switch (err0.code) {
+            case 'ENOENT' :
+                made = sync(path.dirname(p), opts, made);
+                sync(p, opts, made);
+                break;
+
+            // In the case of any other error, just see if there's a dir
+            // there already.  If so, then hooray!  If not, then something
+            // is borked.
+            default:
+                var stat;
+                try {
+                    stat = xfs.statSync(p);
+                }
+                catch (err1) /* istanbul ignore next */ {
+                    throw err0;
+                }
+                /* istanbul ignore if */
+                if (!stat.isDirectory()) throw err0;
+                break;
+        }
+    }
+
+    return made;
+};
+
+
+/***/ }),
+
 /***/ 467:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -85882,7 +85882,7 @@ var jsYaml = {
 /* harmony default export */ const js_yaml = (jsYaml);
 
 
-;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchema.json
+;// CONCATENATED MODULE: ../types/src/schemas/stoatConfigSchema.json
 const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"identifier":{"type":"string","description":"All workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>.<identifier>\\". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).","default":"workflow","examples":["deployment","deployment.{{ github.event.inputs.env }}"]}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -86526,28 +86526,28 @@ function getCurrentPullRequestNumber(octokit, repository, sha) {
     });
 }
 
-;// CONCATENATED MODULE: ./src/schemas/stoatConfigSchemaRendered.json
-const stoatConfigSchemaRendered_namespaceObject = {};
-;// CONCATENATED MODULE: ./src/schemas/index.ts
+;// CONCATENATED MODULE: ../types/dist/plugin.js
+var StoatPlugin;
+(function (StoatPlugin) {
+    StoatPlugin["StaticHosting"] = "static_hosting";
+    StoatPlugin["Json"] = "json";
+    StoatPlugin["ImageDiff"] = "image_diff";
+    StoatPlugin["JobRuntime"] = "job_runtime";
+    StoatPlugin["WorkflowDispatch"] = "workflow_dispatch";
+})(StoatPlugin || (StoatPlugin = {}));
+
+;// CONCATENATED MODULE: ../types/dist/template.js
+var StoatTemplateFormat;
+(function (StoatTemplateFormat) {
+    StoatTemplateFormat["Handlebars"] = "hbs";
+    StoatTemplateFormat["Jinja2"] = "jinja2";
+})(StoatTemplateFormat || (StoatTemplateFormat = {}));
+
+;// CONCATENATED MODULE: ../types/dist/index.js
 
 
 
-;// CONCATENATED MODULE: ./src/types.ts
 
-// These types are copied from src/common/types.ts.
-var Plugin;
-(function (Plugin) {
-    Plugin["StaticHosting"] = "static_hosting";
-    Plugin["Json"] = "json";
-    Plugin["ImageDiff"] = "image_diff";
-    Plugin["JobRuntime"] = "job_runtime";
-    Plugin["WorkflowDispatch"] = "workflow_dispatch";
-})(Plugin || (Plugin = {}));
-var TemplateFormat;
-(function (TemplateFormat) {
-    TemplateFormat["Handlebars"] = "hbs";
-    TemplateFormat["Jinja2"] = "jinja2";
-})(TemplateFormat || (TemplateFormat = {}));
 
 ;// CONCATENATED MODULE: ./src/templateHelpers.ts
 var templateHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -86579,7 +86579,7 @@ const getLocalTemplate = (commentTemplatePath) => {
 const getTemplateFormat = (commentTemplatePath) => {
     const pathTokens = commentTemplatePath.split('.');
     const extension = pathTokens[pathTokens.length - 1];
-    for (const format of Object.values(TemplateFormat)) {
+    for (const format of Object.values(StoatTemplateFormat)) {
         if (format === extension) {
             return format;
         }
@@ -86620,7 +86620,7 @@ const getPlugins = (stoatConfig) => {
     const plugins = new Set();
     for (const [pluginField, pluginValue] of Object.entries(stoatConfig.plugins || {})) {
         if (Object.keys(pluginValue || {}).length > 0) {
-            for (const pluginName of Object.values(Plugin)) {
+            for (const pluginName of Object.values(StoatPlugin)) {
                 if (pluginField === pluginName) {
                     plugins.add(pluginName);
                 }
