@@ -9,6 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/cli/lib" />
       <excludeFolder url="file://$MODULE_DIR$/cli/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/cli/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/types/dist" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
