@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { ImageDiffPlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import { ImageDiffPlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from "../src/schemas";
 import {
   getLocalTemplate,
   getPlugins,

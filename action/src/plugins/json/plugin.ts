@@ -1,8 +1,7 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 
-import { JsonPlugin } from '../../schemas/stoatConfigSchema';
-import { JsonPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { JsonPlugin, JsonPluginRendered } from "../../schemas";
 import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 

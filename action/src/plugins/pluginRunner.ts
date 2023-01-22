@@ -5,7 +5,7 @@ import {
   StaticHostingPlugin,
   StoatConfigSchema,
   WorkflowDispatchPlugin
-} from '../schemas/stoatConfigSchema';
+} from "../schemas";
 import { GithubActionRun } from '../types';
 import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';

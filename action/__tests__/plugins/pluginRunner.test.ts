@@ -4,7 +4,7 @@ import { runJobRuntimePlugin } from '../../src/plugins/jobRuntime';
 import { runJsonPlugin } from '../../src/plugins/json';
 import { runPlugins } from '../../src/plugins/pluginRunner';
 import { runStaticHostingPlugin } from '../../src/plugins/staticHosting';
-import { StoatConfigSchema } from '../../src/schemas/stoatConfigSchema';
+import { StoatConfigSchema } from "../../src/schemas";
 import { GithubActionRun } from '../../src/types';
 
 jest.mock('../../src/plugins/staticHosting');

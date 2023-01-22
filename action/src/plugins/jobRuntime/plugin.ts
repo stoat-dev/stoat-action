@@ -1,7 +1,6 @@
 import * as core from '@actions/core';
 
-import { JobRuntimePlugin } from '../../schemas/stoatConfigSchema';
-import { JobRuntimePluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { JobRuntimePlugin, JobRuntimePluginRendered } from "../../schemas";
 import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 

@@ -1,8 +1,7 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 
-import { WorkflowDispatchPlugin } from '../../schemas/stoatConfigSchema';
-import { WorkflowDispatchPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
+import { WorkflowDispatchPlugin, WorkflowDispatchPluginRendered } from '../../schemas';
 import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
 import { submitPartialConfig } from '../helpers';
 

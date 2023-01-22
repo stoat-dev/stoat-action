@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import fetch from 'cross-fetch';
 import { readFileSync } from 'fs';
 
-import { StoatConfigSchema } from './schemas/stoatConfigSchema';
+import { StoatConfigSchema } from "./schemas";
 import { getApiUrlBase } from './stoatApiHelpers';
 import { GetDefaultTemplateRequest, GetDefaultTemplateResponse, Plugin, Template, TemplateFormat } from './types';
 
