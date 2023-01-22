@@ -86260,7 +86260,7 @@ var json_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisAr
 
 
 
-const MAX_CHARACTERS = 10240;
+const MAX_CHARACTERS = 1024;
 const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
