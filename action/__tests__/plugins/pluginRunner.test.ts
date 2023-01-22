@@ -1,11 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
+import { GithubActionRun, StoatConfigSchema } from '../../../types';
 import { runJobRuntimePlugin } from '../../src/plugins/jobRuntime';
 import { runJsonPlugin } from '../../src/plugins/json';
 import { runPlugins } from '../../src/plugins/pluginRunner';
 import { runStaticHostingPlugin } from '../../src/plugins/staticHosting';
-import { StoatConfigSchema } from '../../src/schemas';
-import { GithubActionRun } from '../../src/types';
 
 jest.mock('../../src/plugins/staticHosting');
 const mockStaticHostingPlugin = runStaticHostingPlugin as jest.MockedFunction<typeof runStaticHostingPlugin>;

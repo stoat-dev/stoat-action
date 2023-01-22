@@ -1,9 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 
+import { GithubActionRun, GithubJob, StaticHostingPlugin } from '../../../../types';
 import { runStaticHostingPlugin } from '../../../src/plugins/staticHosting';
-import { StaticHostingPlugin } from '../../../src/schemas';
-import { GithubActionRun, GithubJob } from '../../../src/types';
 
 describe('static hosting plugin', () => {
   const githubActionRun: GithubActionRun = {

@@ -1,6 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { ImageDiffPlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas';
+import {
+  ImageDiffPlugin,
+  JsonPlugin,
+  Plugin,
+  StaticHostingPlugin,
+  StoatConfigSchema,
+  TemplateFormat
+} from '../../types';
 import {
   getLocalTemplate,
   getPlugins,
@@ -8,7 +15,6 @@ import {
   getTemplate,
   getTemplateFormat
 } from '../src/templateHelpers';
-import { Plugin, TemplateFormat } from '../src/types';
 
 const ghOwner = 'test-owner';
 const ghRepo = 'test-repo';
