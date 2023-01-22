@@ -108,6 +108,10 @@ export interface UploadImageDiffRequest extends UploadPartialConfigRequest {
   diffUrl: string;
 }
 
+export interface UploadWorkflowDispatchRequest extends UploadPartialConfigRequest {
+  workflow: string;
+}
+
 export interface UploadJobRuntimeRequest extends UploadPartialConfigRequest {
   ghWorkflow: string;
   ghJob: string;
