@@ -1,6 +1,6 @@
 {
   "name": "stoat-types",
-  "version": "0.0.9",
+  "version": "0.0.1",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,6 +15,7 @@
     "url": "git+https://github.com/stoat-dev/stoat-action.git"
   },
   "author": "Stoat Dev",
+  "keywords": ["stoat", "types"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stoat-dev/stoat-action/issues"

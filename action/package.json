@@ -20,10 +20,11 @@
     "url": "git+https://github.com/stoat-dev/stoat-action.git"
   },
   "keywords": [
-    "github",
     "actions",
     "ci",
-    "cd"
+    "cd",
+    "github",
+    "stoat"
   ],
   "author": "Stoat Dev",
   "license": "MIT",
