@@ -86403,7 +86403,7 @@ const runWorkflowDispatchPlugin = (taskId, taskConfig, githubActionRun, stoatCon
         return;
     }
     const workflowDefinition = external_fs_default().readFileSync(workflowFilename).toString();
-    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { workflow_definition: workflowDefinition });
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { definition: workflowDefinition });
     const requestBody = {
         ghOwner: githubActionRun.ghRepository.owner,
         ghRepo: githubActionRun.ghRepository.repo,
