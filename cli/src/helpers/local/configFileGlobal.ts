@@ -4,7 +4,7 @@ import path from 'path';
 
 import { getTypedStoatConfig, readStoatConfig } from '../../../../action/src/configHelpers';
 import { getRemoteDefaultTemplate, getTemplateFormat } from '../../../../action/src/templateHelpers';
-import { StoatTemplate, StoatConfigSchema } from '../../../../types/src';
+import { StoatConfigSchema, StoatTemplate } from '../../../../types/src';
 import { findGitRoot, findStoatConfigPath } from '../pathHelpers';
 
 // supports reading the local template from a subdirectory
