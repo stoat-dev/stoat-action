@@ -1,10 +1,10 @@
 {
   "name": "stoat-types",
-  "version": "0.0.2-rc.1",
+  "version": "0.0.2-rc.2",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist/**/*.d.ts", "dist/**/*.json"],
+  "files": ["dist/**/*.d.ts", "dist/**/*.js", "dist/**/*.json"],
   "scripts": {
     "build": "npm run gen-types && tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
