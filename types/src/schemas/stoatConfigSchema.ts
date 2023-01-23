@@ -13,6 +13,7 @@ export interface StoatConfigSchema {
     static_hosting?: StaticHostingPluginMap;
     json?: JsonPluginMap;
     image_diff?: ImageDiffPluginMap;
+    workflow_dispatch?: WorkflowDispatchPluginMap;
     job_runtime?: JobRuntimePlugin;
     [k: string]: unknown;
   };
@@ -48,6 +49,17 @@ export interface ImageDiffPlugin {
   };
   image: string;
   baseline: string;
+  [k: string]: unknown;
+}
+export interface WorkflowDispatchPluginMap {
+  [k: string]: WorkflowDispatchPlugin;
+}
+export interface WorkflowDispatchPlugin {
+  filename: string;
+  /**
+   * All workflow related information will be persisted under "plugins.workflow_dispatch.<task-id>.<identifier>". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).
+   */
+  identifier?: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePlugin {
