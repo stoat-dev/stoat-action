@@ -2,9 +2,12 @@ import * as core from '@actions/core';
 import fs from 'fs';
 import { basename, resolve } from 'path';
 
-import { StaticHostingPlugin } from '../../schemas/stoatConfigSchema';
-import { StaticHostingPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import {
+  StaticHostingPlugin,
+  StaticHostingPluginRendered,
+  UploadGenericPartialConfigRequest
+} from '../../../../types/src';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from './helpers';
 

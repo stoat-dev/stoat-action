@@ -33,9 +33,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            ${{ github.workspace }}/types/node_modules
             ${{ github.workspace }}/action/node_modules
             ${{ github.workspace }}/cli/node_modules
-          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('cli/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
+          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}-${{ hashFiles('cli/yarn.lock') }}
+      - name: Install types dependencies
+        working-directory: types
+        run: |
+          yarn install --frozen-lockfile
       - name: Install action dependencies
         working-directory: action
         run: |

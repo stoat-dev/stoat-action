@@ -3,8 +3,8 @@ import Ajv from 'ajv';
 import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
 
-import { StoatConfigSchema } from './schemas/stoatConfigSchema';
-import stoatSchema from './schemas/stoatConfigSchema.json';
+import { StoatConfigSchema } from '../../types/src';
+import stoatSchema from '../../types/src/schemas/stoatConfigSchema.json';
 
 const ajv = new Ajv();
 

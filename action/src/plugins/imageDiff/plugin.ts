@@ -7,9 +7,8 @@ import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-import { ImageDiffPlugin } from '../../schemas/stoatConfigSchema';
-import { ImageDiffPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import { ImageDiffPlugin, ImageDiffPluginRendered, UploadGenericPartialConfigRequest } from '../../../../types/src';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 import { createSignedUrl, uploadPath } from '../staticHosting/helpers';
 

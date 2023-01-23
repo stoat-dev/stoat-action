@@ -1,6 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { ImageDiffPlugin, JsonPlugin, StaticHostingPlugin, StoatConfigSchema } from '../src/schemas/stoatConfigSchema';
+import {
+  ImageDiffPlugin,
+  JsonPlugin,
+  StaticHostingPlugin,
+  StoatConfigSchema,
+  StoatPlugin,
+  StoatTemplateFormat
+} from '../../types/src';
 import {
   getLocalTemplate,
   getPlugins,
@@ -8,7 +15,6 @@ import {
   getTemplate,
   getTemplateFormat
 } from '../src/templateHelpers';
-import { Plugin, TemplateFormat } from '../src/types';
 
 const ghOwner = 'test-owner';
 const ghRepo = 'test-repo';
@@ -40,7 +46,7 @@ describe('Read local template', () => {
         comment_template_file: template1Path
       })
     ).toEqual({
-      format: TemplateFormat.Handlebars,
+      format: StoatTemplateFormat.Handlebars,
       template: template1
     });
 
@@ -50,7 +56,7 @@ describe('Read local template', () => {
         comment_template_file: template2Path
       })
     ).toEqual({
-      format: TemplateFormat.Jinja2,
+      format: StoatTemplateFormat.Jinja2,
       template: template2
     });
   });
@@ -58,11 +64,11 @@ describe('Read local template', () => {
   test('getLocalTemplate', () => {
     expect(getLocalTemplate(template1Path)).toEqual({
       template: template1,
-      format: TemplateFormat.Handlebars
+      format: StoatTemplateFormat.Handlebars
     });
     expect(getLocalTemplate(template2Path)).toEqual({
       template: template2,
-      format: TemplateFormat.Jinja2
+      format: StoatTemplateFormat.Jinja2
     });
   });
 });
@@ -101,8 +107,8 @@ describe('Read remote default template', () => {
 });
 
 test('getTemplateFormat', () => {
-  expect(getTemplateFormat(template1Path)).toEqual(TemplateFormat.Handlebars);
-  expect(getTemplateFormat(template2Path)).toEqual(TemplateFormat.Jinja2);
+  expect(getTemplateFormat(template1Path)).toEqual(StoatTemplateFormat.Handlebars);
+  expect(getTemplateFormat(template2Path)).toEqual(StoatTemplateFormat.Jinja2);
   expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 
@@ -115,7 +121,7 @@ describe('getPlugins', () => {
           static_hosting: { plugin1: staticHosting1 }
         }
       })
-    ).toEqual([Plugin.StaticHosting]);
+    ).toEqual([StoatPlugin.StaticHosting]);
   });
 
   test('Multiple plugins', () => {
@@ -128,6 +134,6 @@ describe('getPlugins', () => {
           image_diff: { plugin4: imageDiff1 }
         }
       }).sort()
-    ).toEqual([Plugin.Json, Plugin.StaticHosting, Plugin.ImageDiff].sort());
+    ).toEqual([StoatPlugin.Json, StoatPlugin.StaticHosting, StoatPlugin.ImageDiff].sort());
   });
 });

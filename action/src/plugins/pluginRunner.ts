@@ -4,7 +4,7 @@ import {
   JsonPlugin,
   StaticHostingPlugin,
   StoatConfigSchema
-} from '../schemas/stoatConfigSchema';
+} from '../../../types/src';
 import { GithubActionRun } from '../types';
 import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';

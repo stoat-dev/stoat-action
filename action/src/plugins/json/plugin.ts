@@ -1,9 +1,8 @@
 import * as core from '@actions/core';
-import fs, { readFileSync } from 'fs';
+import fs from 'fs';
 
-import { JsonPlugin } from '../../schemas/stoatConfigSchema';
-import { JsonPluginRendered } from '../../schemas/stoatConfigSchemaRendered';
-import { GithubActionRun, UploadGenericPartialConfigRequest } from '../../types';
+import { JsonPlugin, JsonPluginRendered, UploadGenericPartialConfigRequest } from '../../../../types/src';
+import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
 
 const MAX_CHARACTERS = 1024;
@@ -25,7 +24,7 @@ const runJsonPlugin = async (
     return;
   }
 
-  const jsonString = readFileSync(jsonToUpload).toString();
+  const jsonString = fs.readFileSync(jsonToUpload).toString();
 
   if (jsonString.length > MAX_CHARACTERS) {
     const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
