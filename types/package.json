@@ -1,6 +1,6 @@
 {
   "name": "stoat-types",
-  "version": "0.0.1",
+  "version": "0.0.2-rc.1",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
