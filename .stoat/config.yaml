@@ -4,6 +4,11 @@ enabled: true
 plugins:
   job_runtime:
     enabled: true
+  workflow_dispatch:
+    test-types:
+      filename: test-types.yaml
+      identifier: workflow_test.${{ github.event.inputs.identifier }}
+
   static_hosting:
     test_coverage_action:
       metadata:

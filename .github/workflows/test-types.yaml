@@ -16,6 +16,12 @@ on:
       - 'types/**'
       - '.stoat/**'
       - '.github/workflows/test-types.yaml'
+  workflow_dispatch:
+    inputs:
+      identifier:
+        description: 'Arbitrary identifier for the workflow run'
+        required: true
+        default: 'default'
 
 defaults:
   run:
