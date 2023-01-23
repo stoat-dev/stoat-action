@@ -85878,7 +85878,7 @@ var jsYaml = {
 
 
 ;// CONCATENATED MODULE: ../types/src/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"identifier":{"type":"string","description":"All workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>.<identifier>\\". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).","default":"workflow","examples":["deployment","deployment.{{ github.event.inputs.env }}"]}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -86370,6 +86370,55 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
 ;// CONCATENATED MODULE: ./src/plugins/staticHosting/index.ts
 
 
+;// CONCATENATED MODULE: ./src/plugins/workflowDispatch/plugin.ts
+var workflowDispatch_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+const runWorkflowDispatchPlugin = (taskId, taskConfig, githubActionRun, stoatConfigFileId) => workflowDispatch_plugin_awaiter(void 0, void 0, void 0, function* () {
+    core.info(`[${taskId}] Running workflow dispatch plugin (stoat config ${stoatConfigFileId})`);
+    const workflowFilename = taskConfig.filename;
+    if (!workflowFilename) {
+        const message = `[${taskId}] Workflow filename is missing, please specify a filename in the "workflow_filename" field`;
+        core.error(message);
+        return;
+    }
+    const workflowFilePath = `.github/workflows/${workflowFilename}`;
+    if (!external_fs_default().existsSync(workflowFilePath)) {
+        const message = `[${taskId}] Workflow file does not exist: ${workflowFilePath}`;
+        core.error(message);
+        return;
+    }
+    const workflowDefinition = external_fs_default().readFileSync(workflowFilename).toString();
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { definition: workflowDefinition });
+    const requestBody = {
+        ghOwner: githubActionRun.ghRepository.owner,
+        ghRepo: githubActionRun.ghRepository.repo,
+        ghSha: githubActionRun.ghSha,
+        ghToken: githubActionRun.ghToken,
+        taskId,
+        stoatConfigFileId,
+        partialConfig: {
+            plugins: {
+                workflow_dispatch: { [taskId]: renderedPlugin }
+            }
+        }
+    };
+    yield submitPartialConfig(taskId, requestBody);
+});
+/* harmony default export */ const workflowDispatch_plugin = (runWorkflowDispatchPlugin);
+
+;// CONCATENATED MODULE: ./src/plugins/workflowDispatch/index.ts
+
+
 ;// CONCATENATED MODULE: ./src/plugins/pluginRunner.ts
 var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -86384,8 +86433,9 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 
+
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     if (((_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.static_hosting) !== undefined) {
         for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
             yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
@@ -86401,8 +86451,13 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield imageDiff_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
     }
-    if (((_e = (_d = stoatConfig.plugins) === null || _d === void 0 ? void 0 : _d.job_runtime) === null || _e === void 0 ? void 0 : _e.tracking) === true || ((_g = (_f = stoatConfig.plugins) === null || _f === void 0 ? void 0 : _f.job_runtime) === null || _g === void 0 ? void 0 : _g.tracking) === undefined) {
-        yield jobRuntime_plugin('stoat_job_runtime', (_h = stoatConfig.plugins) === null || _h === void 0 ? void 0 : _h.job_runtime, githubActionRun, stoatConfigFileId);
+    if (((_d = stoatConfig.plugins) === null || _d === void 0 ? void 0 : _d.workflow_dispatch) !== undefined) {
+        for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.workflow_dispatch)) {
+            yield workflowDispatch_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
+        }
+    }
+    if (((_f = (_e = stoatConfig.plugins) === null || _e === void 0 ? void 0 : _e.job_runtime) === null || _f === void 0 ? void 0 : _f.tracking) === true || ((_h = (_g = stoatConfig.plugins) === null || _g === void 0 ? void 0 : _g.job_runtime) === null || _h === void 0 ? void 0 : _h.tracking) === undefined) {
+        yield jobRuntime_plugin('stoat_job_runtime', (_j = stoatConfig.plugins) === null || _j === void 0 ? void 0 : _j.job_runtime, githubActionRun, stoatConfigFileId);
     }
 });
 
