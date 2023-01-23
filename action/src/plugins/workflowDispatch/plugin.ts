@@ -30,7 +30,7 @@ const runWorkflowDispatchPlugin = async (
     core.error(message);
     return;
   }
-  const workflowDefinition = fs.readFileSync(workflowFilename).toString();
+  const workflowDefinition = fs.readFileSync(workflowFilePath).toString();
 
   const renderedPlugin: WorkflowDispatchPluginRendered = {
     ...taskConfig,
