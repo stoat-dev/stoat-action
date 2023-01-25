@@ -29,7 +29,7 @@ updates:
         # https://docusaurus.io/docs/markdown-features/react
         versions: [ "2.x" ]
 
-  - package-ecosystems: npm
+  - package-ecosystem: npm
     directory: types
     schedule:
       interval: monthly
