@@ -56,6 +56,14 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      algolia: {
+        appId: '19PRXY5NQO',
+        // https://www.algolia.com/account/api-keys/all?applicationId=19PRXY5NQO
+        apiKey: '56dd801775a4f1bebef910997da02e6b',
+        contextualSearch: true,
+        indexName: 'stoat',
+        debug: false
+      },
       colorMode: {
         defaultMode: 'light',
         disableSwitch: true,
