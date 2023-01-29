@@ -10,7 +10,7 @@ const MAX_CHARACTERS = 1024;
 const runJsonPlugin = async (
   taskId: string,
   taskConfig: JsonPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
+  { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
@@ -50,6 +50,8 @@ const runJsonPlugin = async (
   const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
+    ghBranch,
+    ghPullRequestNumber,
     ghSha,
     ghToken,
     taskId,

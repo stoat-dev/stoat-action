@@ -15,7 +15,7 @@ import { createSignedUrl, uploadPath } from '../staticHosting/helpers';
 const runImageDiffPlugin = async (
   taskId: string,
   taskConfig: ImageDiffPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghSha }: GithubActionRun,
+  { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
@@ -99,6 +99,8 @@ const runImageDiffPlugin = async (
   const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
+    ghBranch,
+    ghPullRequestNumber,
     ghSha,
     ghToken,
     taskId,

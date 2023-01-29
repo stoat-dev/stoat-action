@@ -86099,7 +86099,7 @@ var plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _a
 
 
 
-const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -86168,6 +86168,8 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
+        ghBranch,
+        ghPullRequestNumber,
         ghSha,
         ghToken,
         taskId,
@@ -86208,7 +86210,7 @@ var jobRuntime_plugin_awaiter = (undefined && undefined.__awaiter) || function (
 };
 
 
-const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }, stoatConfigFileId) => jobRuntime_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghJob }, stoatConfigFileId) => jobRuntime_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running job runtime plugin (stoat config ${stoatConfigFileId})`);
     if (!ghJob) {
         core.warning(`[${taskId}] No job information found for job run`);
@@ -86230,6 +86232,8 @@ const runJobRuntimePlugin = (taskId, taskConfig, { ghToken, ghWorkflow, ghReposi
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
+        ghBranch,
+        ghPullRequestNumber,
         ghSha,
         ghToken,
         taskId,
@@ -86261,7 +86265,7 @@ var json_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisAr
 
 
 const MAX_CHARACTERS = 1024;
-const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha }, stoatConfigFileId) => json_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running json plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
     const jsonToUpload = taskConfig.path;
@@ -86289,6 +86293,8 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
+        ghBranch,
+        ghPullRequestNumber,
         ghSha,
         ghToken,
         taskId,
@@ -86321,7 +86327,7 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghSha, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -86353,6 +86359,8 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     const requestBody = {
         ghOwner: owner,
         ghRepo: repo,
+        ghBranch,
+        ghPullRequestNumber,
         ghSha,
         ghToken,
         taskId,
@@ -86383,7 +86391,7 @@ var workflowDispatch_plugin_awaiter = (undefined && undefined.__awaiter) || func
 
 
 
-const runWorkflowDispatchPlugin = (taskId, taskConfig, githubActionRun, stoatConfigFileId) => workflowDispatch_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runWorkflowDispatchPlugin = (taskId, taskConfig, { ghToken, ghRepository: { owner, repo }, ghBranch, ghPullRequestNumber, ghSha }, stoatConfigFileId) => workflowDispatch_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running workflow dispatch plugin (stoat config ${stoatConfigFileId})`);
     const workflowFilename = taskConfig.filename;
     if (!workflowFilename) {
@@ -86400,10 +86408,12 @@ const runWorkflowDispatchPlugin = (taskId, taskConfig, githubActionRun, stoatCon
     const workflowDefinition = external_fs_default().readFileSync(workflowFilePath).toString();
     const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { definition: workflowDefinition });
     const requestBody = {
-        ghOwner: githubActionRun.ghRepository.owner,
-        ghRepo: githubActionRun.ghRepository.repo,
-        ghSha: githubActionRun.ghSha,
-        ghToken: githubActionRun.ghToken,
+        ghOwner: owner,
+        ghRepo: repo,
+        ghSha,
+        ghToken,
+        ghBranch,
+        ghPullRequestNumber,
         taskId,
         stoatConfigFileId,
         partialConfig: {

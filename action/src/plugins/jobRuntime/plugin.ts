@@ -7,7 +7,7 @@ import { submitPartialConfig } from '../helpers';
 const runJobRuntimePlugin = async (
   taskId: string,
   taskConfig: JobRuntimePlugin,
-  { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghSha, ghJob }: GithubActionRun,
+  { ghToken, ghWorkflow, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghJob }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running job runtime plugin (stoat config ${stoatConfigFileId})`);
@@ -38,6 +38,8 @@ const runJobRuntimePlugin = async (
   const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner: owner,
     ghRepo: repo,
+    ghBranch,
+    ghPullRequestNumber,
     ghSha,
     ghToken,
     taskId,
