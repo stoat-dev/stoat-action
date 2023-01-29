@@ -12,7 +12,7 @@ import { submitPartialConfig } from '../helpers';
 const runWorkflowDispatchPlugin = async (
   taskId: string,
   taskConfig: WorkflowDispatchPlugin,
-  githubActionRun: GithubActionRun,
+  { ghToken, ghRepository: { owner, repo }, ghBranch, ghPullRequestNumber, ghSha }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running workflow dispatch plugin (stoat config ${stoatConfigFileId})`);
@@ -37,10 +37,12 @@ const runWorkflowDispatchPlugin = async (
     definition: workflowDefinition
   };
   const requestBody: UploadGenericPartialConfigRequest = {
-    ghOwner: githubActionRun.ghRepository.owner,
-    ghRepo: githubActionRun.ghRepository.repo,
-    ghSha: githubActionRun.ghSha,
-    ghToken: githubActionRun.ghToken,
+    ghOwner: owner,
+    ghRepo: repo,
+    ghSha,
+    ghToken,
+    ghBranch,
+    ghPullRequestNumber,
     taskId,
     stoatConfigFileId,
     partialConfig: {
