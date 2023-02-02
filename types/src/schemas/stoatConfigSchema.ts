@@ -57,9 +57,9 @@ export interface WorkflowDispatchPluginMap {
 export interface WorkflowDispatchPlugin {
   filename: string;
   /**
-   * All workflow related information will be persisted under "plugins.workflow_dispatch.<task-id>.<identifier>". This is useful if the same workflow can be triggered for different purposes (e.g. deployment for multiple environments).
+   * A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under "plugins.workflow_dispatch.<task-id>". When this field is not empty, the persistent field is "plugins.workflow_dispatch.<task-id>.<scope-identifier>".
    */
-  identifier?: string;
+  scope_identifier?: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePlugin {
