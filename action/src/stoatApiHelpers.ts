@@ -18,8 +18,13 @@ export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
 export const getDevServerBase = (branchName: string): string => {
-  const subdomain = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
-  return `https://stoat-git-${subdomain}-stoat-dev.vercel.app`;
+  const branchToken = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+  const subdomain = `stoat-git-${branchToken}-stoat-dev`;
+  if (subdomain.length > 63) {
+    core.warning(`Subdomain "${subdomain}" is too long. Fall back to ${PROD_API_URL_BASE}.`);
+    return PROD_API_URL_BASE;
+  }
+  return `https://${subdomain}.vercel.app`;
 };
 
 export const getApiUrlBase = async (ghOwner: string, ghRepo: string) => {
@@ -60,8 +65,11 @@ export const waitForStoatDevServer = async (
   if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
     return false;
   }
-  core.info(`Waiting for dev server to be deployed for stoat dev branch...`);
   const devServerBase = getDevServerBase(branchName);
+  if (devServerBase === PROD_API_URL_BASE) {
+    return false;
+  }
+  core.info(`Waiting for dev server to be deployed for stoat dev branch: ${devServerBase}`);
   return waitForShaToMatch(devServerBase, repoSha, perAttemptWaitingSeconds);
 };
 
