@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as core from '@actions/core';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fetch, { Response } from 'cross-fetch';
@@ -24,6 +25,10 @@ describe('getDevServerBase', () => {
     expect(getDevServerBase('token1/token2_token3$token4')).toEqual(
       'https://stoat-git-token1-token2-token3-token4-stoat-dev.vercel.app'
     );
+  });
+
+  it('returns the prod server if the subdomain is too long', () => {
+    expect(getDevServerBase(_.repeat('token-', 10))).toEqual(PROD_API_URL_BASE);
   });
 });
 
