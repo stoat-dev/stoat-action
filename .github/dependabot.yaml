@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: npm
     directory: action
     schedule:
-      interval: weekly
+      interval: monthly
 
   - package-ecosystem: npm
     directory: cli
