@@ -81945,7 +81945,7 @@ const getApiUrlBase = (ghOwner, ghRepo) => __awaiter(void 0, void 0, void 0, fun
 /**
  * For dev work in the stoat repo, wait for the dev server and the latest SHA to be deployed.
  */
-const waitForStoatDevServer = (repository, branchName, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
+const waitForStoatDevServer = (repository, branchName, repoSha, perAttemptWaitingSeconds = 20) => __awaiter(void 0, void 0, void 0, function* () {
     if (repository.owner !== STOAT_ORG || repository.repo !== STOAT_REPO || branchName === INTERNAL_REPO_DEFAULT_BRANCH) {
         return false;
     }
@@ -81959,9 +81959,9 @@ const waitForStoatDevServer = (repository, branchName, repoSha, perAttemptWaitin
 /**
  * The perAttemptWaitingSeconds is configurable for testing purposes.
  */
-const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 5) => __awaiter(void 0, void 0, void 0, function* () {
+const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 20) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${serverBase}/api/debug/sha`;
-    const maxWaitingTimeSeconds = 2 * 60;
+    const maxWaitingTimeSeconds = 5 * 60;
     const maxAttempts = maxWaitingTimeSeconds / perAttemptWaitingSeconds;
     let attempt = 0;
     while (attempt < maxAttempts) {
