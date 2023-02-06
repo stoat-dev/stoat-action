@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import * as core from '@actions/core';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import fetch, { Response } from 'cross-fetch';
+import _ from 'lodash';
 
 import {
   INTERNAL_REPO_DEFAULT_BRANCH,
