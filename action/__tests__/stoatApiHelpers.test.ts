@@ -89,21 +89,62 @@ describe('waitForStoatDevServer', () => {
 
   describe('non-stoat repos', () => {
     it('does not wait', async () => {
-      expect(await waitForStoatDevServer({ owner: 'external-org', repo: 'repo' }, 'b1', repoSha)).toEqual(false);
-      expect(await waitForStoatDevServer({ owner: STOAT_ORG, repo: 'stoat-action' }, 'b1', repoSha)).toEqual(false);
-      expect(await waitForStoatDevServer({ owner: STOAT_ORG, repo: 'examples' }, 'b1', repoSha)).toEqual(false);
+      expect(
+        await waitForStoatDevServer(
+          {
+            owner: 'external-org',
+            repo: 'repo'
+          },
+          'b1',
+          repoSha
+        )
+      ).toEqual(false);
+      expect(
+        await waitForStoatDevServer(
+          {
+            owner: STOAT_ORG,
+            repo: 'stoat-action'
+          },
+          'b1',
+          repoSha
+        )
+      ).toEqual(false);
+      expect(
+        await waitForStoatDevServer(
+          {
+            owner: STOAT_ORG,
+            repo: 'examples'
+          },
+          'b1',
+          repoSha
+        )
+      ).toEqual(false);
     });
   });
 
   describe('stoat repo', () => {
     it('does not wait for main branch', async () => {
       expect(
-        await waitForStoatDevServer({ owner: STOAT_ORG, repo: STOAT_REPO }, INTERNAL_REPO_DEFAULT_BRANCH, repoSha)
+        await waitForStoatDevServer(
+          {
+            owner: STOAT_ORG,
+            repo: STOAT_REPO
+          },
+          INTERNAL_REPO_DEFAULT_BRANCH,
+          repoSha
+        )
       ).toEqual(false);
     });
 
     it('waits for dev branch', async () => {
       mockFetch
+        // the dev server is not be available
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 404,
+          json: async () => ({ message: 'Not Found' })
+        } as Response)
+        // the dev server is available but the commit is not deployed
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({ sha: 'irrelevant-sha' })
@@ -124,6 +165,14 @@ describe('waitForStoatDevServer', () => {
           1
         )
       ).toEqual('https://stoat-git-dev-feature1-stoat-dev.vercel.app');
+
+      const infos = mockCore.info.mock.calls;
+      expect(infos[0][0]).toContain('Waiting for dev server');
+      expect(infos[1][0]).toContain('Dev server is not up running yet');
+      expect(infos[2][0]).toContain('Waiting / retrying for latest change');
+      expect(infos[3][0]).toContain('Matches: false');
+      expect(infos[4][0]).toContain('Waiting / retrying for latest change');
+      expect(infos[5][0]).toContain('Matches: true');
     });
 
     it('throws when the dev server is down', async () => {

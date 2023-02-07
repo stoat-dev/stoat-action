@@ -81968,7 +81968,12 @@ const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 20) =
         ++attempt;
         const response = yield node_ponyfill_default()(url);
         if (!response.ok) {
-            throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+            if (response.status === 404) {
+                core.info('Dev server is not up running yet');
+            }
+            else {
+                throw new Error(`Failed to fetch server SHA: ${response.status} - ${response.statusText}`);
+            }
         }
         else {
             const { sha: serverSha } = (yield response.json());
@@ -81977,7 +81982,7 @@ const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 20) =
                 return serverBase;
             }
         }
-        core.info(`Waiting / retrying for server to be deployed...`);
+        core.info(`Waiting / retrying for latest change to be deployed...`);
         yield new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
     }
     throw Error(`Server SHA does not match repo SHA after ${maxWaitingTimeSeconds} seconds`);
