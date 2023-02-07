@@ -165,6 +165,14 @@ describe('waitForStoatDevServer', () => {
           1
         )
       ).toEqual('https://stoat-git-dev-feature1-stoat-dev.vercel.app');
+
+      const infos = mockCore.info.mock.calls;
+      expect(infos[0][0]).toContain('Waiting for dev server');
+      expect(infos[1][0]).toContain('Dev server is not up running yet');
+      expect(infos[2][0]).toContain('Waiting / retrying for latest change');
+      expect(infos[3][0]).toContain('Matches: false');
+      expect(infos[4][0]).toContain('Waiting / retrying for latest change');
+      expect(infos[5][0]).toContain('Matches: true');
     });
 
     it('throws when the dev server is down', async () => {

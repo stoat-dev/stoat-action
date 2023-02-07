@@ -81969,7 +81969,7 @@ const waitForShaToMatch = (serverBase, repoSha, perAttemptWaitingSeconds = 20) =
         const response = yield node_ponyfill_default()(url);
         if (!response.ok) {
             if (response.status === 404) {
-                core.error(`Dev server is not up running yet`);
+                core.info('Dev server is not up running yet');
             }
             else {
                 throw new Error(`Failed to fetch server SHA: ${response.status} - ${response.statusText}`);
