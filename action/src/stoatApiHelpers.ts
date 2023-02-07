@@ -92,7 +92,11 @@ export const waitForShaToMatch = async (
     ++attempt;
     const response = await fetch(url);
     if (!response.ok) {
-      throw Error(`Failed to fetch server SHA: ${JSON.stringify(response, null, 2)}`);
+      if (response.status === 404) {
+        core.error(`Dev server is not up running yet`);
+      } else {
+        throw new Error(`Failed to fetch server SHA: ${response.status} - ${response.statusText}`);
+      }
     } else {
       const { sha: serverSha } = (await response.json()) as ShaResponse;
       core.info(`Repo SHA: ${repoSha} Server SHA: ${serverSha} Matches: ${repoSha === serverSha}`);
@@ -101,7 +105,7 @@ export const waitForShaToMatch = async (
         return serverBase;
       }
     }
-    core.info(`Waiting / retrying for server to be deployed...`);
+    core.info(`Waiting / retrying for latest change to be deployed...`);
     await new Promise((r) => setTimeout(r, perAttemptWaitingSeconds * 1000));
   }
 
