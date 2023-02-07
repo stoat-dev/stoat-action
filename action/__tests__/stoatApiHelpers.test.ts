@@ -138,13 +138,13 @@ describe('waitForStoatDevServer', () => {
 
     it('waits for dev branch', async () => {
       mockFetch
-        // test the case when the dev server is not be available
+        // the dev server is not be available
         .mockResolvedValueOnce({
           ok: false,
           status: 404,
           json: async () => ({ message: 'Not Found' })
         } as Response)
-        // test the case when the dev server is available but the commit is not deployed yet
+        // the dev server is available but the commit is not deployed
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({ sha: 'irrelevant-sha' })
