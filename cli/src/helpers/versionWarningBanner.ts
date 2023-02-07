@@ -4,7 +4,7 @@ import latestVersion from 'latest-version';
 
 import { version } from '../../package.json';
 
-export default async function () {
+export default async function main() {
   try {
     const latest = await latestVersion('stoat');
 
@@ -17,10 +17,12 @@ export default async function () {
       'Please upgrade by running: npm update -g stoat'
     ];
 
-    if (compareVersions(version, latest!) < 0) {
+    if (compareVersions(version, latest) < 0) {
       const longest = Math.max(...versionWarning.map((line) => line.length));
       console.warn(chalk.yellow('-'.repeat(longest)));
-      versionWarning.forEach((line) => console.warn(chalk.yellow(`${line}`)));
+      for (const line of versionWarning) {
+        console.warn(chalk.yellow(`${line}`));
+      }
       console.warn(chalk.yellow('-'.repeat(longest)));
       console.warn();
     }
