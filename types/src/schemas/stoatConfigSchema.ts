@@ -15,6 +15,7 @@ export interface StoatConfigSchema {
     image_diff?: ImageDiffPluginMap;
     workflow_dispatch?: WorkflowDispatchPluginMap;
     job_runtime?: JobRuntimePlugin;
+    auto_hosting?: AutoHostingPlugin;
     [k: string]: unknown;
   };
   [k: string]: unknown;
@@ -70,5 +71,9 @@ export interface JobRuntimePlugin {
     height?: number;
     [k: string]: unknown;
   };
+  [k: string]: unknown;
+}
+export interface AutoHostingPlugin {
+  enabled: boolean;
   [k: string]: unknown;
 }
