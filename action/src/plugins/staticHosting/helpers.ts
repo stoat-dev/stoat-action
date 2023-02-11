@@ -7,8 +7,73 @@ import fs from 'fs';
 import mime from 'mime-types';
 import { basename, posix, resolve } from 'path';
 
-import { CreateSignedUrlRequest, CreateSignedUrlResponse } from '../../../../types/src';
+import {
+  CreateSignedUrlRequest,
+  CreateSignedUrlResponse,
+  StaticHostingPlugin,
+  StaticHostingPluginRendered,
+  UploadGenericPartialConfigRequest
+} from '../../../../types/src';
 import { getApiUrlBase } from '../../stoatApiHelpers';
+import { GithubActionRun } from '../../types';
+import { submitPartialConfig } from '../helpers';
+
+export const processPath = async (
+  taskId: string,
+  taskConfig: StaticHostingPlugin,
+  {
+    ghRepository: { owner: ghOwner, repo: ghRepo },
+    ghBranch,
+    ghPullRequestNumber,
+    ghSha,
+    ghToken,
+    stepsSucceeded
+  }: Pick<
+    GithubActionRun,
+    'ghRepository' | 'ghBranch' | 'ghPullRequestNumber' | 'ghSha' | 'ghToken' | 'stepsSucceeded'
+  >,
+  stoatConfigFileId: number,
+  pathToUpload: string
+) => {
+  // get signed url
+  const isFile = fs.lstatSync(pathToUpload).isFile();
+  const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
+    ghOwner,
+    ghRepo,
+    ghSha,
+    ghToken,
+    taskId,
+    filename: isFile ? basename(pathToUpload) : undefined
+  });
+
+  // upload directory
+  core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
+  await uploadPath(signedUrl, fields, pathToUpload, objectPath);
+
+  // submit partial config
+  const renderedPlugin: StaticHostingPluginRendered = {
+    ...taskConfig,
+    sha: ghSha,
+    link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
+    status: stepsSucceeded ? '✅' : '❌'
+  };
+  const requestBody: UploadGenericPartialConfigRequest = {
+    ghOwner,
+    ghRepo,
+    ghBranch,
+    ghPullRequestNumber,
+    ghSha,
+    ghToken,
+    taskId,
+    stoatConfigFileId,
+    partialConfig: {
+      plugins: {
+        static_hosting: { [taskId]: renderedPlugin }
+      }
+    }
+  };
+  await submitPartialConfig(taskId, requestBody);
+};
 
 export const createSignedUrl = async (request: CreateSignedUrlRequest): Promise<CreateSignedUrlResponse> => {
   core.info(`[${request.taskId}] Getting signed url...`);

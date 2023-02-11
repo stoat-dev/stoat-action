@@ -1,15 +1,10 @@
 import * as core from '@actions/core';
 import fs from 'fs';
-import { basename, resolve } from 'path';
+import { resolve } from 'path';
 
-import {
-  StaticHostingPlugin,
-  StaticHostingPluginRendered,
-  UploadGenericPartialConfigRequest
-} from '../../../../types/src';
+import { StaticHostingPlugin } from '../../../../types/src';
 import { GithubActionRun } from '../../types';
-import { submitPartialConfig } from '../helpers';
-import { createSignedUrl, uploadPath } from './helpers';
+import { processPath } from './helpers';
 
 const runStaticHostingPlugin = async (
   taskId: string,
@@ -33,44 +28,20 @@ const runStaticHostingPlugin = async (
     return;
   }
 
-  // get signed url
-  const isFile = fs.lstatSync(pathToUpload).isFile();
-  const { signedUrl, fields, objectPath, hostingUrl } = await createSignedUrl({
-    ghOwner: owner,
-    ghRepo: repo,
-    ghSha,
-    ghToken,
+  await processPath(
     taskId,
-    filename: isFile ? basename(pathToUpload) : undefined
-  });
-
-  // upload directory
-  core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
-  await uploadPath(signedUrl, fields, pathToUpload, objectPath);
-
-  // submit partial config
-  const renderedPlugin: StaticHostingPluginRendered = {
-    ...taskConfig,
-    sha: ghSha,
-    link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
-    status: stepsSucceeded ? '✅' : '❌'
-  };
-  const requestBody: UploadGenericPartialConfigRequest = {
-    ghOwner: owner,
-    ghRepo: repo,
-    ghBranch,
-    ghPullRequestNumber,
-    ghSha,
-    ghToken,
-    taskId,
+    taskConfig,
+    {
+      ghRepository: { owner, repo },
+      ghBranch,
+      ghPullRequestNumber,
+      ghSha,
+      ghToken,
+      stepsSucceeded
+    },
     stoatConfigFileId,
-    partialConfig: {
-      plugins: {
-        static_hosting: { [taskId]: renderedPlugin }
-      }
-    }
-  };
-  await submitPartialConfig(taskId, requestBody);
+    pathToUpload
+  );
 };
 
 export default runStaticHostingPlugin;
