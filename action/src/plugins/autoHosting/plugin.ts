@@ -76,7 +76,7 @@ const runAutoHostingPlugin = async (
   for (const directory of validDirectories) {
     const staticHostingTaskConfig: StaticHostingPlugin = {
       metadata: {
-        name: 'Path `${directory}`'
+        name: `Path \`${directory}\``
       },
       path: directory
     };

@@ -87677,7 +87677,7 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
     for (const directory of validDirectories) {
         const staticHostingTaskConfig = {
             metadata: {
-                name: 'Path `${directory}`'
+                name: `Path \`${directory}\``
             },
             path: directory
         };
