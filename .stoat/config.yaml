@@ -4,6 +4,8 @@ enabled: true
 plugins:
   job_runtime:
     enabled: true
+  auto_hosting:
+    enabled: true
   static_hosting:
     test_coverage_action:
       metadata:
