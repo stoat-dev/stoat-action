@@ -74,6 +74,17 @@ export interface JobRuntimePlugin {
   [k: string]: unknown;
 }
 export interface AutoHostingPlugin {
+  /**
+   * When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.
+   */
   enabled: boolean;
+  /**
+   * Whether to show the suggested artifacts to host in the rendered comment.
+   */
+  show_in_comment?: boolean;
+  /**
+   * Whether to automatically upload the detected artifacts to the Stoat server for hosting.
+   */
+  auto_upload?: boolean;
   [k: string]: unknown;
 }
