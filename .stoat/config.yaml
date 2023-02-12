@@ -4,10 +4,6 @@ enabled: true
 plugins:
   job_runtime:
     enabled: true
-  auto_hosting:
-    enabled: true
-    auto_upload: false
-    show_in_comment: true
   static_hosting:
     test_coverage_action:
       metadata:
