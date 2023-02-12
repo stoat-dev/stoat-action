@@ -124,7 +124,7 @@ export const uploadFileWithSignedUrl = async (
         body: form as any
       });
       const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
-      core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
+      core.debug(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
 
       if (ok) {
         break;

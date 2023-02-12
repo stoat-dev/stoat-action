@@ -87549,7 +87549,7 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
                 body: form
             });
             const retryStatus = retry > 0 ? ` (retry ${retry})` : '';
-            core.info(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
+            core.debug(`-- Upload ${localFilePath} -> ${objectKey}: ${status} - ${statusText}${retryStatus}`);
             if (ok) {
                 break;
             }
