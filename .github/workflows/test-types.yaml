@@ -46,9 +46,18 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install --frozen-lockfile
-      - name: Build and test stoat types
+      - name: Generate and build stoat types
         run: |
+          yarn gen-types
           yarn build
-      - name: Run Stoat Action
+      - name: Ensure no uncommitted changes
+        run: |
+          if [ "$(git diff --ignore-space-at-eol ./ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build. See status below:"
+            git diff
+            exit 1
+          fi
+        id: diff
+      - name: Run stoat action
         uses: ./
         if: always()
