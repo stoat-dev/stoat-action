@@ -54,6 +54,6 @@ jobs:
           yarn test
       - name: Check format
         run: yarn format-check
-      - name: Run Stoat Action
+      - name: Run stoat action
         uses: ./
         if: always()
