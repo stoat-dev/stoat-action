@@ -87661,10 +87661,7 @@ const getSubtaskId = (directory) => {
 const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
-    const { exitCode, stdout, stderr } = yield exec.getExecOutput('/bin/sh', [
-        '-c',
-        "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"
-    ]);
+    const { exitCode, stdout, stderr } = yield exec.getExecOutput('/bin/sh', ['-c', "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"], { silent: true });
     if (exitCode !== 0) {
         core.error(`[${taskId}] Failed to search for index.html files (exit code ${exitCode}): ${stderr}`);
         return;
@@ -87672,17 +87669,15 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
     const allDirectories = stdout.split('\n').filter((d) => d.trim() !== '');
     core.debug(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
     const rootDirectories = getRootDirectories(allDirectories);
-    core.info(`[${taskId}] Candidate directories:\n-- ${rootDirectories.join('\n-- ')}`);
+    core.info(`[${taskId}] Detected possible artifact path(s) that can be hosted with Stoat. To host them, add a new "static_hosting" task for each path:`);
+    core.info(`-- ${rootDirectories.join('\n-- ')}`);
     const validDirectories = getValidDirectories(rootDirectories);
-    for (const directory of validDirectories) {
-        const staticHostingTaskConfig = {
-            metadata: {
-                name: `\`${directory}\``
-            },
-            path: directory
-        };
-        core.info(`[${taskId}] Detected possible HTML build artifact. To host it, add a new "static_hosting" task with "path: ${directory}":`);
-        if (taskConfig.auto_upload) {
+    if (taskConfig.auto_upload) {
+        for (const directory of validDirectories) {
+            const staticHostingTaskConfig = {
+                metadata: { name: `\`${directory}\`` },
+                path: directory
+            };
             yield processPath(getSubtaskId(directory), staticHostingTaskConfig, {
                 ghRepository: { owner, repo },
                 ghBranch,
