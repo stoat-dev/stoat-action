@@ -87691,7 +87691,15 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
 });
 /* harmony default export */ const autoHosting_plugin = (runAutoHostingPlugin);
 
+;// CONCATENATED MODULE: ./src/plugins/autoHosting/constants.ts
+const DefaultAutoHostingConfig = {
+    enabled: true,
+    auto_upload: false,
+    show_in_comment: false
+};
+
 ;// CONCATENATED MODULE: ./src/plugins/autoHosting/index.ts
+
 
 
 // EXTERNAL MODULE: external "crypto"
@@ -88076,7 +88084,8 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
     }
     const autoHostingEnabled = (_l = (_k = stoatConfig.plugins) === null || _k === void 0 ? void 0 : _k.auto_hosting) === null || _l === void 0 ? void 0 : _l.enabled;
     if (autoHostingEnabled === undefined || autoHostingEnabled) {
-        yield autoHosting_plugin('stoat_auto_hosting', (_m = stoatConfig.plugins) === null || _m === void 0 ? void 0 : _m.auto_hosting, githubActionRun, stoatConfigFileId);
+        const autoHostingConfig = ((_m = stoatConfig.plugins) === null || _m === void 0 ? void 0 : _m.auto_hosting) || DefaultAutoHostingConfig;
+        yield autoHosting_plugin('stoat_auto_hosting', autoHostingConfig, githubActionRun, stoatConfigFileId);
     }
 });
 
