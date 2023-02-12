@@ -53,7 +53,8 @@ export const runPlugins = async (
     );
   }
 
-  if (stoatConfig.plugins?.auto_hosting?.enabled === true) {
+  const autoHostingEnabled = stoatConfig.plugins?.auto_hosting?.enabled;
+  if (autoHostingEnabled === undefined || autoHostingEnabled) {
     await runAutoHostingPlugin(
       'stoat_auto_hosting',
       stoatConfig.plugins?.auto_hosting as AutoHostingPlugin,
