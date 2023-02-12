@@ -30,6 +30,9 @@
         },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
+        },
+        "auto_hosting": {
+          "$ref": "#/definitions/auto_hosting_plugin"
         }
       }
     }
@@ -147,6 +150,27 @@
               "type": "integer"
             }
           }
+        }
+      }
+    },
+    "auto_hosting_plugin": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.",
+          "default": true
+        },
+        "show_in_comment": {
+          "type": "boolean",
+          "description": "Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.",
+          "default": false
+        },
+        "auto_upload": {
+          "type": "boolean",
+          "description": "Whether to automatically upload the detected artifacts to the Stoat server for hosting.",
+          "default": false
         }
       }
     }

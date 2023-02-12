@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { StoatConfigSchema } from '../../../types/src';
+import { runAutoHostingPlugin } from '../../src/plugins/autoHosting';
 import { runJobRuntimePlugin } from '../../src/plugins/jobRuntime';
 import { runJsonPlugin } from '../../src/plugins/json';
 import { runPlugins } from '../../src/plugins/pluginRunner';
@@ -15,6 +16,9 @@ const mockJobRuntimePlugin = runJobRuntimePlugin as jest.MockedFunction<typeof r
 
 jest.mock('../../src/plugins/json');
 const mockJsonPlugin = runJsonPlugin as jest.MockedFunction<typeof runJsonPlugin>;
+
+jest.mock('../../src/plugins/autoHosting');
+const mockAutoHostingPlugin = runAutoHostingPlugin as jest.MockedFunction<typeof runAutoHostingPlugin>;
 
 describe('runPlugins', () => {
   afterEach(() => {
@@ -82,6 +86,45 @@ describe('runPlugins', () => {
     await runPlugins(stoatConfig, {} as GithubActionRun, 1);
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(0);
+    expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
+  });
+
+  it('runs the auto hosting plugin by default', async () => {
+    const stoatConfig: StoatConfigSchema = {
+      version: 1,
+      enabled: true,
+      plugins: {
+        static_hosting: {
+          staticHostingTask1: {
+            path: 'path1'
+          }
+        }
+      }
+    };
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
+    expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
+    expect(mockAutoHostingPlugin).toHaveBeenCalledTimes(1);
+    expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not run the auto hosting plugin when disabled', async () => {
+    const stoatConfig: StoatConfigSchema = {
+      version: 1,
+      enabled: true,
+      plugins: {
+        auto_hosting: {
+          enabled: false
+        },
+        static_hosting: {
+          staticHostingTask1: {
+            path: 'path1'
+          }
+        }
+      }
+    };
+    await runPlugins(stoatConfig, {} as GithubActionRun, 1);
+    expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(1);
+    expect(mockAutoHostingPlugin).toHaveBeenCalledTimes(0);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
   });
 });

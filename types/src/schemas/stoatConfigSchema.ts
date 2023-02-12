@@ -15,6 +15,7 @@ export interface StoatConfigSchema {
     image_diff?: ImageDiffPluginMap;
     workflow_dispatch?: WorkflowDispatchPluginMap;
     job_runtime?: JobRuntimePlugin;
+    auto_hosting?: AutoHostingPlugin;
     [k: string]: unknown;
   };
   [k: string]: unknown;
@@ -70,5 +71,20 @@ export interface JobRuntimePlugin {
     height?: number;
     [k: string]: unknown;
   };
+  [k: string]: unknown;
+}
+export interface AutoHostingPlugin {
+  /**
+   * When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.
+   */
+  enabled: boolean;
+  /**
+   * Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.
+   */
+  show_in_comment?: boolean;
+  /**
+   * Whether to automatically upload the detected artifacts to the Stoat server for hosting.
+   */
+  auto_upload?: boolean;
   [k: string]: unknown;
 }

@@ -1,4 +1,5 @@
 import {
+  AutoHostingPlugin,
   ImageDiffPlugin,
   JobRuntimePlugin,
   JsonPlugin,
@@ -7,6 +8,7 @@ import {
   WorkflowDispatchPlugin
 } from '../../../types/src';
 import { GithubActionRun } from '../types';
+import { DefaultAutoHostingConfig, runAutoHostingPlugin } from './autoHosting';
 import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';
 import { runJsonPlugin } from './json';
@@ -49,5 +51,11 @@ export const runPlugins = async (
       githubActionRun,
       stoatConfigFileId
     );
+  }
+
+  const autoHostingEnabled = stoatConfig.plugins?.auto_hosting?.enabled;
+  if (autoHostingEnabled === undefined || autoHostingEnabled) {
+    const autoHostingConfig: AutoHostingPlugin = stoatConfig.plugins?.auto_hosting || DefaultAutoHostingConfig;
+    await runAutoHostingPlugin('stoat_auto_hosting', autoHostingConfig, githubActionRun, stoatConfigFileId);
   }
 };
