@@ -76,24 +76,29 @@ const runAutoHostingPlugin = async (
   for (const directory of validDirectories) {
     const staticHostingTaskConfig: StaticHostingPlugin = {
       metadata: {
-        name: `Path \`${directory}\``
+        name: `\`${directory}\``
       },
       path: directory
     };
-    await processPath(
-      getSubtaskId(directory),
-      staticHostingTaskConfig,
-      {
-        ghRepository: { owner, repo },
-        ghBranch,
-        ghPullRequestNumber,
-        ghSha,
-        ghToken,
-        stepsSucceeded
-      },
-      stoatConfigFileId,
-      directory
+    core.info(
+      `[${taskId}] Detected possible HTML build artifact. To host it, add a new "static_hosting" task with "path: ${directory}":`
     );
+    if (taskConfig.auto_upload) {
+      await processPath(
+        getSubtaskId(directory),
+        staticHostingTaskConfig,
+        {
+          ghRepository: { owner, repo },
+          ghBranch,
+          ghPullRequestNumber,
+          ghSha,
+          ghToken,
+          stepsSucceeded
+        },
+        stoatConfigFileId,
+        directory
+      );
+    }
   }
 };
 
