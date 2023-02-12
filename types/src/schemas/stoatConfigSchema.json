@@ -164,7 +164,7 @@
         },
         "show_in_comment": {
           "type": "boolean",
-          "description": "Whether to show the suggested artifacts to host in the rendered comment.",
+          "description": "Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.",
           "default": false
         },
         "auto_upload": {

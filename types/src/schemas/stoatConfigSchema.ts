@@ -79,7 +79,7 @@ export interface AutoHostingPlugin {
    */
   enabled: boolean;
   /**
-   * Whether to show the suggested artifacts to host in the rendered comment.
+   * Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.
    */
   show_in_comment?: boolean;
   /**
