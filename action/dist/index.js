@@ -88079,7 +88079,8 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
     if (((_f = (_e = stoatConfig.plugins) === null || _e === void 0 ? void 0 : _e.job_runtime) === null || _f === void 0 ? void 0 : _f.tracking) === true || ((_h = (_g = stoatConfig.plugins) === null || _g === void 0 ? void 0 : _g.job_runtime) === null || _h === void 0 ? void 0 : _h.tracking) === undefined) {
         yield jobRuntime_plugin('stoat_job_runtime', (_j = stoatConfig.plugins) === null || _j === void 0 ? void 0 : _j.job_runtime, githubActionRun, stoatConfigFileId);
     }
-    if (((_l = (_k = stoatConfig.plugins) === null || _k === void 0 ? void 0 : _k.auto_hosting) === null || _l === void 0 ? void 0 : _l.enabled) === true) {
+    const autoHostingEnabled = (_l = (_k = stoatConfig.plugins) === null || _k === void 0 ? void 0 : _k.auto_hosting) === null || _l === void 0 ? void 0 : _l.enabled;
+    if (autoHostingEnabled === undefined || autoHostingEnabled) {
         yield autoHosting_plugin('stoat_auto_hosting', (_m = stoatConfig.plugins) === null || _m === void 0 ? void 0 : _m.auto_hosting, githubActionRun, stoatConfigFileId);
     }
 });
