@@ -108,6 +108,10 @@ export interface MetricPluginRendered {
    * The unit will be shown in the y-axis title in the metric chart.
    */
   unit?: string;
+  /**
+   * The input file including the metric value. The file should be in JSON with these keys: "value" (required, number) and "group" (optional, string). The "group" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
+   */
+  filename?: string;
   values: MetricEntry[];
   [k: string]: unknown;
 }
