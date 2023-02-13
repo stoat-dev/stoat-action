@@ -87669,9 +87669,12 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
     const allDirectories = stdout.split('\n').filter((d) => d.trim() !== '');
     core.debug(`[${taskId}] Found ${allDirectories.length} directories with index.html files:\n-- ${allDirectories.join('\n--')}`);
     const rootDirectories = getRootDirectories(allDirectories);
-    core.info(`[${taskId}] Detected possible artifact path(s) that can be hosted with Stoat. To host them, add a new "static_hosting" task for each path:`);
-    core.info(`-- ${rootDirectories.join('\n-- ')}`);
     const validDirectories = getValidDirectories(rootDirectories);
+    if (validDirectories.length === 0) {
+        return;
+    }
+    core.info(`[${taskId}] Detected possible artifact path(s) that can be hosted with Stoat. To host them, add a new "static_hosting" task for each path:`);
+    core.info(`-- ${validDirectories.join('\n-- ')}`);
     if (taskConfig.auto_upload) {
         for (const directory of validDirectories) {
             const staticHostingTaskConfig = {
