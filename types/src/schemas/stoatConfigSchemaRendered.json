@@ -28,6 +28,9 @@
         "workflow_dispatch": {
           "$ref": "#/definitions/workflow_dispatch_plugin_rendered_map"
         },
+        "metric": {
+          "$ref": "#/definitions/metric_plugin_rendered_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin_rendered"
         }
@@ -190,6 +193,56 @@
         "dispatch_link": {
           "type": "string",
           "description": "The link to trigger the workflow. This link is populated by the server."
+        }
+      }
+    },
+    "metric_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/metric_plugin_rendered"
+      }
+    },
+    "metric_plugin_rendered": {
+      "type": "object",
+      "required": ["values"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "unit": {
+          "type": "string",
+          "description": "The unit will be shown in the y-axis title in the metric chart."
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metric_entry"
+          }
+        }
+      }
+    },
+    "metric_entry": {
+      "type": "object",
+      "required": ["ghBranch", "sha", "value"],
+      "additionalProperties": true,
+      "properties": {
+        "ghBranch": {
+          "type": "string"
+        },
+        "ghPullRequestNumber": {
+          "type": "number"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string",
+          "description": "Each metric can have multiple data groups. Each group will be a separate line in the chart. If some metric values have \"group\" information but some don't, the metric values without a defined \"group\" will be grouped under \"default\"."
+        },
+        "value": {
+          "type": "number"
         }
       }
     },

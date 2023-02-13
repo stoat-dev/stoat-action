@@ -14,6 +14,7 @@ export interface StoatConfigSchema {
     json?: JsonPluginMap;
     image_diff?: ImageDiffPluginMap;
     workflow_dispatch?: WorkflowDispatchPluginMap;
+    metric?: MetricPluginMap;
     job_runtime?: JobRuntimePlugin;
     auto_hosting?: AutoHostingPlugin;
     [k: string]: unknown;
@@ -61,6 +62,19 @@ export interface WorkflowDispatchPlugin {
    * A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under "plugins.workflow_dispatch.<task-id>". When this field is not empty, the persistent field is "plugins.workflow_dispatch.<task-id>.<scope-identifier>".
    */
   scope_identifier?: string;
+  [k: string]: unknown;
+}
+export interface MetricPluginMap {
+  [k: string]: MetricPlugin;
+}
+export interface MetricPlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  /**
+   * The unit will be shown in the y-axis title in the metric chart.
+   */
+  unit?: string;
   [k: string]: unknown;
 }
 export interface JobRuntimePlugin {

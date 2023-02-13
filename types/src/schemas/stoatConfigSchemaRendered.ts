@@ -14,6 +14,7 @@ export interface StoatConfigSchemaRendered {
     json?: JsonPluginRenderedMap;
     image_diff?: ImageDiffPluginRenderedMap;
     workflow_dispatch?: WorkflowDispatchPluginRenderedMap;
+    metric?: MetricPluginRenderedMap;
     job_runtime?: JobRuntimePluginRendered;
     [k: string]: unknown;
   };
@@ -94,6 +95,31 @@ export interface WorkflowDispatchPluginRendered {
    * The link to trigger the workflow. This link is populated by the server.
    */
   dispatch_link?: string;
+  [k: string]: unknown;
+}
+export interface MetricPluginRenderedMap {
+  [k: string]: MetricPluginRendered;
+}
+export interface MetricPluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  /**
+   * The unit will be shown in the y-axis title in the metric chart.
+   */
+  unit?: string;
+  values: MetricEntry[];
+  [k: string]: unknown;
+}
+export interface MetricEntry {
+  ghBranch: string;
+  ghPullRequestNumber?: number;
+  sha: string;
+  /**
+   * Each metric can have multiple data groups. Each group will be a separate line in the chart. If some metric values have "group" information but some don't, the metric values without a defined "group" will be grouped under "default".
+   */
+  group?: string;
+  value: number;
   [k: string]: unknown;
 }
 export interface JobRuntimePluginRendered {

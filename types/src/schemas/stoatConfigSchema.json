@@ -28,6 +28,9 @@
         "workflow_dispatch": {
           "$ref": "#/definitions/workflow_dispatch_plugin_map"
         },
+        "metric": {
+          "$ref": "#/definitions/metric_plugin_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
         },
@@ -126,6 +129,25 @@
             "deployment.${{ inputs.env }}",
             "deployment.${inputs.env}"
           ]
+        }
+      }
+    },
+    "metric_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/metric_plugin"
+      }
+    },
+    "metric_plugin": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "unit": {
+          "type": "string",
+          "description": "The unit will be shown in the y-axis title in the metric chart."
         }
       }
     },
