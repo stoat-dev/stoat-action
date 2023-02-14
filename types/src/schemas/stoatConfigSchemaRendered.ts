@@ -34,9 +34,17 @@ export interface StoatConfigSchemaRendered {
   };
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin_rendered_map".
+ */
 export interface StaticHostingPluginRenderedMap {
   [k: string]: StaticHostingPluginRendered;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin_rendered".
+ */
 export interface StaticHostingPluginRendered {
   metadata?: {
     [k: string]: unknown;
@@ -48,9 +56,17 @@ export interface StaticHostingPluginRendered {
   status: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "json_plugin_rendered_map".
+ */
 export interface JsonPluginRenderedMap {
   [k: string]: JsonPluginRendered;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "json_plugin_rendered".
+ */
 export interface JsonPluginRendered {
   metadata?: {
     [k: string]: unknown;
@@ -61,9 +77,17 @@ export interface JsonPluginRendered {
   };
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "image_diff_plugin_rendered_map".
+ */
 export interface ImageDiffPluginRenderedMap {
   [k: string]: ImageDiffPluginRendered;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "image_diff_plugin_rendered".
+ */
 export interface ImageDiffPluginRendered {
   metadata?: {
     [k: string]: unknown;
@@ -75,9 +99,17 @@ export interface ImageDiffPluginRendered {
   diff_url: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "workflow_dispatch_plugin_rendered_map".
+ */
 export interface WorkflowDispatchPluginRenderedMap {
   [k: string]: WorkflowDispatchPluginRendered;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "workflow_dispatch_plugin_rendered".
+ */
 export interface WorkflowDispatchPluginRendered {
   metadata?: {
     [k: string]: unknown;
@@ -97,9 +129,17 @@ export interface WorkflowDispatchPluginRendered {
   dispatch_link?: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "metric_plugin_rendered_map".
+ */
 export interface MetricPluginRenderedMap {
   [k: string]: MetricPluginRendered;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "metric_plugin_rendered".
+ */
 export interface MetricPluginRendered {
   metadata?: {
     [k: string]: unknown;
@@ -112,13 +152,17 @@ export interface MetricPluginRendered {
    * The input file including the metric value. The file should be in JSON with these keys: "value" (required, number) and "group" (optional, string). The "group" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
    */
   filename?: string;
-  values: MetricEntry[];
+  values: MetricEntryRendered[];
   [k: string]: unknown;
 }
-export interface MetricEntry {
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "metric_entry_rendered".
+ */
+export interface MetricEntryRendered {
   ghBranch: string;
   ghPullRequestNumber?: number;
-  sha: string;
+  ghSha?: string;
   /**
    * Each metric can have multiple data groups. Each group will be a separate line in the chart. If some metric values have "group" information but some don't, the metric values without a defined "group" will be grouped under "default".
    */
@@ -126,6 +170,10 @@ export interface MetricEntry {
   value: number;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "job_runtime_plugin_rendered".
+ */
 export interface JobRuntimePluginRendered {
   enabled: boolean;
   tracking?: boolean;
@@ -137,6 +185,10 @@ export interface JobRuntimePluginRendered {
   runtime: JobRuntimeEntry[];
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "job_runtime_entry".
+ */
 export interface JobRuntimeEntry {
   workflow: string;
   job: string;

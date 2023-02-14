@@ -222,12 +222,12 @@
         "values": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/metric_entry"
+            "$ref": "#/definitions/metric_entry_rendered"
           }
         }
       }
     },
-    "metric_entry": {
+    "metric_entry_rendered": {
       "type": "object",
       "required": ["ghBranch", "sha", "value"],
       "additionalProperties": true,
@@ -238,7 +238,7 @@
         "ghPullRequestNumber": {
           "type": "number"
         },
-        "sha": {
+        "ghSha": {
           "type": "string"
         },
         "group": {

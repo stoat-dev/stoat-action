@@ -156,6 +156,19 @@
         }
       }
     },
+    "metric_entry": {
+      "type": "object",
+      "description": "Schema of the input file for the metric task.",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "group": {
+          "type": "string"
+        }
+      }
+    },
     "job_runtime_plugin": {
       "type": "object",
       "required": ["enabled"],
