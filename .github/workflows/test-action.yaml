@@ -55,13 +55,6 @@ jobs:
             git diff
             exit 1
           fi
-        id: diff
-      - name: Upload actual dist if it is different
-        uses: actions/upload-artifact@v3
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
-        with:
-          name: dist
-          path: dist/
       - name: Run stoat action
         uses: ./
         if: always()
