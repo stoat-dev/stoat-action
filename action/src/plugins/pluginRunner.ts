@@ -3,6 +3,7 @@ import {
   ImageDiffPlugin,
   JobRuntimePlugin,
   JsonPlugin,
+  MetricPlugin,
   StaticHostingPlugin,
   StoatConfigSchema,
   WorkflowDispatchPlugin
@@ -12,6 +13,7 @@ import { DefaultAutoHostingConfig, runAutoHostingPlugin } from './autoHosting';
 import { runImageDiffPlugin } from './imageDiff';
 import { runJobRuntimePlugin } from './jobRuntime';
 import { runJsonPlugin } from './json';
+import { runMetricPlugin } from './metric';
 import { runStaticHostingPlugin } from './staticHosting';
 import { runWorkflowDispatchPlugin } from './workflowDispatch';
 
@@ -41,6 +43,12 @@ export const runPlugins = async (
   if (stoatConfig.plugins?.workflow_dispatch !== undefined) {
     for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.workflow_dispatch)) {
       await runWorkflowDispatchPlugin(taskId, taskConfig as WorkflowDispatchPlugin, githubActionRun, stoatConfigFileId);
+    }
+  }
+
+  if (stoatConfig.plugins?.metric !== undefined) {
+    for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.metric)) {
+      await runMetricPlugin(taskId, taskConfig as MetricPlugin, githubActionRun, stoatConfigFileId);
     }
   }
 
