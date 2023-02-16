@@ -15,6 +15,7 @@ export interface StoatConfigSchemaRendered {
     image_diff?: ImageDiffPluginRenderedMap;
     workflow_dispatch?: WorkflowDispatchPluginRenderedMap;
     metric?: MetricPluginRenderedMap;
+    chart?: ChartPluginRenderedMap;
     job_runtime?: JobRuntimePluginRendered;
     [k: string]: unknown;
   };
@@ -145,13 +146,9 @@ export interface MetricPluginRendered {
     [k: string]: unknown;
   };
   /**
-   * The unit will be shown in the y-axis title in the metric chart.
-   */
-  unit?: string;
-  /**
    * The input file including the metric value. The file should be in JSON with these keys: "value" (required, number) and "group" (optional, string). The "group" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
    */
-  filename?: string;
+  filename: string;
   values: MetricEntryRendered[];
   [k: string]: unknown;
 }
@@ -163,11 +160,29 @@ export interface MetricEntryRendered {
   ghBranch: string;
   ghPullRequestNumber?: number;
   ghSha?: string;
-  /**
-   * Each metric can have multiple data groups. Each group will be a separate line in the chart. If some metric values have "group" information but some don't, the metric values without a defined "group" will be grouped under "default".
-   */
-  group?: string;
+  tags: string[];
   value: number;
+  [k: string]: unknown;
+}
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "chart_plugin_rendered_map".
+ */
+export interface ChartPluginRenderedMap {
+  [k: string]: ChartPluginRendered;
+}
+/**
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "chart_plugin_rendered".
+ */
+export interface ChartPluginRendered {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  title: string;
+  y_title?: string;
+  tags: string[];
+  chart_url?: string;
   [k: string]: unknown;
 }
 /**
@@ -183,6 +198,7 @@ export interface JobRuntimePluginRendered {
     [k: string]: unknown;
   };
   runtime: JobRuntimeEntry[];
+  chart_url?: string;
   [k: string]: unknown;
 }
 /**

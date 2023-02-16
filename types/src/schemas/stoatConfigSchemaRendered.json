@@ -31,6 +31,9 @@
         "metric": {
           "$ref": "#/definitions/metric_plugin_rendered_map"
         },
+        "chart": {
+          "$ref": "#/definitions/chart_plugin_rendered_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin_rendered"
         }
@@ -204,16 +207,12 @@
     },
     "metric_plugin_rendered": {
       "type": "object",
-      "required": ["values"],
+      "required": ["filename", "values"],
       "additionalProperties": true,
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
-        },
-        "unit": {
-          "type": "string",
-          "description": "The unit will be shown in the y-axis title in the metric chart."
         },
         "filename": {
           "type": "string",
@@ -229,7 +228,7 @@
     },
     "metric_entry_rendered": {
       "type": "object",
-      "required": ["ghBranch", "sha", "value"],
+      "required": ["ghBranch", "sha", "tags", "value"],
       "additionalProperties": true,
       "properties": {
         "ghBranch": {
@@ -241,12 +240,44 @@
         "ghSha": {
           "type": "string"
         },
-        "group": {
-          "type": "string",
-          "description": "Each metric can have multiple data groups. Each group will be a separate line in the chart. If some metric values have \"group\" information but some don't, the metric values without a defined \"group\" will be grouped under \"default\"."
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
         },
         "value": {
           "type": "number"
+        }
+      }
+    },
+    "chart_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/chart_plugin_rendered"
+      }
+    },
+    "chart_plugin_rendered": {
+      "type": "object",
+      "required": ["title", "tags"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": {
+          "type": "string"
+        },
+        "y_title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "chart_url": {
+          "type": "string"
         }
       }
     },
@@ -278,6 +309,9 @@
           "items": {
             "$ref": "#/definitions/job_runtime_entry"
           }
+        },
+        "chart_url": {
+          "type": "string"
         }
       }
     },

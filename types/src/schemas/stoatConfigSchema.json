@@ -31,6 +31,9 @@
         "metric": {
           "$ref": "#/definitions/metric_plugin_map"
         },
+        "chart": {
+          "$ref": "#/definitions/chart_plugin_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
         },
@@ -146,10 +149,6 @@
           "type": "object",
           "additionalProperties": true
         },
-        "unit": {
-          "type": "string",
-          "description": "The unit will be shown in the y-axis title in the metric chart."
-        },
         "filename": {
           "type": "string",
           "description": "The input file including the metric value. The file should be in JSON with these keys: \"value\" (required, number) and \"group\" (optional, string). The \"group\" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task."
@@ -164,8 +163,45 @@
         "value": {
           "type": "number"
         },
-        "group": {
+        "tag": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "tags": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        }
+      }
+    },
+    "chart_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/chart_plugin"
+      }
+    },
+    "chart_plugin": {
+      "type": "object",
+      "required": ["title", "tags"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": {
           "type": "string"
+        },
+        "y_title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

@@ -15,6 +15,7 @@ export interface StoatConfigSchema {
     image_diff?: ImageDiffPluginMap;
     workflow_dispatch?: WorkflowDispatchPluginMap;
     metric?: MetricPluginMap;
+    chart?: ChartPluginMap;
     job_runtime?: JobRuntimePlugin;
     auto_hosting?: AutoHostingPlugin;
     [k: string]: unknown;
@@ -112,13 +113,29 @@ export interface MetricPlugin {
     [k: string]: unknown;
   };
   /**
-   * The unit will be shown in the y-axis title in the metric chart.
-   */
-  unit?: string;
-  /**
    * The input file including the metric value. The file should be in JSON with these keys: "value" (required, number) and "group" (optional, string). The "group" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
    */
   filename: string;
+  [k: string]: unknown;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "chart_plugin_map".
+ */
+export interface ChartPluginMap {
+  [k: string]: ChartPlugin;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "chart_plugin".
+ */
+export interface ChartPlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  title: string;
+  y_title?: string;
+  tags: string[];
   [k: string]: unknown;
 }
 /**
@@ -162,6 +179,7 @@ export interface AutoHostingPlugin {
  */
 export interface MetricEntry {
   value: number;
-  group?: string;
+  tag?: string | string[];
+  tags?: string | string[];
   [k: string]: unknown;
 }
