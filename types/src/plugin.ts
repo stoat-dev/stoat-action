@@ -1,8 +1,13 @@
 // the "Stoat-" prefix is to prevent name clashing
 export enum StoatPlugin {
+  // task-based plugins
   StaticHosting = 'static_hosting',
   Json = 'json',
   ImageDiff = 'image_diff',
-  JobRuntime = 'job_runtime',
-  WorkflowDispatch = 'workflow_dispatch'
+  Metric = 'metric',
+  Chart = 'chart',
+  WorkflowDispatch = 'workflow_dispatch',
+
+  // global plugins
+  JobRuntime = 'job_runtime'
 }
