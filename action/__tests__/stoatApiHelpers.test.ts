@@ -25,6 +25,7 @@ describe('getDevServerBase', () => {
     expect(getDevServerBase('token1/token2_token3$token4')).toEqual(
       'https://stoat-git-token1-token2-token3-token4-stoat-dev.vercel.app'
     );
+    expect(getDevServerBase('a/b-c-0.0.0')).toEqual('https://stoat-git-a-b-c-000-stoat-dev.vercel.app');
   });
 
   it('returns the prod server if the subdomain is too long', () => {

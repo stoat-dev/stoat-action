@@ -18,7 +18,7 @@ export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
 export const getDevServerBase = (branchName: string): string => {
-  const branchToken = branchName.replace(/[^-a-zA-Z0-9]/g, '-');
+  const branchToken = branchName.replace(/\./g, '').replace(/[^-a-zA-Z0-9]/g, '-');
   const subdomain = `stoat-git-${branchToken}-stoat-dev`;
   if (subdomain.length > 63) {
     core.warning(`Subdomain "${subdomain}" is too long. Fall back to ${PROD_API_URL_BASE}.`);
