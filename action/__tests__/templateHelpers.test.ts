@@ -23,6 +23,8 @@ const template1Path = '__tests__/templates/template1.hbs';
 const template1 = 'template1';
 const template2Path = '__tests__/templates/template2.jinja2';
 const template2 = 'template2';
+const template3Path = '__tests__/templates/template3.js';
+const template3 = 'template3';
 
 const staticHosting1: StaticHostingPlugin = {
   path: 'path1'
@@ -109,6 +111,7 @@ describe('Read remote default template', () => {
 test('getTemplateFormat', () => {
   expect(getTemplateFormat(template1Path)).toEqual(StoatTemplateFormat.Handlebars);
   expect(getTemplateFormat(template2Path)).toEqual(StoatTemplateFormat.Jinja2);
+  expect(getTemplateFormat(template3Path)).toEqual(StoatTemplateFormat.JavaScript);
   expect(() => getTemplateFormat('template.xlsx')).toThrowError();
 });
 

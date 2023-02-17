@@ -88174,6 +88174,7 @@ var StoatTemplateFormat;
 (function (StoatTemplateFormat) {
     StoatTemplateFormat["Handlebars"] = "hbs";
     StoatTemplateFormat["Jinja2"] = "jinja2";
+    StoatTemplateFormat["JavaScript"] = "js";
 })(StoatTemplateFormat || (StoatTemplateFormat = {}));
 
 ;// CONCATENATED MODULE: ../types/src/index.ts

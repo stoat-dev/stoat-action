@@ -1,6 +1,6 @@
 {
   "name": "stoat-types",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
     "json-schema-to-typescript": "^11.0.3",
-    "utility-types": "^3.10.0"
+    "utility-types": "^3.10.0",
+    "typescript": "^4.9.5"
   }
 }
