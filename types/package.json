@@ -24,6 +24,7 @@
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
     "json-schema-to-typescript": "^11.0.3",
-    "utility-types": "^3.10.0"
+    "utility-types": "^3.10.0",
+    "typescript": "^4.9.5"
   }
 }
