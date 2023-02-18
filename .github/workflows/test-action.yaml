@@ -60,10 +60,10 @@ jobs:
         run: |
           free
           echo "Writing to action_runner_memory.jsonl..."
-          echo "{ \"value\": $(awk '/^Mem/ {print $2}' <(free)), \"tags\": \"Total\" }" | tee action_runner_memory.jsonl
-          echo "{ \"value\": $(awk '/^Mem/ {print $3}' <(free)), \"tags\": \"Used\" }" | tee -a action_runner_memory.jsonl
-          echo "{ \"value\": $(awk '/^Mem/ {print $4}' <(free)), \"tags\": \"Free\" }" | tee -a action_runner_memory.jsonl
-          echo "{ \"value\": $(awk '/^Mem/ {print $5}' <(free)), \"tags\": \"Buff/Cache\" }" | tee -a action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $2}' <(free)), \"tag\": \"Total\" }" | tee action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $3}' <(free)), \"tag\": \"Used\" }" | tee -a action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $4}' <(free)), \"tag\": \"Free\" }" | tee -a action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $5}' <(free)), \"tag\": \"Buff/Cache\" }" | tee -a action_runner_memory.jsonl
       - name: Run stoat action
         uses: ./
         if: always()
