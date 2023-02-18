@@ -9,6 +9,7 @@ import {
 } from '../../../../types/src';
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
+import { parseMetricFile } from './helpers';
 
 const MAX_CHARACTERS = 10240;
 
@@ -33,50 +34,46 @@ const runMetricPlugin = async (
     return;
   }
 
-  let metricJson: MetricEntry;
-  try {
-    metricJson = JSON.parse(metricJsonString);
-  } catch (e) {
-    core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricFile}. Skip.`);
-    return;
-  }
-  const { value, tag, tags } = metricJson;
-  const allTags: string[] = [taskId];
-  if (tag) {
-    allTags.push(tag);
-  }
-  if (tags) {
-    allTags.push(...tags);
-  }
-
-  const renderedPlugin: MetricPluginRendered = {
-    ...taskConfig,
-    values: [
-      {
-        ghBranch,
-        ghPullRequestNumber: ghPullRequestNumber || undefined,
-        ghSha,
-        tags: allTags,
-        value
-      }
-    ]
-  };
-  const requestBody: UploadGenericPartialConfigRequest = {
-    ghOwner: owner,
-    ghRepo: repo,
-    ghBranch,
-    ghPullRequestNumber,
-    ghSha,
-    ghToken,
-    taskId,
-    stoatConfigFileId,
-    partialConfig: {
-      plugins: {
-        metric: { [taskId]: renderedPlugin }
-      }
+  const metricEntries: MetricEntry[] = await parseMetricFile(taskId, metricFile, MAX_CHARACTERS);
+  for (const metricEntry of metricEntries) {
+    const { value, tag, tags } = metricEntry;
+    const allTags: string[] = [taskId];
+    if (tag) {
+      allTags.push(tag);
     }
-  };
-  await submitPartialConfig(taskId, requestBody);
+    if (tags) {
+      allTags.push(...tags);
+    }
+
+    const renderedPlugin: MetricPluginRendered = {
+      ...taskConfig,
+      values: [
+        {
+          ghBranch,
+          ghPullRequestNumber: ghPullRequestNumber || undefined,
+          ghSha,
+          tags: allTags,
+          value
+        }
+      ]
+    };
+    const requestBody: UploadGenericPartialConfigRequest = {
+      ghOwner: owner,
+      ghRepo: repo,
+      ghBranch,
+      ghPullRequestNumber,
+      ghSha,
+      ghToken,
+      taskId,
+      stoatConfigFileId,
+      partialConfig: {
+        plugins: {
+          metric: { [taskId]: renderedPlugin }
+        }
+      }
+    };
+    await submitPartialConfig(taskId, requestBody);
+  }
 };
 
 export default runMetricPlugin;

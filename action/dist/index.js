@@ -87949,6 +87949,49 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
 ;// CONCATENATED MODULE: ./src/plugins/json/index.ts
 
 
+;// CONCATENATED MODULE: ./src/plugins/metric/helpers.ts
+var metric_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+const parseMetricFile = (taskId, filename, maxChar) => metric_helpers_awaiter(void 0, void 0, void 0, function* () {
+    const metricJsonString = external_fs_default().readFileSync(filename).toString();
+    if (metricJsonString.length > maxChar) {
+        core.error(`[${taskId}] Metric file exceeds character limit. Limit: ${maxChar}. Actual: ${metricJsonString.length}. Skip.`);
+        return [];
+    }
+    if (filename.toLowerCase().endsWith('.json')) {
+        let metricJson;
+        try {
+            metricJson = JSON.parse(metricJsonString);
+        }
+        catch (e) {
+            core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricJsonString}. Skip.`);
+            return [];
+        }
+        return [metricJson];
+    }
+    if (filename.toLowerCase().endsWith('.jsonl')) {
+        const jsonLines = metricJsonString.split('\n');
+        try {
+            return jsonLines.map((json) => JSON.parse(json));
+        }
+        catch (e) {
+            core.error(`[${taskId}] Metric file does not have valid JSONL contents: ${jsonLines}. Skip.`);
+            return [];
+        }
+    }
+    core.warning(`[${taskId}] Unexpected metric file extension: ${filename}. Expect '.json' or '.jsonl'. Skip.`);
+    return [];
+});
+
 ;// CONCATENATED MODULE: ./src/plugins/metric/plugin.ts
 var metric_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -87959,6 +88002,7 @@ var metric_plugin_awaiter = (undefined && undefined.__awaiter) || function (this
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -87975,47 +88019,42 @@ const runMetricPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, ow
         core.error(`[${taskId}] Metric file exceeds character limit. Limit: ${plugin_MAX_CHARACTERS}. Actual: ${metricJsonString.length}. Skip.`);
         return;
     }
-    let metricJson;
-    try {
-        metricJson = JSON.parse(metricJsonString);
-    }
-    catch (e) {
-        core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricFile}. Skip.`);
-        return;
-    }
-    const { value, tag, tags } = metricJson;
-    const allTags = [taskId];
-    if (tag) {
-        allTags.push(tag);
-    }
-    if (tags) {
-        allTags.push(...tags);
-    }
-    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { values: [
-            {
-                ghBranch,
-                ghPullRequestNumber: ghPullRequestNumber || undefined,
-                ghSha,
-                tags: allTags,
-                value
-            }
-        ] });
-    const requestBody = {
-        ghOwner: owner,
-        ghRepo: repo,
-        ghBranch,
-        ghPullRequestNumber,
-        ghSha,
-        ghToken,
-        taskId,
-        stoatConfigFileId,
-        partialConfig: {
-            plugins: {
-                metric: { [taskId]: renderedPlugin }
-            }
+    const metricEntries = yield parseMetricFile(taskId, metricFile, plugin_MAX_CHARACTERS);
+    for (const metricEntry of metricEntries) {
+        const { value, tag, tags } = metricEntry;
+        const allTags = [taskId];
+        if (tag) {
+            allTags.push(tag);
         }
-    };
-    yield submitPartialConfig(taskId, requestBody);
+        if (tags) {
+            allTags.push(...tags);
+        }
+        const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { values: [
+                {
+                    ghBranch,
+                    ghPullRequestNumber: ghPullRequestNumber || undefined,
+                    ghSha,
+                    tags: allTags,
+                    value
+                }
+            ] });
+        const requestBody = {
+            ghOwner: owner,
+            ghRepo: repo,
+            ghBranch,
+            ghPullRequestNumber,
+            ghSha,
+            ghToken,
+            taskId,
+            stoatConfigFileId,
+            partialConfig: {
+                plugins: {
+                    metric: { [taskId]: renderedPlugin }
+                }
+            }
+        };
+        yield submitPartialConfig(taskId, requestBody);
+    }
 });
 /* harmony default export */ const metric_plugin = (runMetricPlugin);
 
