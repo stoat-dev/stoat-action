@@ -5,6 +5,7 @@ import { MetricEntry } from '../../../../types/src';
 
 export const parseMetricFile = async (taskId: string, filename: string, maxChar: number): Promise<MetricEntry[]> => {
   const metricJsonString = fs.readFileSync(filename).toString();
+
   if (metricJsonString.length > maxChar) {
     core.error(
       `[${taskId}] Metric file exceeds character limit. Limit: ${maxChar}. Actual: ${metricJsonString.length}. Skip.`
@@ -24,9 +25,9 @@ export const parseMetricFile = async (taskId: string, filename: string, maxChar:
   }
 
   if (filename.toLowerCase().endsWith('.jsonl')) {
-    const jsonLines = metricJsonString.split('\n');
+    const jsonLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
     try {
-      return jsonLines.map((json) => JSON.parse(json) as MetricEntry);
+      return jsonLines.map((jsonLine) => JSON.parse(jsonLine) as MetricEntry);
     } catch (e) {
       core.error(`[${taskId}] Metric file does not have valid JSONL contents: ${jsonLines}. Skip.`);
       return [];

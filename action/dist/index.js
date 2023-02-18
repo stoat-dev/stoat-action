@@ -87979,9 +87979,9 @@ const parseMetricFile = (taskId, filename, maxChar) => metric_helpers_awaiter(vo
         return [metricJson];
     }
     if (filename.toLowerCase().endsWith('.jsonl')) {
-        const jsonLines = metricJsonString.split('\n');
+        const jsonLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
         try {
-            return jsonLines.map((json) => JSON.parse(json));
+            return jsonLines.map((jsonLine) => JSON.parse(jsonLine));
         }
         catch (e) {
             core.error(`[${taskId}] Metric file does not have valid JSONL contents: ${jsonLines}. Skip.`);
