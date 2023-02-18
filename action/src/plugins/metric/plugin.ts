@@ -21,7 +21,7 @@ const runMetricPlugin = async (
   core.info(`[${taskId}] Running metric plugin (stoat config ${stoatConfigFileId})`);
   const metricFile = taskConfig.filename;
   if (!fs.existsSync(metricFile)) {
-    core.info(`[${taskId}] Metric file does not exist: ${metricFile} in the current job. Skip.`);
+    core.warning(`[${taskId}] Metric file does not exist: ${metricFile} in the current job. Skip.`);
     return;
   }
 

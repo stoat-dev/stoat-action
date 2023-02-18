@@ -87967,7 +87967,7 @@ const runMetricPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, ow
     core.info(`[${taskId}] Running metric plugin (stoat config ${stoatConfigFileId})`);
     const metricFile = taskConfig.filename;
     if (!external_fs_default().existsSync(metricFile)) {
-        core.info(`[${taskId}] Metric file does not exist: ${metricFile} in the current job. Skip.`);
+        core.warning(`[${taskId}] Metric file does not exist: ${metricFile} in the current job. Skip.`);
         return;
     }
     const metricJsonString = external_fs_default().readFileSync(metricFile).toString();
