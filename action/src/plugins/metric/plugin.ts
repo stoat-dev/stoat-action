@@ -44,6 +44,7 @@ const runMetricPlugin = async (
     if (tags) {
       allTags.push(...tags);
     }
+    core.info(`-- Metric: ${value} (tags: ${allTags.join(', ')})`);
 
     const renderedPlugin: MetricPluginRendered = {
       ...taskConfig,

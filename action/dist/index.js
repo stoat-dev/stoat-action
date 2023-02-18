@@ -88029,6 +88029,7 @@ const runMetricPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, ow
         if (tags) {
             allTags.push(...tags);
         }
+        core.info(`-- Metric: ${value} (tags: ${allTags.join(', ')})`);
         const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { values: [
                 {
                     ghBranch,
