@@ -113,7 +113,7 @@ export interface MetricPlugin {
     [k: string]: unknown;
   };
   /**
-   * The input file including the metric value. The file should be in JSON with these keys: "value" (required, number) and "group" (optional, string). The "group" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
+   * The input file including the metric value. The expected formats are: json or jsonl. The file should be in JSON with these keys: "value" (required, number), "tag" (optional, string), and "tags" (optional, string array). The "tag" or "tags" are used to groups metric data points in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
    */
   filename: string;
   [k: string]: unknown;
