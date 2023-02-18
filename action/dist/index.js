@@ -87383,7 +87383,7 @@ var jsYaml = {
 
 
 ;// CONCATENATED MODULE: ../types/src/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"},"auto_hosting":{"$ref":"#/definitions/auto_hosting_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"scope_identifier":{"type":"string","description":"A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>\\". When this field is not empty, the persistent field is \\"plugins.workflow_dispatch.<task-id>.<scope-identifier>\\".","default":"","examples":["${{ inputs.<input-parameter-name> }}","${inputs.<input-parameter-name>}","deployment.${{ inputs.env }}","deployment.${inputs.env}"]}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}},"auto_hosting_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean","description":"When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.","default":true},"show_in_comment":{"type":"boolean","description":"Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.","default":false},"auto_upload":{"type":"boolean","description":"Whether to automatically upload the detected artifacts to the Stoat server for hosting.","default":false}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"},"metric":{"$ref":"#/definitions/metric_plugin_map"},"chart":{"$ref":"#/definitions/chart_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"},"auto_hosting":{"$ref":"#/definitions/auto_hosting_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"scope_identifier":{"type":"string","description":"A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>\\". When this field is not empty, the persistent field is \\"plugins.workflow_dispatch.<task-id>.<scope-identifier>\\".","default":"","examples":["${{ inputs.<input-parameter-name> }}","${inputs.<input-parameter-name>}","deployment.${{ inputs.env }}","deployment.${inputs.env}"]}}},"metric_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/metric_plugin"}},"metric_plugin":{"type":"object","required":["filename"],"properties":{"metadata":{"type":"object","additionalProperties":true},"filename":{"type":"string","description":"The input file including the metric value. The file should be in JSON with these keys: \\"value\\" (required, number) and \\"group\\" (optional, string). The \\"group\\" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task."}}},"metric_entry":{"type":"object","description":"Schema of the input file for the metric task.","required":["value"],"properties":{"value":{"type":"number"},"tag":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"chart_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/chart_plugin"}},"chart_plugin":{"type":"object","required":["title","tags"],"properties":{"metadata":{"type":"object","additionalProperties":true},"title":{"type":"string"},"y_title":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}},"auto_hosting_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean","description":"When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.","default":true},"show_in_comment":{"type":"boolean","description":"Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.","default":false},"auto_upload":{"type":"boolean","description":"Whether to automatically upload the detected artifacts to the Stoat server for hosting.","default":false}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -87914,18 +87914,16 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
     }
     const jsonString = external_fs_default().readFileSync(jsonToUpload).toString();
     if (jsonString.length > MAX_CHARACTERS) {
-        const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
-        core.error(message);
-        throw Error(message);
+        core.error(`JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}. Skip`);
+        return;
     }
     let value;
     try {
         value = JSON.parse(jsonString);
     }
     catch (e) {
-        const message = `JSON file to upload does not have valid JSON contents: ${jsonToUpload}`;
-        core.error(message);
-        throw Error(message);
+        core.error(`JSON file to upload does not have valid JSON contents: ${jsonToUpload}. Skip.`);
+        return;
     }
     // submit partial config
     const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { value });
@@ -87949,6 +87947,79 @@ const runJsonPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owne
 /* harmony default export */ const json_plugin = (runJsonPlugin);
 
 ;// CONCATENATED MODULE: ./src/plugins/json/index.ts
+
+
+;// CONCATENATED MODULE: ./src/plugins/metric/plugin.ts
+var metric_plugin_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+const plugin_MAX_CHARACTERS = 10240;
+const runMetricPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha }, stoatConfigFileId) => metric_plugin_awaiter(void 0, void 0, void 0, function* () {
+    core.info(`[${taskId}] Running metric plugin (stoat config ${stoatConfigFileId})`);
+    const metricFile = taskConfig.filename;
+    if (!external_fs_default().existsSync(metricFile)) {
+        core.info(`[${taskId}] Metric file does not exist: ${metricFile} in the current job. Skip.`);
+        return;
+    }
+    const metricJsonString = external_fs_default().readFileSync(metricFile).toString();
+    if (metricJsonString.length > plugin_MAX_CHARACTERS) {
+        core.error(`[${taskId}] Metric file exceeds character limit. Limit: ${plugin_MAX_CHARACTERS}. Actual: ${metricJsonString.length}. Skip.`);
+        return;
+    }
+    let metricJson;
+    try {
+        metricJson = JSON.parse(metricJsonString);
+    }
+    catch (e) {
+        core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricFile}. Skip.`);
+        return;
+    }
+    const { value, tag, tags } = metricJson;
+    const allTags = [taskId];
+    if (tag) {
+        allTags.push(tag);
+    }
+    if (tags) {
+        allTags.push(...tags);
+    }
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { values: [
+            {
+                ghBranch,
+                ghPullRequestNumber: ghPullRequestNumber || undefined,
+                ghSha,
+                tags: allTags,
+                value
+            }
+        ] });
+    const requestBody = {
+        ghOwner: owner,
+        ghRepo: repo,
+        ghBranch,
+        ghPullRequestNumber,
+        ghSha,
+        ghToken,
+        taskId,
+        stoatConfigFileId,
+        partialConfig: {
+            plugins: {
+                metric: { [taskId]: renderedPlugin }
+            }
+        }
+    };
+    yield submitPartialConfig(taskId, requestBody);
+});
+/* harmony default export */ const metric_plugin = (runMetricPlugin);
+
+;// CONCATENATED MODULE: ./src/plugins/metric/index.ts
 
 
 ;// CONCATENATED MODULE: ./src/plugins/staticHosting/plugin.ts
@@ -88060,8 +88131,9 @@ var pluginRunner_awaiter = (undefined && undefined.__awaiter) || function (thisA
 
 
 
+
 const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRunner_awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     if (((_a = stoatConfig.plugins) === null || _a === void 0 ? void 0 : _a.static_hosting) !== undefined) {
         for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.static_hosting)) {
             yield staticHosting_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
@@ -88082,12 +88154,17 @@ const runPlugins = (stoatConfig, githubActionRun, stoatConfigFileId) => pluginRu
             yield workflowDispatch_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
         }
     }
-    if (((_f = (_e = stoatConfig.plugins) === null || _e === void 0 ? void 0 : _e.job_runtime) === null || _f === void 0 ? void 0 : _f.tracking) === true || ((_h = (_g = stoatConfig.plugins) === null || _g === void 0 ? void 0 : _g.job_runtime) === null || _h === void 0 ? void 0 : _h.tracking) === undefined) {
-        yield jobRuntime_plugin('stoat_job_runtime', (_j = stoatConfig.plugins) === null || _j === void 0 ? void 0 : _j.job_runtime, githubActionRun, stoatConfigFileId);
+    if (((_e = stoatConfig.plugins) === null || _e === void 0 ? void 0 : _e.metric) !== undefined) {
+        for (const [taskId, taskConfig] of Object.entries(stoatConfig.plugins.metric)) {
+            yield metric_plugin(taskId, taskConfig, githubActionRun, stoatConfigFileId);
+        }
     }
-    const autoHostingEnabled = (_l = (_k = stoatConfig.plugins) === null || _k === void 0 ? void 0 : _k.auto_hosting) === null || _l === void 0 ? void 0 : _l.enabled;
+    if (((_g = (_f = stoatConfig.plugins) === null || _f === void 0 ? void 0 : _f.job_runtime) === null || _g === void 0 ? void 0 : _g.tracking) === true || ((_j = (_h = stoatConfig.plugins) === null || _h === void 0 ? void 0 : _h.job_runtime) === null || _j === void 0 ? void 0 : _j.tracking) === undefined) {
+        yield jobRuntime_plugin('stoat_job_runtime', (_k = stoatConfig.plugins) === null || _k === void 0 ? void 0 : _k.job_runtime, githubActionRun, stoatConfigFileId);
+    }
+    const autoHostingEnabled = (_m = (_l = stoatConfig.plugins) === null || _l === void 0 ? void 0 : _l.auto_hosting) === null || _m === void 0 ? void 0 : _m.enabled;
     if (autoHostingEnabled === undefined || autoHostingEnabled) {
-        const autoHostingConfig = ((_m = stoatConfig.plugins) === null || _m === void 0 ? void 0 : _m.auto_hosting) || DefaultAutoHostingConfig;
+        const autoHostingConfig = ((_o = stoatConfig.plugins) === null || _o === void 0 ? void 0 : _o.auto_hosting) || DefaultAutoHostingConfig;
         yield autoHosting_plugin('stoat_auto_hosting', autoHostingConfig, githubActionRun, stoatConfigFileId);
     }
 });
@@ -88162,11 +88239,15 @@ const stoatConfigSchemaRendered_namespaceObject = {};
 // the "Stoat-" prefix is to prevent name clashing
 var StoatPlugin;
 (function (StoatPlugin) {
+    // task-based plugins
     StoatPlugin["StaticHosting"] = "static_hosting";
     StoatPlugin["Json"] = "json";
     StoatPlugin["ImageDiff"] = "image_diff";
-    StoatPlugin["JobRuntime"] = "job_runtime";
+    StoatPlugin["Metric"] = "metric";
+    StoatPlugin["Chart"] = "chart";
     StoatPlugin["WorkflowDispatch"] = "workflow_dispatch";
+    // global plugins
+    StoatPlugin["JobRuntime"] = "job_runtime";
 })(StoatPlugin || (StoatPlugin = {}));
 
 ;// CONCATENATED MODULE: ../types/src/template.ts
