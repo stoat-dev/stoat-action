@@ -55,6 +55,13 @@ jobs:
             git diff
             exit 1
           fi
+      - name: Emit runner memory
+        run: |
+          free
+          echo "{ \"value\": $(awk '/^Mem/ {print $2}' <(free)), \"tags\": \"Total\" }" > action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $3}' <(free)), \"tags\": \"Used\" }" >> action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $4}' <(free)), \"tags\": \"Free\" }" >> action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $5}' <(free)), \"tags\": \"Buff/Cache\" }" >> action_runner_memory.jsonl
       - name: Run stoat action
         uses: ./
         if: always()

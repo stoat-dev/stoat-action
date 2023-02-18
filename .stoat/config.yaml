@@ -27,3 +27,15 @@ plugins:
         name: Logo
       image: docs/static/img/logo-128.png
       baseline: docs/build/baseline-logo-128.png
+  metric:
+    action_runner_memory:
+      filename: action_runner_memory.jsonl
+  chart:
+    action_runner_memory_chart:
+      title: Runner Memory Usage
+      y_title: Memory (byte)
+      tags:
+        - Total
+        - Used
+        - Free
+        - Buff/Cache
