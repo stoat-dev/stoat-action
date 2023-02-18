@@ -164,16 +164,10 @@
           "type": "number"
         },
         "tag": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "array", "items": { "type": "string" } }
-          ]
+          "type": "string"
         },
         "tags": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "array", "items": { "type": "string" } }
-          ]
+          "type": "array", "items": { "type": "string" }
         }
       }
     },

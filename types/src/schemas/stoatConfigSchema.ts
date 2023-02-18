@@ -179,7 +179,7 @@ export interface AutoHostingPlugin {
  */
 export interface MetricEntry {
   value: number;
-  tag?: string | string[];
-  tags?: string | string[];
+  tag?: string;
+  tags?: string[];
   [k: string]: unknown;
 }
