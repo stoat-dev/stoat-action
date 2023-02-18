@@ -40,7 +40,14 @@ const runMetricPlugin = async (
     core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricFile}. Skip.`);
     return;
   }
-  const { group, value } = metricJson;
+  const { value, tag, tags } = metricJson;
+  const allTags: string[] = [taskId];
+  if (tag) {
+    allTags.push(tag);
+  }
+  if (tags) {
+    allTags.push(...tags);
+  }
 
   const renderedPlugin: MetricPluginRendered = {
     ...taskConfig,
@@ -49,8 +56,8 @@ const runMetricPlugin = async (
         ghBranch,
         ghPullRequestNumber: ghPullRequestNumber || undefined,
         ghSha,
-        value,
-        group
+        tags: allTags,
+        value
       }
     ]
   };
