@@ -12,6 +12,7 @@ const expectedMetric2 = [
 
 const invalid1File = '__tests__/plugins/metric/invalid1.json';
 const invalid2File = '__tests__/plugins/metric/invalid2.jsonl';
+const expectedInvalid2 = [{ value: 1, tag: 'g1' }];
 
 describe('parseMetricFile', () => {
   it('ignores oversize files', async () => {
@@ -39,7 +40,7 @@ describe('parseMetricFile', () => {
 
     it('ignores invalid json lines', async () => {
       const entries = await parseMetricFile('test', invalid2File, 10000);
-      expect(entries).toEqual([]);
+      expect(entries).toEqual(expectedInvalid2);
     });
   });
 });

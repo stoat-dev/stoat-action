@@ -87961,30 +87961,65 @@ var metric_helpers_awaiter = (undefined && undefined.__awaiter) || function (thi
 };
 
 
+const isMetricEntry = (object) => {
+    if (typeof object !== 'object') {
+        return false;
+    }
+    if (!('value' in object) || typeof object.value !== 'number') {
+        return false;
+    }
+    if ('tag' in object && typeof object.tag !== 'string') {
+        return false;
+    }
+    if ('tags' in object && !Array.isArray(object.tags)) {
+        if (!Array.isArray(object.tags)) {
+            return false;
+        }
+        if (object.tags.some((tag) => typeof tag !== 'string')) {
+            return false;
+        }
+    }
+    return true;
+};
 const parseMetricFile = (taskId, filename, maxChar) => metric_helpers_awaiter(void 0, void 0, void 0, function* () {
     const metricJsonString = external_fs_default().readFileSync(filename).toString();
     if (metricJsonString.length > maxChar) {
-        core.error(`[${taskId}] Metric file exceeds character limit. Limit: ${maxChar}. Actual: ${metricJsonString.length}. Skip.`);
+        core.error(`[${taskId}] Metric file ${filename} exceeds character limit. Limit: ${maxChar}. Actual: ${metricJsonString.length}. Skip.`);
         return [];
     }
     if (filename.toLowerCase().endsWith('.json')) {
-        let metricJson;
         try {
-            metricJson = JSON.parse(metricJsonString);
+            const entry = JSON.parse(metricJsonString);
+            if (isMetricEntry(entry)) {
+                return [entry];
+            }
+            else {
+                core.warning(`[${taskId}] Metric file ${filename} contains invalid JSON entry: ${metricJsonString}. Skip.`);
+                return [];
+            }
         }
         catch (e) {
-            core.error(`[${taskId}] Metric file does not have valid JSON contents: ${metricJsonString}. Skip.`);
+            core.error(`[${taskId}] Metric file ${filename} does not have valid JSON contents: ${metricJsonString}. Skip.`);
             return [];
         }
-        return [metricJson];
     }
     if (filename.toLowerCase().endsWith('.jsonl')) {
-        const jsonLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
         try {
-            return jsonLines.map((jsonLine) => JSON.parse(jsonLine));
+            const jsonLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
+            const entries = [];
+            for (const jsonLine of jsonLines) {
+                const entry = JSON.parse(jsonLine);
+                if (isMetricEntry(entry)) {
+                    entries.push(entry);
+                }
+                else {
+                    core.warning(`[${taskId}] Metric file ${filename} contains invalid JSON entry: ${jsonLine}. Skip.`);
+                }
+            }
+            return entries;
         }
         catch (e) {
-            core.error(`[${taskId}] Metric file does not have valid JSONL contents: ${jsonLines}. Skip.`);
+            core.error(`[${taskId}] Metric file ${filename} does not have valid JSONL contents. Skip.\n${metricJsonString}`);
             return [];
         }
     }
