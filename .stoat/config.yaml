@@ -33,7 +33,7 @@ plugins:
   chart:
     action_runner_memory_chart:
       title: Runner Memory Usage
-      y_title: Memory (byte)
+      y_title: Memory (bytes)
       tags:
         - Total
         - Used
