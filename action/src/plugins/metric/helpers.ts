@@ -68,6 +68,25 @@ export const parseMetricFile = async (taskId: string, filename: string, maxChar:
     }
   }
 
+  if (filename.toLowerCase().endsWith('.csv')) {
+    const csvLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
+    const entries: MetricEntry[] = [];
+    for (const csvLine of csvLines) {
+      const [value, ...tags] = csvLine.split(',').map((s) => s.trim());
+      const parsedValue: number = parseFloat(value);
+      if (isNaN(parsedValue)) {
+        core.error(`[${taskId}] Metric file ${filename} does not have valid CSV contents. Skip.\n${metricJsonString}`);
+        continue;
+      }
+      const entry: MetricEntry = { value: parsedValue };
+      if (tags.length > 0) {
+        entry.tags = tags;
+      }
+      entries.push(entry);
+    }
+    return entries;
+  }
+
   core.warning(`[${taskId}] Unexpected metric file extension: ${filename}. Expect '.json' or '.jsonl'. Skip.`);
   return [];
 };
