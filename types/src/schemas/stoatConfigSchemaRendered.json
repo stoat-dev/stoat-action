@@ -193,7 +193,7 @@
           "type": "string",
           "description": "The definition of the workflow."
         },
-        "dispatch_link": {
+        "link": {
           "type": "string",
           "description": "The link to trigger the workflow. This link is populated by the server."
         }
@@ -276,7 +276,7 @@
             "type": "string"
           }
         },
-        "chart_url": {
+        "link": {
           "type": "string"
         }
       }
@@ -310,7 +310,7 @@
             "$ref": "#/definitions/job_runtime_entry"
           }
         },
-        "chart_url": {
+        "link": {
           "type": "string"
         }
       }

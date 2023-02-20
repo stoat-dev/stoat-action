@@ -127,7 +127,7 @@ export interface WorkflowDispatchPluginRendered {
   /**
    * The link to trigger the workflow. This link is populated by the server.
    */
-  dispatch_link?: string;
+  link?: string;
   [k: string]: unknown;
 }
 /**
@@ -182,7 +182,7 @@ export interface ChartPluginRendered {
   title: string;
   y_title?: string;
   tags: string[];
-  chart_url?: string;
+  link?: string;
   [k: string]: unknown;
 }
 /**
@@ -198,7 +198,7 @@ export interface JobRuntimePluginRendered {
     [k: string]: unknown;
   };
   runtime: JobRuntimeEntry[];
-  chart_url?: string;
+  link?: string;
   [k: string]: unknown;
 }
 /**
