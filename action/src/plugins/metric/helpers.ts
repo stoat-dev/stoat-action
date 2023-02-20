@@ -1,27 +1,15 @@
 import * as core from '@actions/core';
+import Ajv from 'ajv';
 import fs from 'fs';
 
 import { MetricEntry } from '../../../../types/src';
+import stoatSchema from '../../../../types/src/schemas/stoatConfigSchema.json';
+
+const ajv = new Ajv();
+const validate = ajv.compile(stoatSchema.definitions.metric_entry);
 
 export const isMetricEntry = (object: any): object is MetricEntry => {
-  if (typeof object !== 'object') {
-    return false;
-  }
-  if (!('value' in object) || typeof object.value !== 'number') {
-    return false;
-  }
-  if ('tag' in object && typeof object.tag !== 'string') {
-    return false;
-  }
-  if ('tags' in object && !Array.isArray(object.tags)) {
-    if (!Array.isArray(object.tags)) {
-      return false;
-    }
-    if (object.tags.some((tag: any) => typeof tag !== 'string')) {
-      return false;
-    }
-  }
-  return true;
+  return validate(object);
 };
 
 export const parseMetricFile = async (taskId: string, filename: string, maxChar: number): Promise<MetricEntry[]> => {

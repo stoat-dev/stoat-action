@@ -87961,25 +87961,12 @@ var metric_helpers_awaiter = (undefined && undefined.__awaiter) || function (thi
 };
 
 
+
+
+const helpers_ajv = new (ajv_default())();
+const validate = helpers_ajv.compile(stoatConfigSchema_namespaceObject.definitions.metric_entry);
 const isMetricEntry = (object) => {
-    if (typeof object !== 'object') {
-        return false;
-    }
-    if (!('value' in object) || typeof object.value !== 'number') {
-        return false;
-    }
-    if ('tag' in object && typeof object.tag !== 'string') {
-        return false;
-    }
-    if ('tags' in object && !Array.isArray(object.tags)) {
-        if (!Array.isArray(object.tags)) {
-            return false;
-        }
-        if (object.tags.some((tag) => typeof tag !== 'string')) {
-            return false;
-        }
-    }
-    return true;
+    return validate(object);
 };
 const parseMetricFile = (taskId, filename, maxChar) => metric_helpers_awaiter(void 0, void 0, void 0, function* () {
     const metricJsonString = external_fs_default().readFileSync(filename).toString();
