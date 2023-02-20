@@ -136,7 +136,7 @@ describe('getPlugins', () => {
           json: { plugin3: json1 },
           image_diff: { plugin4: imageDiff1 }
         }
-      }).sort()
-    ).toEqual([StoatPlugin.Json, StoatPlugin.StaticHosting, StoatPlugin.ImageDiff].sort());
+      }).sort((a, b) => a.localeCompare(b))
+    ).toEqual([StoatPlugin.Json, StoatPlugin.StaticHosting, StoatPlugin.ImageDiff].sort((a, b) => a.localeCompare(b)));
   });
 });
