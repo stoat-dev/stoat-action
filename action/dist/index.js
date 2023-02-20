@@ -88023,6 +88023,24 @@ const parseMetricFile = (taskId, filename, maxChar) => metric_helpers_awaiter(vo
             return [];
         }
     }
+    if (filename.toLowerCase().endsWith('.csv')) {
+        const csvLines = metricJsonString.split('\n').filter((line) => line.trim().length > 0);
+        const entries = [];
+        for (const csvLine of csvLines) {
+            const [value, ...tags] = csvLine.split(',').map((s) => s.trim());
+            const parsedValue = parseFloat(value);
+            if (isNaN(parsedValue)) {
+                core.error(`[${taskId}] Metric file ${filename} does not have valid CSV contents. Skip.\n${metricJsonString}`);
+                continue;
+            }
+            const entry = { value: parsedValue };
+            if (tags.length > 0) {
+                entry.tags = tags;
+            }
+            entries.push(entry);
+        }
+        return entries;
+    }
     core.warning(`[${taskId}] Unexpected metric file extension: ${filename}. Expect '.json' or '.jsonl'. Skip.`);
     return [];
 });
