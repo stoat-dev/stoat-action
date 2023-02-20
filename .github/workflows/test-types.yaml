@@ -57,7 +57,6 @@ jobs:
             git diff
             exit 1
           fi
-        id: diff
       - name: Run stoat action
         uses: ./
         if: always()

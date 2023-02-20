@@ -21,9 +21,21 @@ plugins:
       metadata:
         name: Documentation
       path: docs/build
-  image_diff:
-    compare_logo_image:
-      metadata:
-        name: Logo
-      image: docs/static/img/logo-128.png
-      baseline: docs/build/baseline-logo-128.png
+  # image_diff:
+  #   compare_logo_image:
+  #     metadata:
+  #       name: Logo
+  #     image: docs/static/img/logo-128.png
+  #     baseline: docs/build/baseline-logo-128.png
+  metric:
+    action_runner_memory:
+      filename: action_runner_memory.jsonl
+  chart:
+    action_runner_memory_chart:
+      title: Runner Memory Usage
+      y_title: Memory (bytes)
+      tags:
+        - Total
+        - Used
+        - Free
+        - Buff/Cache

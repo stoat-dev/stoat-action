@@ -14,15 +14,25 @@ export interface StoatConfigSchema {
     json?: JsonPluginMap;
     image_diff?: ImageDiffPluginMap;
     workflow_dispatch?: WorkflowDispatchPluginMap;
+    metric?: MetricPluginMap;
+    chart?: ChartPluginMap;
     job_runtime?: JobRuntimePlugin;
     auto_hosting?: AutoHostingPlugin;
     [k: string]: unknown;
   };
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin_map".
+ */
 export interface StaticHostingPluginMap {
   [k: string]: StaticHostingPlugin;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin".
+ */
 export interface StaticHostingPlugin {
   metadata?: {
     [k: string]: unknown;
@@ -31,9 +41,17 @@ export interface StaticHostingPlugin {
   file_viewer?: boolean;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "json_plugin_map".
+ */
 export interface JsonPluginMap {
   [k: string]: JsonPlugin;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "json_plugin".
+ */
 export interface JsonPlugin {
   metadata?: {
     [k: string]: unknown;
@@ -41,9 +59,17 @@ export interface JsonPlugin {
   path: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "image_diff_plugin_map".
+ */
 export interface ImageDiffPluginMap {
   [k: string]: ImageDiffPlugin;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "image_diff_plugin".
+ */
 export interface ImageDiffPlugin {
   metadata?: {
     [k: string]: unknown;
@@ -52,9 +78,17 @@ export interface ImageDiffPlugin {
   baseline: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "workflow_dispatch_plugin_map".
+ */
 export interface WorkflowDispatchPluginMap {
   [k: string]: WorkflowDispatchPlugin;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "workflow_dispatch_plugin".
+ */
 export interface WorkflowDispatchPlugin {
   filename: string;
   /**
@@ -63,6 +97,51 @@ export interface WorkflowDispatchPlugin {
   scope_identifier?: string;
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "metric_plugin_map".
+ */
+export interface MetricPluginMap {
+  [k: string]: MetricPlugin;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "metric_plugin".
+ */
+export interface MetricPlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  /**
+   * The input file including the metric value. The expected formats are: json or jsonl. The file should be in JSON with these keys: "value" (required, number), "tag" (optional, string), and "tags" (optional, string array). The "tag" or "tags" are used to groups metric data points in the chart. This file will be consumed by the Stoat action as inputs for the metric task.
+   */
+  filename: string;
+  [k: string]: unknown;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "chart_plugin_map".
+ */
+export interface ChartPluginMap {
+  [k: string]: ChartPlugin;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "chart_plugin".
+ */
+export interface ChartPlugin {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  title: string;
+  y_title?: string;
+  tags: string[];
+  [k: string]: unknown;
+}
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "job_runtime_plugin".
+ */
 export interface JobRuntimePlugin {
   enabled: boolean;
   tracking?: boolean;
@@ -73,6 +152,10 @@ export interface JobRuntimePlugin {
   };
   [k: string]: unknown;
 }
+/**
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "auto_hosting_plugin".
+ */
 export interface AutoHostingPlugin {
   /**
    * When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.
@@ -86,5 +169,17 @@ export interface AutoHostingPlugin {
    * Whether to automatically upload the detected artifacts to the Stoat server for hosting.
    */
   auto_upload?: boolean;
+  [k: string]: unknown;
+}
+/**
+ * Schema of the input file for the metric task.
+ *
+ * This interface was referenced by `StoatConfigSchema`'s JSON-Schema
+ * via the `definition` "metric_entry".
+ */
+export interface MetricEntry {
+  value: number;
+  tag?: string;
+  tags?: string[];
   [k: string]: unknown;
 }

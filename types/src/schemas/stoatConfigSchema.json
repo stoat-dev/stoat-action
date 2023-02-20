@@ -28,6 +28,12 @@
         "workflow_dispatch": {
           "$ref": "#/definitions/workflow_dispatch_plugin_map"
         },
+        "metric": {
+          "$ref": "#/definitions/metric_plugin_map"
+        },
+        "chart": {
+          "$ref": "#/definitions/chart_plugin_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin"
         },
@@ -126,6 +132,70 @@
             "deployment.${{ inputs.env }}",
             "deployment.${inputs.env}"
           ]
+        }
+      }
+    },
+    "metric_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/metric_plugin"
+      }
+    },
+    "metric_plugin": {
+      "type": "object",
+      "required": ["filename"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "filename": {
+          "type": "string",
+          "description": "The input file including the metric value. The expected formats are: json or jsonl. The file should be in JSON with these keys: \"value\" (required, number), \"tag\" (optional, string), and \"tags\" (optional, string array). The \"tag\" or \"tags\" are used to groups metric data points in the chart. This file will be consumed by the Stoat action as inputs for the metric task."
+        }
+      }
+    },
+    "metric_entry": {
+      "type": "object",
+      "description": "Schema of the input file for the metric task.",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array", "items": { "type": "string" }
+        }
+      }
+    },
+    "chart_plugin_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/chart_plugin"
+      }
+    },
+    "chart_plugin": {
+      "type": "object",
+      "required": ["title", "tags"],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": {
+          "type": "string"
+        },
+        "y_title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

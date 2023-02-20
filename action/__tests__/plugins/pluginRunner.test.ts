@@ -4,6 +4,7 @@ import { StoatConfigSchema } from '../../../types/src';
 import { runAutoHostingPlugin } from '../../src/plugins/autoHosting';
 import { runJobRuntimePlugin } from '../../src/plugins/jobRuntime';
 import { runJsonPlugin } from '../../src/plugins/json';
+import { runMetricPlugin } from '../../src/plugins/metric';
 import { runPlugins } from '../../src/plugins/pluginRunner';
 import { runStaticHostingPlugin } from '../../src/plugins/staticHosting';
 import { GithubActionRun } from '../../src/types';
@@ -19,6 +20,9 @@ const mockJsonPlugin = runJsonPlugin as jest.MockedFunction<typeof runJsonPlugin
 
 jest.mock('../../src/plugins/autoHosting');
 const mockAutoHostingPlugin = runAutoHostingPlugin as jest.MockedFunction<typeof runAutoHostingPlugin>;
+
+jest.mock('../../src/plugins/metric');
+const mockMetricPlugin = runMetricPlugin as jest.MockedFunction<typeof runMetricPlugin>;
 
 describe('runPlugins', () => {
   afterEach(() => {
@@ -47,6 +51,7 @@ describe('runPlugins', () => {
     expect(mockStaticHostingPlugin).toHaveBeenCalledTimes(2);
     expect(mockJobRuntimePlugin).toHaveBeenCalledTimes(1);
     expect(mockJsonPlugin).toHaveBeenCalledTimes(0);
+    expect(mockMetricPlugin).toHaveBeenCalledTimes(0);
   });
 
   it('runs the job runtime plugin by default', async () => {

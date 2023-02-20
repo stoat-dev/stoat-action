@@ -27,9 +27,8 @@ const runJsonPlugin = async (
   const jsonString = fs.readFileSync(jsonToUpload).toString();
 
   if (jsonString.length > MAX_CHARACTERS) {
-    const message = `JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}`;
-    core.error(message);
-    throw Error(message);
+    core.error(`JSON string exceeds character limit. Limit: ${MAX_CHARACTERS}. Actual: ${jsonString.length}. Skip`);
+    return;
   }
 
   let value;
@@ -37,9 +36,8 @@ const runJsonPlugin = async (
   try {
     value = JSON.parse(jsonString);
   } catch (e) {
-    const message = `JSON file to upload does not have valid JSON contents: ${jsonToUpload}`;
-    core.error(message);
-    throw Error(message);
+    core.error(`JSON file to upload does not have valid JSON contents: ${jsonToUpload}. Skip.`);
+    return;
   }
 
   // submit partial config

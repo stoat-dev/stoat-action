@@ -1,6 +1,6 @@
 {
   "name": "stoat-types",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "npm run gen-types && tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
-    "gen-types": "json2ts -i 'src/schemas/**/*.json' -o src/schemas && for f in src/schemas/*.d.ts; do mv -- \"$f\" \"${f%.d.ts}.ts\"; done"
+    "gen-types": "json2ts -i 'src/schemas/**/*.json' --unreachableDefinitions -o src/schemas && for f in src/schemas/*.d.ts; do mv -- \"$f\" \"${f%.d.ts}.ts\"; done"
   },
   "repository": {
     "type": "git",

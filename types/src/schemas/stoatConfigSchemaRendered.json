@@ -28,6 +28,12 @@
         "workflow_dispatch": {
           "$ref": "#/definitions/workflow_dispatch_plugin_rendered_map"
         },
+        "metric": {
+          "$ref": "#/definitions/metric_plugin_rendered_map"
+        },
+        "chart": {
+          "$ref": "#/definitions/chart_plugin_rendered_map"
+        },
         "job_runtime": {
           "$ref": "#/definitions/job_runtime_plugin_rendered"
         }
@@ -187,9 +193,91 @@
           "type": "string",
           "description": "The definition of the workflow."
         },
-        "dispatch_link": {
+        "link": {
           "type": "string",
           "description": "The link to trigger the workflow. This link is populated by the server."
+        }
+      }
+    },
+    "metric_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/metric_plugin_rendered"
+      }
+    },
+    "metric_plugin_rendered": {
+      "type": "object",
+      "required": ["filename", "values"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "filename": {
+          "type": "string",
+          "description": "The input file including the metric value. The file should be in JSON with these keys: \"value\" (required, number) and \"group\" (optional, string). The \"group\" key is used to group the metric values in the chart. This file will be consumed by the Stoat action as inputs for the metric task."
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metric_entry_rendered"
+          }
+        }
+      }
+    },
+    "metric_entry_rendered": {
+      "type": "object",
+      "required": ["ghBranch", "sha", "tags", "value"],
+      "additionalProperties": true,
+      "properties": {
+        "ghBranch": {
+          "type": "string"
+        },
+        "ghPullRequestNumber": {
+          "type": "number"
+        },
+        "ghSha": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "value": {
+          "type": "number"
+        }
+      }
+    },
+    "chart_plugin_rendered_map": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/chart_plugin_rendered"
+      }
+    },
+    "chart_plugin_rendered": {
+      "type": "object",
+      "required": ["title", "tags"],
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": {
+          "type": "string"
+        },
+        "y_title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "link": {
+          "type": "string"
         }
       }
     },
@@ -221,6 +309,9 @@
           "items": {
             "$ref": "#/definitions/job_runtime_entry"
           }
+        },
+        "link": {
+          "type": "string"
         }
       }
     },

@@ -55,13 +55,15 @@ jobs:
             git diff
             exit 1
           fi
-        id: diff
-      - name: Upload actual dist if it is different
-        uses: actions/upload-artifact@v3
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
-        with:
-          name: dist
-          path: dist/
+      - name: Emit runner memory
+        working-directory: ${{ github.workspace }}
+        run: |
+          free
+          echo "Writing to action_runner_memory.jsonl..."
+          echo "{ \"value\": $(awk '/^Mem/ {print $2}' <(free)), \"tag\": \"Total\" }" | tee action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $3}' <(free)), \"tag\": \"Used\" }" | tee -a action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $4}' <(free)), \"tag\": \"Free\" }" | tee -a action_runner_memory.jsonl
+          echo "{ \"value\": $(awk '/^Mem/ {print $5}' <(free)), \"tag\": \"Buff/Cache\" }" | tee -a action_runner_memory.jsonl
       - name: Run stoat action
         uses: ./
         if: always()
