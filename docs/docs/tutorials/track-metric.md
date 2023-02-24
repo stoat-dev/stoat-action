@@ -138,3 +138,17 @@ Two charts will be generated. The first chart will have two lines: one for free 
 The `chart` tasks do not have 1 to 1 mapping with the `metric` tasks. It is possible to have only one `metric` task and multiple `chart` tasks, or multiple `metric` tasks and only one `chart` task. The `chart` tasks only care about the tags of the metric values to be included.
 
 The simplest use case is to have one `metric` task, and append all metric values to the same  file. Each value can have different tags. However, it is mentally convenient to create multiple `metric` tasks, each for a different use case.
+
+## TODOs
+- Compare metrics from pull requests and the default branch.
+- Add interactive chart view.
+- Migrate away from QuickChart.
+- Add aggregate chart view in Stoat dashboard.
+- Ingest metrics through API.
+
+## Changelog
+
+| Date | Description |
+| :--- | :--- |
+| 2023-02-24 | Add TODOs. |
+| 2023-02-23 | Add initial docs for metric and chart plugins. |
