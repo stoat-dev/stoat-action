@@ -18,8 +18,18 @@ all files, all metrics, and all other data you publish to Stoat for templating w
 
 ## 1. Install GitHub Application
 
-Go to the [Stoat GitHub application page](https://github.com/apps/stoat-app/) and install the application for your repository. If you have any question about the permissions
-or run into any problems with installing, please [let us know](company/contact-us).
+Go to the [Stoat GitHub application page](https://github.com/apps/stoat-app/) and install the application for your repository.
+
+The application requires the following permissions:
+
+| Entity | Permission | Reason |
+| :--- | :---: | :--- |
+| User emails | **Read** | Necessary for user identification and authentication. |
+| Metadata | **Read** | Enabled by default. |
+| Actions | **Read** | Currently not used. Necessary to read GitHub job logs. |
+| Pull requests | **Write** | Necessary to create and update comments in pull requests. |
+
+If you have any questions or concerns about the permissions, or run into any problems, please [let us know](company/contact-us).
 
 ## 2. Install CLI
 
