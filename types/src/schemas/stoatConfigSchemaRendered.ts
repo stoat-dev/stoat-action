@@ -12,6 +12,7 @@ export interface StoatConfigSchemaRendered {
   metadata?: {
     github?: {
       branch?: string;
+      pull_request?: number;
       [k: string]: unknown;
     };
     [k: string]: unknown;

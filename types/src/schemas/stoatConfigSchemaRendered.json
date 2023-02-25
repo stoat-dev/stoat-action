@@ -21,6 +21,9 @@
           "properties": {
             "branch": {
               "type": "string"
+            },
+            "pull_request": {
+              "type": "number"
             }
           }
         }
