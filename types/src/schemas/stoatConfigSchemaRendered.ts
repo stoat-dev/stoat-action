@@ -9,6 +9,13 @@ export interface StoatConfigSchemaRendered {
   version: number;
   enabled?: boolean;
   comment_template_file?: string;
+  metadata?: {
+    github?: {
+      branch?: string;
+      [k: string]: unknown;
+    };
+    [k: string]: unknown;
+  };
   plugins?: {
     static_hosting?: StaticHostingPluginRenderedMap;
     json?: JsonPluginRenderedMap;

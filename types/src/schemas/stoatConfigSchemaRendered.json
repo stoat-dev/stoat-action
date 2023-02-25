@@ -13,6 +13,19 @@
     "comment_template_file": {
       "type": "string"
     },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "github": {
+          "type": "object",
+          "properties": {
+            "branch": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "plugins": {
       "type": "object",
       "properties": {
