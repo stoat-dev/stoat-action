@@ -75,6 +75,7 @@ export interface StaticHostingPluginRendered {
 export interface StaticHostingPluginRenderedVariants {
   job_type: "variants";
   path: string;
+  file_viewer?: boolean;
   sha: string;
   variants: {
     [k: string]: {

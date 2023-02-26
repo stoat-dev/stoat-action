@@ -141,6 +141,9 @@
         "path": {
           "type": "string"
         },
+        "file_viewer": {
+          "type": "boolean"
+        },
         "sha": {
           "type": "string"
         },
