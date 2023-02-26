@@ -88495,6 +88495,8 @@ function run(stoatConfig) {
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
+        core.info(`Jobs: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
+        core.info(`Context: ${JSON.stringify(github.context, null, 2)}`);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
         // There is no precise way to find the current running job. To do that,
