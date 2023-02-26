@@ -27,7 +27,7 @@ export const logPriorSteps = (job: Pick<GithubJob, 'name' | 'steps'> | undefined
 /**
  * Check whether a job id or name contains all the matrix variants.
  */
-export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, string> | null): boolean => {
+export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, string | number> | null): boolean => {
   if (matrix === null) {
     return true;
   }
@@ -35,5 +35,5 @@ export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, 
     .substring(jobName.lastIndexOf('(') + 1, jobName.lastIndexOf(')'))
     .split(',')
     .map((v) => v.trim());
-  return _.isEqual(_.sortBy(variants), _.sortBy(Object.values(matrix)));
+  return _.isEqual(_.sortBy(variants), _.sortBy(Object.values(matrix).map((v) => String(v))));
 };

@@ -88458,7 +88458,7 @@ const isJobMatchMatrixVariant = (jobName, matrix) => {
         .substring(jobName.lastIndexOf('(') + 1, jobName.lastIndexOf(')'))
         .split(',')
         .map((v) => v.trim());
-    return lodash_default().isEqual(lodash_default().sortBy(variants), lodash_default().sortBy(Object.values(matrix)));
+    return lodash_default().isEqual(lodash_default().sortBy(variants), lodash_default().sortBy(Object.values(matrix).map((v) => String(v))));
 };
 
 ;// CONCATENATED MODULE: ./src/app.ts
