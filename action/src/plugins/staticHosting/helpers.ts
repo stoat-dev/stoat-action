@@ -53,7 +53,7 @@ export const processPath = async (
     ghRepo,
     ghSha,
     ghToken,
-    taskId,
+    taskId: ghRunMatrix ? `${taskId}-${getMatrixId(ghRunMatrix)}` : taskId,
     filename: isFile ? basename(pathToUpload) : undefined
   });
 

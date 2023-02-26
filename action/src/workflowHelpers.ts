@@ -1,5 +1,4 @@
 import * as core from '@actions/core';
-import _ from 'lodash';
 
 import { GithubJob } from './types';
 
