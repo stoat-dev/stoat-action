@@ -87457,8 +87457,8 @@ const getMatrixVariantString = (runMatrix) => {
         return '';
     }
     return lodash_default().sortBy(Object.entries(runMatrix), ([key]) => key)
-        .map(([key, value]) => `${key}=${String(value)}`)
-        .join(',');
+        .map(([, value]) => String(value))
+        .join(', ');
 };
 
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
