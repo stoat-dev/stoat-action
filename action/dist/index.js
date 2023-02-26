@@ -88427,6 +88427,7 @@ const getPlugins = (stoatConfig) => {
 
 ;// CONCATENATED MODULE: ./src/workflowHelpers.ts
 
+
 /**
  * Log prior steps and return whether prior steps have succeeded. Return true
  * if there is no step with "failure" conclusion. Note that when a step has
@@ -88453,7 +88454,11 @@ const isJobMatchMatrixVariant = (jobName, matrix) => {
     if (matrix === null) {
         return true;
     }
-    return Object.values(matrix).every((variant) => jobName.includes(variant));
+    const variants = jobName
+        .substring(jobName.lastIndexOf('(') + 1, jobName.lastIndexOf(')'))
+        .split(',')
+        .map((v) => v.trim());
+    return lodash_default().isEqual(lodash_default().sortBy(variants), lodash_default().sortBy(Object.values(matrix)));
 };
 
 ;// CONCATENATED MODULE: ./src/app.ts
