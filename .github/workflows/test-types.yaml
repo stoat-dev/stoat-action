@@ -28,10 +28,10 @@ defaults:
     working-directory: types
 
 jobs:
-  strategy:
-    matrix:
-      node-version: [16, 18]
   build:
+    strategy:
+      matrix:
+        node-version: [ 16, 18 ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
