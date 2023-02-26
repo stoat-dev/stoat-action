@@ -88497,6 +88497,8 @@ function run(stoatConfig) {
         });
         core.info(`Jobs: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         core.info(`Context: ${JSON.stringify(github.context, null, 2)}`);
+        const runMatrix = core.getInput('run_matrix');
+        core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
         // There is no precise way to find the current running job. To do that,

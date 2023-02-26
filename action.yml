@@ -26,6 +26,9 @@ inputs:
   job_status:
     default: ${{ job.status }}
     description: current job status
+  run_matrix:
+    default: ${{ toJSON(matrix) }}
+    description: Matrix of the current run
 runs:
   using: 'node16'
   main: 'action/dist/index.js'
