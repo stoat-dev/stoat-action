@@ -9,6 +9,7 @@ import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
 import { GithubActionRun, GithubJob, Repository } from './types';
+import { isJobMatchMatrixVariant } from './workflowHelpers';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -69,8 +70,6 @@ async function run(stoatConfig: any) {
     repo: github.context.repo.repo,
     run_id: github.context.runId
   });
-  core.info(`Jobs: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
-  core.info(`Context: ${JSON.stringify(github.context, null, 2)}`);
   const runMatrix = JSON.parse(core.getInput('run_matrix'));
   core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
   const ghJobId = github.context.job;
@@ -83,7 +82,7 @@ async function run(stoatConfig: any) {
   // with the matrix variants. In those cases, nothing from github.context
   // can be used to find the job.
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find(
-    (j) => j.run_id === ghJobRunId && j.status === 'in_progress'
+    (j) => j.run_id === ghJobRunId && j.status === 'in_progress' && isJobMatchMatrixVariant(j.name, runMatrix)
   );
   if (ghJob !== undefined) {
     core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);

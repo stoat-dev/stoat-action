@@ -22,3 +22,13 @@ export const logPriorSteps = (job: Pick<GithubJob, 'name' | 'steps'> | undefined
   }
   return stepsSucceeded;
 };
+
+/**
+ * Check whether a job id or name contains all the matrix variants.
+ */
+export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, string> | null): boolean => {
+  if (matrix === null) {
+    return true;
+  }
+  return Object.values(matrix).every((variant) => jobName.includes(variant));
+};
