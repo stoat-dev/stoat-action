@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import _ from 'lodash';
 
 import { GithubJob } from './types';
 
@@ -30,5 +31,9 @@ export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, 
   if (matrix === null) {
     return true;
   }
-  return Object.values(matrix).every((variant) => jobName.includes(variant));
+  const variants = jobName
+    .substring(jobName.lastIndexOf('(') + 1, jobName.lastIndexOf(')'))
+    .split(',')
+    .map((v) => v.trim());
+  return _.isEqual(_.sortBy(variants), _.sortBy(Object.values(matrix)));
 };
