@@ -21,6 +21,9 @@ export type GithubActionRun = {
   ghRunId: number;
   ghRunNumber: number;
   ghRunAttempt: number;
+  ghRunMatrix: GithubRunMatrix;
   ghToken: string;
   stepsSucceeded: boolean;
 };
+
+export type GithubRunMatrix = Record<string, string | number> | null;

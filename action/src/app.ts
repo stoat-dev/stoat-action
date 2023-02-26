@@ -4,12 +4,12 @@ import { GitHub } from '@actions/github/lib/utils';
 
 import { uploadWorkflowOutputs } from './commentHelpers';
 import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
+import { isJobMatchMatrixVariant } from './matrixHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
-import { GithubActionRun, GithubJob, Repository } from './types';
-import { isJobMatchMatrixVariant } from './workflowHelpers';
+import { GithubActionRun, GithubJob, GithubRunMatrix, Repository } from './types';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -70,7 +70,7 @@ async function run(stoatConfig: any) {
     repo: github.context.repo.repo,
     run_id: github.context.runId
   });
-  const runMatrix = JSON.parse(core.getInput('run_matrix'));
+  const runMatrix: GithubRunMatrix = JSON.parse(core.getInput('run_matrix'));
   core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
   const ghJobId = github.context.job;
   const ghJobRunId = github.context.runId;
@@ -112,6 +112,7 @@ async function run(stoatConfig: any) {
     ghRunNumber: github.context.runNumber,
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
     ghToken: token,
+    ghRunMatrix: runMatrix,
     stepsSucceeded
   };
 

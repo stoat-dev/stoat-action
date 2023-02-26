@@ -9,7 +9,15 @@ import { processPath } from './helpers';
 const runStaticHostingPlugin = async (
   taskId: string,
   taskConfig: StaticHostingPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }: GithubActionRun,
+  {
+    ghToken,
+    ghRepository: { repo, owner },
+    ghBranch,
+    ghPullRequestNumber,
+    ghSha,
+    ghRunMatrix,
+    stepsSucceeded
+  }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
@@ -36,6 +44,7 @@ const runStaticHostingPlugin = async (
       ghBranch,
       ghPullRequestNumber,
       ghSha,
+      ghRunMatrix,
       ghToken,
       stepsSucceeded
     },

@@ -21,6 +21,7 @@ describe('static hosting plugin', () => {
     ghRunNumber: 2000,
     ghRunAttempt: 1,
     ghToken: 'token',
+    ghRunMatrix: null,
     stepsSucceeded: true
   };
 
