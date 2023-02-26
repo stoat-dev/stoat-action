@@ -18,8 +18,6 @@ plugins:
         name: CLI Test Coverage
       path: cli/coverage/lcov-report
     types_ts_coverage:
-      metadata:
-        name: Types TS Coverage
       path: types/coverage-ts
     docs:
       metadata:
