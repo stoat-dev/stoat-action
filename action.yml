@@ -14,12 +14,6 @@ inputs:
   actual_sha:
     default: ${{ github.event.pull_request.head.sha || github.sha }}
     description: the commit pushed, not the commit post merge like github.sha
-  run_id:
-    default: ${{ github.run_id }}
-    description: A unique number for each workflow run within a repository. This number does not change if you re-run the workflow run.
-  run_number:
-    default: ${{ github.run_number }}
-    description: A unique number for each run of a particular workflow in a repository. This number begins at 1 for the workflow's first run, and increments with each new run. This number does not change if you re-run the workflow run.
   run_attempt:
     default: ${{ github.run_attempt }}
     description: A unique number for each attempt of a particular workflow run in a repository. This number begins at 1 for the workflow run's first attempt, and increments with each re-run.

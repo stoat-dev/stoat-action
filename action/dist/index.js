@@ -88531,9 +88531,6 @@ function run(stoatConfig) {
         lib_core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
-        lib_core.info(`github.context.runId: ${github.context.runId}`);
-        lib_core.info(`github.run_id: ${lib_core.getInput('run_id')}`);
-        lib_core.info(`Jobs: ${JSON.stringify(jobListResponse.data.jobs, null, 2)}`);
         // There is no precise way to find the current running job. To do that,
         // we need to use an identifier from the github.context and search for
         // it in the job list. Usually this works, because both github.context.job
@@ -88559,8 +88556,8 @@ function run(stoatConfig) {
             ghJob,
             ghSha: repoSha,
             ghCommitTimestamp,
-            ghRunId: parseInt(lib_core.getInput('run_id')),
-            ghRunNumber: parseInt(lib_core.getInput('run_number')),
+            ghRunId: github.context.runId,
+            ghRunNumber: github.context.runNumber,
             ghRunAttempt: parseInt(lib_core.getInput('run_attempt')),
             ghToken: token,
             stepsSucceeded
