@@ -53,6 +53,7 @@ export const processPath = async (
   // submit partial config
   const renderedPlugin: StaticHostingPluginRendered = {
     ...taskConfig,
+    job_type: 'default',
     sha: ghSha,
     link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
     status: stepsSucceeded ? '✅' : '❌'
