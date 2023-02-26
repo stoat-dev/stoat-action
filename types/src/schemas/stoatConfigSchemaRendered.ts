@@ -48,7 +48,7 @@ export interface StoatConfigSchemaRendered {
  * via the `definition` "static_hosting_plugin_rendered_map".
  */
 export interface StaticHostingPluginRenderedMap {
-  [k: string]: StaticHostingPluginRendered;
+  [k: string]: StaticHostingPluginRendered | StaticHostingPluginRenderedVariants;
 }
 /**
  * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
@@ -58,11 +58,31 @@ export interface StaticHostingPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
+  job_type: "default";
   path: string;
   file_viewer?: boolean;
   link: string;
   sha: string;
   status: string;
+  [k: string]: unknown;
+}
+/**
+ * Static hosting tasks with variants.
+ *
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin_rendered_variants".
+ */
+export interface StaticHostingPluginRenderedVariants {
+  job_type: "variants";
+  path: string;
+  sha: string;
+  variants: {
+    [k: string]: {
+      link: string;
+      status: string;
+      [k: string]: unknown;
+    };
+  };
   [k: string]: unknown;
 }
 /**

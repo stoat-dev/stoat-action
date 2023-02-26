@@ -93,16 +93,24 @@
     "static_hosting_plugin_rendered_map": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/definitions/static_hosting_plugin_rendered"
+        "oneOf": [
+          { "$ref": "#/definitions/static_hosting_plugin_rendered" },
+          { "$ref": "#/definitions/static_hosting_plugin_rendered_variants" }
+        ]
       }
     },
     "static_hosting_plugin_rendered": {
       "type": "object",
-      "required": ["path", "link", "sha", "status"],
+      "required": ["job_type", "path", "link", "sha", "status"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
+        },
+        "job_type": {
+          "type": "string",
+          "const": "default",
+          "default": "default"
         },
         "path": {
           "type": "string"
@@ -118,6 +126,38 @@
         },
         "status": {
           "type": "string"
+        }
+      }
+    },
+    "static_hosting_plugin_rendered_variants": {
+      "type": "object",
+      "required": ["job_type", "path", "sha", "variants"],
+      "description": "Static hosting tasks with variants.",
+      "properties": {
+        "job_type": {
+          "type": "string",
+          "const": "variants"
+        },
+        "path": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "variants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["link", "status"],
+            "properties": {
+              "link": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
         }
       }
     },
