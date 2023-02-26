@@ -87542,7 +87542,7 @@ const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo:
     const renderedPlugin = ghRunMatrix
         ? Object.assign(Object.assign({}, taskConfig), { with_variants: true, sha: ghSha, variants: {
                 [getMatrixId(ghRunMatrix)]: {
-                    variant: ghJob ? ghJob.name : `Variant (${getMatrixVariantString(ghRunMatrix)})`,
+                    variant: getMatrixVariantString(ghRunMatrix),
                     link,
                     status
                 }

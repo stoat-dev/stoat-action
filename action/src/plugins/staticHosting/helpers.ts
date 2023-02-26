@@ -71,7 +71,7 @@ export const processPath = async (
         sha: ghSha,
         variants: {
           [getMatrixId(ghRunMatrix)]: {
-            variant: ghJob ? ghJob.name : `Variant (${getMatrixVariantString(ghRunMatrix)})`,
+            variant: getMatrixVariantString(ghRunMatrix),
             link,
             status
           }
