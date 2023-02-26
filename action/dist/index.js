@@ -88168,7 +88168,7 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghRunMatrix, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghJob, ghRunMatrix, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -88187,6 +88187,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghBranch,
         ghPullRequestNumber,
         ghSha,
+        ghJob,
         ghRunMatrix,
         ghToken,
         stepsSucceeded

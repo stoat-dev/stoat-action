@@ -15,6 +15,7 @@ const runStaticHostingPlugin = async (
     ghBranch,
     ghPullRequestNumber,
     ghSha,
+    ghJob,
     ghRunMatrix,
     stepsSucceeded
   }: GithubActionRun,
@@ -44,6 +45,7 @@ const runStaticHostingPlugin = async (
       ghBranch,
       ghPullRequestNumber,
       ghSha,
+      ghJob,
       ghRunMatrix,
       ghToken,
       stepsSucceeded
