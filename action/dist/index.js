@@ -87438,7 +87438,8 @@ const isJobMatchMatrixVariant = (jobName, matrix) => {
 };
 /**
  * Generate a unique id from matrix variants.
- * Variants are sorted by variant names, and concatenated with hyphens.
+ * Variants are sorted by variant key names, and concatenated with hyphens.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => '13-ubuntu-latest'
  */
 const getMatrixId = (runMatrix) => {
     if (runMatrix === null) {
@@ -87449,15 +87450,16 @@ const getMatrixId = (runMatrix) => {
         .join('-');
 };
 /**
- * Generate a string from matrix variants.
- * Variants are sorted by variant names, and concatenated with commas.
+ * Generate a string from matrix key and variants.
+ * Key variant pairs are sorted by variant key names, and concatenated with commas.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => 'os: 13, nodeVersion: ubuntu-latest'
  */
 const getMatrixVariantString = (runMatrix) => {
     if (runMatrix === null) {
         return '';
     }
     return lodash_default().sortBy(Object.entries(runMatrix), ([key]) => key)
-        .map(([, value]) => String(value))
+        .map(([key, value]) => `${key}: ${value}`)
         .join(', ');
 };
 
@@ -87530,7 +87532,7 @@ const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo:
         ghRepo,
         ghSha,
         ghToken,
-        taskId,
+        taskId: ghRunMatrix ? `${taskId}-${getMatrixId(ghRunMatrix)}` : taskId,
         filename: isFile ? (0,external_path_.basename)(pathToUpload) : undefined
     });
     // upload directory

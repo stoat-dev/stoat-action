@@ -18,7 +18,8 @@ export const isJobMatchMatrixVariant = (jobName: string, matrix: Record<string, 
 
 /**
  * Generate a unique id from matrix variants.
- * Variants are sorted by variant names, and concatenated with hyphens.
+ * Variants are sorted by variant key names, and concatenated with hyphens.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => '13-ubuntu-latest'
  */
 export const getMatrixId = (runMatrix: GithubRunMatrix): string => {
   if (runMatrix === null) {
@@ -30,14 +31,15 @@ export const getMatrixId = (runMatrix: GithubRunMatrix): string => {
 };
 
 /**
- * Generate a string from matrix variants.
- * Variants are sorted by variant names, and concatenated with commas.
+ * Generate a string from matrix key and variants.
+ * Key variant pairs are sorted by variant key names, and concatenated with commas.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => 'os: 13, nodeVersion: ubuntu-latest'
  */
 export const getMatrixVariantString = (runMatrix: GithubRunMatrix): string => {
   if (runMatrix === null) {
     return '';
   }
   return _.sortBy(Object.entries(runMatrix), ([key]) => key)
-    .map(([, value]) => String(value))
+    .map(([key, value]) => `${key}: ${value}`)
     .join(', ');
 };

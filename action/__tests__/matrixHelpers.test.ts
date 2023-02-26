@@ -86,6 +86,6 @@ describe('getMatrixVariantString', () => {
         fieldA: 14,
         fieldB: 'a'
       })
-    ).toBe('14, a, b');
+    ).toBe('fieldA: 14, fieldB: a, fieldC: b');
   });
 });
