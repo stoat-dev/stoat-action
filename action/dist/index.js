@@ -87493,7 +87493,7 @@ const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo:
     lib_core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadPath(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
-    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { job_type: 'default', sha: ghSha, link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl, status: stepsSucceeded ? '✅' : '❌' });
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { with_variants: false, sha: ghSha, link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl, status: stepsSucceeded ? '✅' : '❌' });
     const requestBody = {
         ghOwner,
         ghRepo,

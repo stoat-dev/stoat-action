@@ -58,7 +58,7 @@ export interface StaticHostingPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
-  job_type: "default";
+  with_variants: false;
   path: string;
   file_viewer?: boolean;
   link: string;
@@ -73,7 +73,10 @@ export interface StaticHostingPluginRendered {
  * via the `definition` "static_hosting_plugin_rendered_variants".
  */
 export interface StaticHostingPluginRenderedVariants {
-  job_type: "variants";
+  metadata?: {
+    [k: string]: unknown;
+  };
+  with_variants: true;
   path: string;
   file_viewer?: boolean;
   sha: string;
