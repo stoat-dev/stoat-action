@@ -78,7 +78,14 @@ export interface StaticHostingPluginRenderedVariants {
   file_viewer?: boolean;
   sha: string;
   variants: {
+    /**
+     * The field name is the normalized variant name.
+     */
     [k: string]: {
+      /**
+       * Name of the variant.
+       */
+      variant: string;
       link: string;
       status: string;
       [k: string]: unknown;

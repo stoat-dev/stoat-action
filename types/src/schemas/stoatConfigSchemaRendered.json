@@ -151,8 +151,14 @@
           "type": "object",
           "additionalProperties": {
             "type": "object",
-            "required": ["link", "status"],
+            "description": "The field name is the normalized variant name.",
+            "required": ["variant", "link", "status"],
             "properties": {
+              "variant": {
+                "type": "string",
+                "description": "Name of the variant.",
+                "examples": ["ubuntu-latest, 12"]
+              },
               "link": {
                 "type": "string"
               },
