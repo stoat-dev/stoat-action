@@ -160,7 +160,7 @@
               "variant": {
                 "type": "string",
                 "description": "Name of the variant.",
-                "examples": ["ubuntu-latest, 12"]
+                "examples": ["os: ubuntu-latest, node-version: 12"]
               },
               "link": {
                 "type": "string"

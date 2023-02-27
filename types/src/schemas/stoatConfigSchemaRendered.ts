@@ -67,7 +67,7 @@ export interface StaticHostingPluginRendered {
   [k: string]: unknown;
 }
 /**
- * Static hosting tasks with variants.
+ * Static hosting tasks with variants, such as those produced by a matrix build.
  *
  * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
  * via the `definition` "static_hosting_plugin_rendered_variants".
