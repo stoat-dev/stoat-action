@@ -67,11 +67,10 @@ export const processPath = async (
   const renderedPlugin: StaticHostingPluginRendered | StaticHostingPluginRenderedVariants = ghRunMatrix
     ? {
         ...taskConfig,
-        with_variants: true,
+        task_type: 'variants',
         sha: ghSha,
         variants: {
-          [getMatrixId(ghRunMatrix)]: {
-            variant: getMatrixVariantString(ghRunMatrix),
+          [getMatrixVariantString(ghRunMatrix)]: {
             link,
             status
           }
@@ -79,7 +78,7 @@ export const processPath = async (
       }
     : {
         ...taskConfig,
-        with_variants: false,
+        task_type: 'default',
         sha: ghSha,
         link,
         status

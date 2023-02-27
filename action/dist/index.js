@@ -87542,13 +87542,12 @@ const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo:
     const link = taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl;
     const status = stepsSucceeded ? '✅' : '❌';
     const renderedPlugin = ghRunMatrix
-        ? Object.assign(Object.assign({}, taskConfig), { with_variants: true, sha: ghSha, variants: {
-                [getMatrixId(ghRunMatrix)]: {
-                    variant: getMatrixVariantString(ghRunMatrix),
+        ? Object.assign(Object.assign({}, taskConfig), { task_type: 'variants', sha: ghSha, variants: {
+                [getMatrixVariantString(ghRunMatrix)]: {
                     link,
                     status
                 }
-            } }) : Object.assign(Object.assign({}, taskConfig), { with_variants: false, sha: ghSha, link,
+            } }) : Object.assign(Object.assign({}, taskConfig), { task_type: 'default', sha: ghSha, link,
         status });
     const requestBody = {
         ghOwner,
