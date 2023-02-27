@@ -1,6 +1,6 @@
 {
   "name": "stoat-action",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "private": false,
   "description": "Supercharge your CI / CD pipelines",
   "main": "src/app.ts",
