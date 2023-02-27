@@ -12,8 +12,10 @@ import {
   CreateSignedUrlResponse,
   StaticHostingPlugin,
   StaticHostingPluginRendered,
+  StaticHostingPluginRenderedVariants,
   UploadGenericPartialConfigRequest
 } from '../../../../types/src';
+import { getMatrixId, getMatrixVariantString } from '../../matrixHelpers';
 import { getApiUrlBase } from '../../stoatApiHelpers';
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
@@ -26,11 +28,20 @@ export const processPath = async (
     ghBranch,
     ghPullRequestNumber,
     ghSha,
+    ghJob,
     ghToken,
+    ghRunMatrix,
     stepsSucceeded
   }: Pick<
     GithubActionRun,
-    'ghRepository' | 'ghBranch' | 'ghPullRequestNumber' | 'ghSha' | 'ghToken' | 'stepsSucceeded'
+    | 'ghRepository'
+    | 'ghBranch'
+    | 'ghPullRequestNumber'
+    | 'ghSha'
+    | 'ghJob'
+    | 'ghToken'
+    | 'stepsSucceeded'
+    | 'ghRunMatrix'
   >,
   stoatConfigFileId: number,
   pathToUpload: string
@@ -42,7 +53,7 @@ export const processPath = async (
     ghRepo,
     ghSha,
     ghToken,
-    taskId,
+    taskId: ghRunMatrix ? `${taskId}-${getMatrixId(ghRunMatrix)}` : taskId,
     filename: isFile ? basename(pathToUpload) : undefined
   });
 
@@ -51,12 +62,27 @@ export const processPath = async (
   await uploadPath(signedUrl, fields, pathToUpload, objectPath);
 
   // submit partial config
-  const renderedPlugin: StaticHostingPluginRendered = {
-    ...taskConfig,
-    sha: ghSha,
-    link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl,
-    status: stepsSucceeded ? '✅' : '❌'
-  };
+  const link = taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl;
+  const status = stepsSucceeded ? '✅' : '❌';
+  const renderedPlugin: StaticHostingPluginRendered | StaticHostingPluginRenderedVariants = ghRunMatrix
+    ? {
+        ...taskConfig,
+        task_type: 'variants',
+        sha: ghSha,
+        variants: {
+          [getMatrixVariantString(ghRunMatrix)]: {
+            link,
+            status
+          }
+        }
+      }
+    : {
+        ...taskConfig,
+        task_type: 'default',
+        sha: ghSha,
+        link,
+        status
+      };
   const requestBody: UploadGenericPartialConfigRequest = {
     ghOwner,
     ghRepo,

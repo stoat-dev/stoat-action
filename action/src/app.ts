@@ -4,11 +4,12 @@ import { GitHub } from '@actions/github/lib/utils';
 
 import { uploadWorkflowOutputs } from './commentHelpers';
 import { getTypedStoatConfig, readStoatConfig } from './configHelpers';
+import { isJobMatchMatrixVariant } from './matrixHelpers';
 import { runPlugins } from './plugins/pluginRunner';
 import { getCurrentPullRequestNumber } from './pullRequestHelpers';
 import { waitForStoatDevServer } from './stoatApiHelpers';
 import { getTemplate } from './templateHelpers';
-import { GithubActionRun, GithubJob, Repository } from './types';
+import { GithubActionRun, GithubJob, GithubRunMatrix, Repository } from './types';
 
 async function getGhCommitTimestamp(
   octokit: InstanceType<typeof GitHub>,
@@ -69,6 +70,8 @@ async function run(stoatConfig: any) {
     repo: github.context.repo.repo,
     run_id: github.context.runId
   });
+  const runMatrix: GithubRunMatrix = JSON.parse(core.getInput('run_matrix'));
+  core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
   const ghJobId = github.context.job;
   const ghJobRunId = github.context.runId;
   // There is no precise way to find the current running job. To do that,
@@ -79,7 +82,7 @@ async function run(stoatConfig: any) {
   // with the matrix variants. In those cases, nothing from github.context
   // can be used to find the job.
   const ghJob: GithubJob | undefined = jobListResponse.data.jobs.find(
-    (j) => j.run_id === ghJobRunId && j.status === 'in_progress'
+    (j) => j.run_id === ghJobRunId && j.status === 'in_progress' && isJobMatchMatrixVariant(j.name, runMatrix)
   );
   if (ghJob !== undefined) {
     core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
@@ -105,10 +108,11 @@ async function run(stoatConfig: any) {
     ghJob,
     ghSha: repoSha,
     ghCommitTimestamp,
-    ghRunId: parseInt(core.getInput('run_id')),
-    ghRunNumber: parseInt(core.getInput('run_number')),
+    ghRunId: github.context.runId,
+    ghRunNumber: github.context.runNumber,
     ghRunAttempt: parseInt(core.getInput('run_attempt')),
     ghToken: token,
+    ghRunMatrix: runMatrix,
     stepsSucceeded
   };
 

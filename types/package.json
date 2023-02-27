@@ -1,21 +1,29 @@
 {
   "name": "stoat-types",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Stoat shared types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist/**/*.d.ts", "dist/**/*.js", "dist/**/*.json"],
+  "files": [
+    "dist/**/*.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.json"
+  ],
   "scripts": {
     "build": "npm run gen-types && tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
-    "gen-types": "json2ts -i 'src/schemas/**/*.json' --unreachableDefinitions -o src/schemas && for f in src/schemas/*.d.ts; do mv -- \"$f\" \"${f%.d.ts}.ts\"; done"
+    "gen-types": "json2ts -i 'src/schemas/**/*.json' --unreachableDefinitions -o src/schemas && for f in src/schemas/*.d.ts; do mv -- \"$f\" \"${f%.d.ts}.ts\"; done",
+    "ts-coverage": "typescript-coverage-report"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stoat-dev/stoat-action.git"
   },
   "author": "Stoat Dev",
-  "keywords": ["stoat", "types"],
+  "keywords": [
+    "stoat",
+    "types"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stoat-dev/stoat-action/issues"
@@ -24,7 +32,8 @@
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
     "json-schema-to-typescript": "^11.0.3",
-    "utility-types": "^3.10.0",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "typescript-coverage-report": "^0.7.0",
+    "utility-types": "^3.10.0"
   }
 }

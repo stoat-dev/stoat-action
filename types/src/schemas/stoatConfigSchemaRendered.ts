@@ -48,7 +48,7 @@ export interface StoatConfigSchemaRendered {
  * via the `definition` "static_hosting_plugin_rendered_map".
  */
 export interface StaticHostingPluginRenderedMap {
-  [k: string]: StaticHostingPluginRendered;
+  [k: string]: StaticHostingPluginRendered | StaticHostingPluginRenderedVariants;
 }
 /**
  * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
@@ -58,11 +58,38 @@ export interface StaticHostingPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
+  task_type: "default";
   path: string;
   file_viewer?: boolean;
   link: string;
   sha: string;
   status: string;
+  [k: string]: unknown;
+}
+/**
+ * Static hosting tasks with variants, such as those produced by a matrix build.
+ *
+ * This interface was referenced by `StoatConfigSchemaRendered`'s JSON-Schema
+ * via the `definition` "static_hosting_plugin_rendered_variants".
+ */
+export interface StaticHostingPluginRenderedVariants {
+  metadata?: {
+    [k: string]: unknown;
+  };
+  task_type: "variants";
+  path: string;
+  file_viewer?: boolean;
+  sha: string;
+  variants: {
+    /**
+     * The field name is the variant key value pairs delimited by comma. E.g. os: "ubuntu-latest, node-version: 12".
+     */
+    [k: string]: {
+      link: string;
+      status: string;
+      [k: string]: unknown;
+    };
+  };
   [k: string]: unknown;
 }
 /**

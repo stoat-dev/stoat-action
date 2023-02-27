@@ -93,16 +93,23 @@
     "static_hosting_plugin_rendered_map": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/definitions/static_hosting_plugin_rendered"
+        "oneOf": [
+          { "$ref": "#/definitions/static_hosting_plugin_rendered" },
+          { "$ref": "#/definitions/static_hosting_plugin_rendered_variants" }
+        ]
       }
     },
     "static_hosting_plugin_rendered": {
       "type": "object",
-      "required": ["path", "link", "sha", "status"],
+      "required": ["task_type", "path", "link", "sha", "status"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
+        },
+        "task_type": {
+          "type": "string",
+          "const": "default"
         },
         "path": {
           "type": "string"
@@ -118,6 +125,46 @@
         },
         "status": {
           "type": "string"
+        }
+      }
+    },
+    "static_hosting_plugin_rendered_variants": {
+      "type": "object",
+      "required": ["task_type", "path", "sha", "variants"],
+      "description": "Static hosting tasks with variants, such as those produced by a matrix build.",
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "task_type": {
+          "type": "string",
+          "const": "variants"
+        },
+        "path": {
+          "type": "string"
+        },
+        "file_viewer": {
+          "type": "boolean"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "variants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "The field name is the variant key value pairs delimited by comma. E.g. os: \"ubuntu-latest, node-version: 12\".",
+            "required": ["link", "status"],
+            "properties": {
+              "link": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
         }
       }
     },

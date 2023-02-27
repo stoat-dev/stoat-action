@@ -87418,6 +87418,51 @@ function getTypedStoatConfig(stoatConfig) {
     });
 }
 
+// EXTERNAL MODULE: ./node_modules/lodash/lodash.js
+var lodash = __nccwpck_require__(250);
+var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
+;// CONCATENATED MODULE: ./src/matrixHelpers.ts
+
+/**
+ * Check whether a job id or name contains all the matrix variants.
+ */
+const isJobMatchMatrixVariant = (jobName, matrix) => {
+    if (matrix === null) {
+        return true;
+    }
+    const variants = jobName
+        .substring(jobName.lastIndexOf('(') + 1, jobName.lastIndexOf(')'))
+        .split(',')
+        .map((v) => v.trim());
+    return lodash_default().isEqual(lodash_default().sortBy(variants), lodash_default().sortBy(Object.values(matrix).map((v) => String(v))));
+};
+/**
+ * Generate a unique id from matrix variants.
+ * Variants are sorted by variant key names, and concatenated with hyphens.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => '13-ubuntu-latest'
+ */
+const getMatrixId = (runMatrix) => {
+    if (runMatrix === null) {
+        return '';
+    }
+    return lodash_default().sortBy(Object.entries(runMatrix), ([key]) => key)
+        .map(([, value]) => String(value))
+        .join('-');
+};
+/**
+ * Generate a string from matrix key and variants.
+ * Key variant pairs are sorted by variant key names, and concatenated with commas.
+ * E.g. { os: 'ubuntu-latest', nodeVersion: 13 } => 'os: 13, nodeVersion: ubuntu-latest'
+ */
+const getMatrixVariantString = (runMatrix) => {
+    if (runMatrix === null) {
+        return '';
+    }
+    return lodash_default().sortBy(Object.entries(runMatrix), ([key]) => key)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ');
+};
+
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
 // EXTERNAL MODULE: external "path"
@@ -87478,7 +87523,8 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 
 
-const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo: ghRepo }, ghBranch, ghPullRequestNumber, ghSha, ghToken, stepsSucceeded }, stoatConfigFileId, pathToUpload) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
+
+const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo: ghRepo }, ghBranch, ghPullRequestNumber, ghSha, ghJob, ghToken, ghRunMatrix, stepsSucceeded }, stoatConfigFileId, pathToUpload) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     // get signed url
     const isFile = external_fs_default().lstatSync(pathToUpload).isFile();
     const { signedUrl, fields, objectPath, hostingUrl } = yield createSignedUrl({
@@ -87486,14 +87532,23 @@ const processPath = (taskId, taskConfig, { ghRepository: { owner: ghOwner, repo:
         ghRepo,
         ghSha,
         ghToken,
-        taskId,
+        taskId: ghRunMatrix ? `${taskId}-${getMatrixId(ghRunMatrix)}` : taskId,
         filename: isFile ? (0,external_path_.basename)(pathToUpload) : undefined
     });
     // upload directory
     core.info(`[${taskId}] Uploading ${pathToUpload} to ${objectPath}...`);
     yield uploadPath(signedUrl, fields, pathToUpload, objectPath);
     // submit partial config
-    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { sha: ghSha, link: taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl, status: stepsSucceeded ? '✅' : '❌' });
+    const link = taskConfig.file_viewer ? `https://www.stoat.dev/file-viewer?root=${hostingUrl}` : hostingUrl;
+    const status = stepsSucceeded ? '✅' : '❌';
+    const renderedPlugin = ghRunMatrix
+        ? Object.assign(Object.assign({}, taskConfig), { task_type: 'variants', sha: ghSha, variants: {
+                [getMatrixVariantString(ghRunMatrix)]: {
+                    link,
+                    status
+                }
+            } }) : Object.assign(Object.assign({}, taskConfig), { task_type: 'default', sha: ghSha, link,
+        status });
     const requestBody = {
         ghOwner,
         ghRepo,
@@ -87658,7 +87713,7 @@ const getSubtaskId = (directory) => {
     const subtaskId = directory.replace(/^\.\//g, '').replace(/\//g, '-');
     return subtaskId === '' ? '-' : subtaskId;
 };
-const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
+const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghRunMatrix, stepsSucceeded }, stoatConfigFileId) => plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
     core.info(`[${taskId}] Current directory: ${process.cwd()}`);
     const { exitCode, stdout, stderr } = yield exec.getExecOutput('/bin/sh', ['-c', "find . ! -path '*/node_modules/*' -type f -name 'index.html' | sed -r 's|/[^/]+$||' | sort | uniq"], { silent: true });
@@ -87687,6 +87742,7 @@ const runAutoHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { rep
                 ghPullRequestNumber,
                 ghSha,
                 ghToken,
+                ghRunMatrix,
                 stepsSucceeded
             }, stoatConfigFileId, directory);
         }
@@ -87710,9 +87766,6 @@ var external_crypto_ = __nccwpck_require__(6113);
 // EXTERNAL MODULE: ./node_modules/jimp/dist/index.js
 var dist = __nccwpck_require__(3794);
 var dist_default = /*#__PURE__*/__nccwpck_require__.n(dist);
-// EXTERNAL MODULE: ./node_modules/lodash/lodash.js
-var lodash = __nccwpck_require__(250);
-var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
 // EXTERNAL MODULE: ./node_modules/pixelmatch/index.js
 var pixelmatch = __nccwpck_require__(6097);
 var pixelmatch_default = /*#__PURE__*/__nccwpck_require__.n(pixelmatch);
@@ -88116,7 +88169,7 @@ var staticHosting_plugin_awaiter = (undefined && undefined.__awaiter) || functio
 
 
 
-const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
+const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, ghJob, ghRunMatrix, stepsSucceeded }, stoatConfigFileId) => staticHosting_plugin_awaiter(void 0, void 0, void 0, function* () {
     core.info(`[${taskId}] Running static hosting plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
@@ -88135,6 +88188,8 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
         ghBranch,
         ghPullRequestNumber,
         ghSha,
+        ghJob,
+        ghRunMatrix,
         ghToken,
         stepsSucceeded
     }, stoatConfigFileId, pathToUpload);
@@ -88443,6 +88498,7 @@ var app_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
+
 function getGhCommitTimestamp(octokit, repository, repoSha) {
     var _a;
     return app_awaiter(this, void 0, void 0, function* () {
@@ -88495,6 +88551,8 @@ function run(stoatConfig) {
             repo: github.context.repo.repo,
             run_id: github.context.runId
         });
+        const runMatrix = JSON.parse(core.getInput('run_matrix'));
+        core.info(`Run matrix: ${JSON.stringify(runMatrix, null, 2)}`);
         const ghJobId = github.context.job;
         const ghJobRunId = github.context.runId;
         // There is no precise way to find the current running job. To do that,
@@ -88504,7 +88562,7 @@ function run(stoatConfig) {
         // there are matrix variants, job.name refers to the custom name or a name
         // with the matrix variants. In those cases, nothing from github.context
         // can be used to find the job.
-        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress');
+        const ghJob = jobListResponse.data.jobs.find((j) => j.run_id === ghJobRunId && j.status === 'in_progress' && isJobMatchMatrixVariant(j.name, runMatrix));
         if (ghJob !== undefined) {
             core.info(`Current job: ${ghJob.name} (run id: ${ghJob.run_id})`);
         }
@@ -88522,10 +88580,11 @@ function run(stoatConfig) {
             ghJob,
             ghSha: repoSha,
             ghCommitTimestamp,
-            ghRunId: parseInt(core.getInput('run_id')),
-            ghRunNumber: parseInt(core.getInput('run_number')),
+            ghRunId: github.context.runId,
+            ghRunNumber: github.context.runNumber,
             ghRunAttempt: parseInt(core.getInput('run_attempt')),
             ghToken: token,
+            ghRunMatrix: runMatrix,
             stepsSucceeded
         };
         core.info('Loading template...');

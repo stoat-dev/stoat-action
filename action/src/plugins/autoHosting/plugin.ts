@@ -49,7 +49,15 @@ export const getSubtaskId = (directory: string): string => {
 const runAutoHostingPlugin = async (
   taskId: string,
   taskConfig: AutoHostingPlugin,
-  { ghToken, ghRepository: { repo, owner }, ghBranch, ghPullRequestNumber, ghSha, stepsSucceeded }: GithubActionRun,
+  {
+    ghToken,
+    ghRepository: { repo, owner },
+    ghBranch,
+    ghPullRequestNumber,
+    ghSha,
+    ghRunMatrix,
+    stepsSucceeded
+  }: GithubActionRun,
   stoatConfigFileId: number
 ) => {
   core.info(`[${taskId}] Running auto hosting plugin (stoat config ${stoatConfigFileId})`);
@@ -95,6 +103,7 @@ const runAutoHostingPlugin = async (
           ghPullRequestNumber,
           ghSha,
           ghToken,
+          ghRunMatrix,
           stepsSucceeded
         },
         stoatConfigFileId,
