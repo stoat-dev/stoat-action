@@ -131,7 +131,7 @@
     "static_hosting_plugin_rendered_variants": {
       "type": "object",
       "required": ["with_variants", "path", "sha", "variants"],
-      "description": "Static hosting tasks with variants.",
+      "description": "Static hosting tasks with variants, such as those produced by a matrix build.",
       "properties": {
         "metadata": {
           "type": "object",
