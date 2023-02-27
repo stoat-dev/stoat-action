@@ -58,7 +58,7 @@ export interface StaticHostingPluginRendered {
   metadata?: {
     [k: string]: unknown;
   };
-  with_variants: false;
+  task_type: "default";
   path: string;
   file_viewer?: boolean;
   link: string;
@@ -76,19 +76,15 @@ export interface StaticHostingPluginRenderedVariants {
   metadata?: {
     [k: string]: unknown;
   };
-  with_variants: true;
+  task_type: "variants";
   path: string;
   file_viewer?: boolean;
   sha: string;
   variants: {
     /**
-     * The field name is the normalized variant name.
+     * The field name is the variant key value pairs delimited by comma. E.g. os: "ubuntu-latest, node-version: 12".
      */
     [k: string]: {
-      /**
-       * Name of the variant.
-       */
-      variant: string;
       link: string;
       status: string;
       [k: string]: unknown;

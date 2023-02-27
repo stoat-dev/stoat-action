@@ -101,15 +101,15 @@
     },
     "static_hosting_plugin_rendered": {
       "type": "object",
-      "required": ["with_variants", "path", "link", "sha", "status"],
+      "required": ["task_type", "path", "link", "sha", "status"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "with_variants": {
-          "type": "boolean",
-          "const": false
+        "task_type": {
+          "type": "string",
+          "const": "default"
         },
         "path": {
           "type": "string"
@@ -130,16 +130,16 @@
     },
     "static_hosting_plugin_rendered_variants": {
       "type": "object",
-      "required": ["with_variants", "path", "sha", "variants"],
+      "required": ["task_type", "path", "sha", "variants"],
       "description": "Static hosting tasks with variants, such as those produced by a matrix build.",
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
-        "with_variants": {
-          "type": "boolean",
-          "const": true
+        "task_type": {
+          "type": "string",
+          "const": "variants"
         },
         "path": {
           "type": "string"
@@ -154,14 +154,9 @@
           "type": "object",
           "additionalProperties": {
             "type": "object",
-            "description": "The field name is the normalized variant name.",
-            "required": ["variant", "link", "status"],
+            "description": "The field name is the variant key value pairs delimited by comma. E.g. os: \"ubuntu-latest, node-version: 12\".",
+            "required": ["link", "status"],
             "properties": {
-              "variant": {
-                "type": "string",
-                "description": "Name of the variant.",
-                "examples": ["os: ubuntu-latest, node-version: 12"]
-              },
               "link": {
                 "type": "string"
               },
