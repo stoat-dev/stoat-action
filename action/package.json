@@ -43,7 +43,7 @@
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35",
     "pixelmatch": "^5.3.0",
-    "pngjs": "^6.0.0"
+    "pngjs": "^7.0.0"
   },
   "devDependencies": {
     "@octokit/openapi-types": "^16.0.0",
