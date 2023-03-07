@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/cli/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/cli/dist" />
       <excludeFolder url="file://$MODULE_DIR$/types/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/types/coverage-ts" />
       <excludeFolder url="file://$MODULE_DIR$/docs/build" />
       <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
     </content>

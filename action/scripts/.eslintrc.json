@@ -1,0 +1,15 @@
+{
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 9,
+        "sourceType": "module",
+        "project": ["../tsconfig.script.json"]
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}
