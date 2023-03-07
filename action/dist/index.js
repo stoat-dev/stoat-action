@@ -83400,7 +83400,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const STOAT_ORG = 'stoat-dev';
 const STOAT_REPO = 'stoat';
 const STOAT_ACTION_REPO = 'stoat-action';
-const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
+const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO, 'd2'];
 const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 const PROD_API_URL_BASE = 'https://www.stoat.dev';
 const getDevServerBase = (branchName) => {
