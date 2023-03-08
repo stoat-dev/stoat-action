@@ -25,12 +25,12 @@ plugins:
       metadata:
         name: Documentation
       path: docs/build
-    image_diff:
-  compare_logo_image:
-    metadata:
-      name: Logo
-    image: docs/static/img/examples/docusaurus-logo.svg
-    baseline: docs/static/img/examples/docusaurus-logo.svg
+  image_diff:
+    compare_logo_image:
+      metadata:
+        name: Logo
+      image: docs/static/img/examples/docusaurus-logo.svg
+      baseline: docs/static/img/examples/docusaurus-logo.svg
   metric:
     action_runner_memory:
       filename: action_runner_memory.jsonl
