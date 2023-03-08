@@ -137,10 +137,7 @@ export const getNormalizedImage = async (
 ): Promise<{ png: PNGWithMetadata | undefined; pngPath: string }> => {
   const [filename, extension] = basename(inputFilePath).split('.');
   const outputFilePath = `${currentDirectory}/${uuid}-${fileType}-${filename}.png`;
-  core.info(
-    `[${taskId}] Converting ${fileType} ${inputFilePath} (${filename}, ${extension}
-    }) to ${outputFilePath}...`
-  );
+  core.info(`[${taskId}] Converting ${fileType} ${inputFilePath} to ${outputFilePath}...`);
   try {
     if (extension.toLowerCase() === 'svg') {
       await convertFile(inputFilePath, { outputFilePath });
