@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { convertFile } from 'convert-svg-to-png';
 import { randomUUID } from 'crypto';
+import { XMLParser } from 'fast-xml-parser';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
@@ -140,7 +141,13 @@ export const getNormalizedImage = async (
   core.info(`[${taskId}] Converting ${fileType} ${inputFilePath} to ${outputFilePath}...`);
   try {
     if (extension.toLowerCase() === 'svg') {
-      await convertFile(inputFilePath, { outputFilePath });
+      const svg = fs.readFileSync(inputFilePath, 'utf8');
+      const svgParser = new XMLParser({ ignoreAttributes: false });
+      const svgObject = svgParser.parse(svg);
+      const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
+        .split(' ')
+        .map((value: string) => parseInt(value, 10));
+      await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
