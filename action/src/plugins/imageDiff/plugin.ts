@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
+import Svg2 from 'oslllo-svg2';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
@@ -32,12 +33,17 @@ const runImageDiffPlugin = async (
 
   // read image
   const uuid = randomUUID();
-  const filename = basename(taskConfig.image).split('.')[0];
-  const imagePath = `${currentDirectory}/${uuid}-image-${filename}.png`;
+  const [imageFilename, imageExtension] = basename(taskConfig.image).split('.')[0];
+  const imagePath = `${currentDirectory}/${uuid}-image-${imageFilename}.png`;
   core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
   try {
-    const imageFile = await Jimp.read(taskConfig.image);
-    await imageFile.writeAsync(imagePath);
+    if (imageExtension.toLowerCase() === 'svg') {
+      const svg = fs.readFileSync(taskConfig.image, 'utf8');
+      await Svg2(svg).png().toFile(imagePath);
+    } else {
+      const imageFile = await Jimp.read(taskConfig.image);
+      await imageFile.writeAsync(imagePath);
+    }
   } catch (error) {
     core.error(`[${taskId}] Failed to read image ${taskConfig.image}: ${error}`);
     return;
@@ -49,10 +55,16 @@ const runImageDiffPlugin = async (
 
   // read baseline and resize
   const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
+  const baselineExtension = basename(taskConfig.baseline).split('.')[1];
   core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
   try {
-    const baselineFile = await Jimp.read(taskConfig.baseline);
-    await baselineFile.resize(width, height).writeAsync(baselinePath);
+    if (baselineExtension.toLowerCase() === 'svg') {
+      const svg = fs.readFileSync(taskConfig.baseline, 'utf8');
+      await Svg2(svg).png().toFile(baselinePath);
+    } else {
+      const baselineFile = await Jimp.read(taskConfig.baseline);
+      await baselineFile.resize(width, height).writeAsync(baselinePath);
+    }
   } catch (error) {
     core.error(`[${taskId}] Failed to read baseline ${taskConfig.baseline}: ${error}`);
     return;
