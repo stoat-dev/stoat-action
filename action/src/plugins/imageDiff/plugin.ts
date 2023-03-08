@@ -6,7 +6,7 @@ import Jimp from 'jimp';
 import _ from 'lodash';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
-import { PNG } from 'pngjs';
+import { PNG, PNGWithMetadata } from 'pngjs';
 
 import { ImageDiffPlugin, ImageDiffPluginRendered, UploadGenericPartialConfigRequest } from '../../../../types/src';
 import { GithubActionRun } from '../../types';
@@ -33,44 +33,32 @@ const runImageDiffPlugin = async (
 
   // read image
   const uuid = randomUUID();
-  const [imageFilename, imageExtension] = basename(taskConfig.image).split('.')[0];
-  const imagePath = `${currentDirectory}/${uuid}-image-${imageFilename}.png`;
-  core.info(`[${taskId}] Converting image ${taskConfig.image} to ${imagePath}...`);
-  try {
-    if (imageExtension.toLowerCase() === 'svg') {
-      const svg = fs.readFileSync(taskConfig.image, 'utf8');
-      await convertFile(svg, { outputFilePath: imagePath });
-    } else {
-      const imageFile = await Jimp.read(taskConfig.image);
-      await imageFile.writeAsync(imagePath);
-    }
-  } catch (error) {
-    core.error(`[${taskId}] Failed to read image ${taskConfig.image}: ${error}`);
+  const { png: imagePng, pngPath: imagePath } = await getNormalizedImage(
+    taskId,
+    'IMAGE',
+    taskConfig.image,
+    currentDirectory,
+    uuid
+  );
+  if (imagePng === undefined) {
     return;
   }
-  core.info(`[${taskId}] Converted image ${taskConfig.image} to ${imagePath}`);
-  const imagePng = PNG.sync.read(fs.readFileSync(imagePath));
   const { width, height } = imagePng;
   core.info(`Image size: ${width} x ${height}`);
 
   // read baseline and resize
-  const baselinePath = `${currentDirectory}/${uuid}-baseline.png`;
-  const baselineExtension = basename(taskConfig.baseline).split('.')[1];
-  core.info(`[${taskId}] Converting baseline ${taskConfig.baseline} to ${baselinePath}...`);
-  try {
-    if (baselineExtension.toLowerCase() === 'svg') {
-      const svg = fs.readFileSync(taskConfig.baseline, 'utf8');
-      await convertFile(svg, { outputFilePath: baselinePath });
-    } else {
-      const baselineFile = await Jimp.read(taskConfig.baseline);
-      await baselineFile.resize(width, height).writeAsync(baselinePath);
-    }
-  } catch (error) {
-    core.error(`[${taskId}] Failed to read baseline ${taskConfig.baseline}: ${error}`);
+  const { png: baselinePng, pngPath: baselinePath } = await getNormalizedImage(
+    taskId,
+    'BASELINE',
+    taskConfig.baseline,
+    currentDirectory,
+    uuid,
+    width,
+    height
+  );
+  if (baselinePng === undefined) {
     return;
   }
-  core.info(`[${taskId}] Converted baseline ${taskConfig.baseline} to ${baselinePath}`);
-  const baselinePng = PNG.sync.read(fs.readFileSync(baselinePath));
 
   // create diff
   const diffPath = `${currentDirectory}/${uuid}-diff.png`;
@@ -136,6 +124,47 @@ export const isFileExist = (taskId: string, pathType: string, path?: string): bo
     return false;
   }
   return true;
+};
+
+export const getNormalizedImage = async (
+  taskId: string,
+  fileType: 'IMAGE' | 'BASELINE',
+  inputFilePath: string,
+  currentDirectory: string,
+  uuid: string,
+  width?: number,
+  height?: number
+): Promise<{ png: PNGWithMetadata | undefined; pngPath: string }> => {
+  const [filename, extension] = basename(inputFilePath).split('.');
+  const outputFilePath = `${currentDirectory}/${uuid}-${fileType}-${filename}.png`;
+  core.info(
+    `[${taskId}] Converting ${fileType} ${inputFilePath} (${filename}, ${extension}
+    }) to ${outputFilePath}...`
+  );
+  try {
+    if (extension.toLowerCase() === 'svg') {
+      const svg = fs.readFileSync(inputFilePath, 'utf8');
+      await convertFile(svg, { outputFilePath });
+    } else {
+      const baselineFile = await Jimp.read(inputFilePath);
+      if (width !== undefined && height !== undefined) {
+        await baselineFile.resize(width, height).writeAsync(outputFilePath);
+      } else {
+        await baselineFile.writeAsync(outputFilePath);
+      }
+    }
+  } catch (error) {
+    core.error(`[${taskId}] Failed to read ${fileType} ${inputFilePath}: ${error}`);
+    return {
+      png: undefined,
+      pngPath: ''
+    };
+  }
+  core.info(`[${taskId}] Converted ${fileType} ${inputFilePath} to ${outputFilePath}`);
+  return {
+    png: PNG.sync.read(fs.readFileSync(outputFilePath)),
+    pngPath: outputFilePath
+  };
 };
 
 export default runImageDiffPlugin;
