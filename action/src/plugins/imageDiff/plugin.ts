@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
+import { convertFile } from 'convert-svg-to-png';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
-import Svg2 from 'oslllo-svg2';
 import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
@@ -39,7 +39,7 @@ const runImageDiffPlugin = async (
   try {
     if (imageExtension.toLowerCase() === 'svg') {
       const svg = fs.readFileSync(taskConfig.image, 'utf8');
-      await Svg2(svg).png().toFile(imagePath);
+      await convertFile(svg, { outputFilePath: imagePath });
     } else {
       const imageFile = await Jimp.read(taskConfig.image);
       await imageFile.writeAsync(imagePath);
@@ -60,7 +60,7 @@ const runImageDiffPlugin = async (
   try {
     if (baselineExtension.toLowerCase() === 'svg') {
       const svg = fs.readFileSync(taskConfig.baseline, 'utf8');
-      await Svg2(svg).png().toFile(baselinePath);
+      await convertFile(svg, { outputFilePath: baselinePath });
     } else {
       const baselineFile = await Jimp.read(taskConfig.baseline);
       await baselineFile.resize(width, height).writeAsync(baselinePath);
