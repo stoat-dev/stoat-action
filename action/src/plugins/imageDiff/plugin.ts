@@ -143,8 +143,7 @@ export const getNormalizedImage = async (
   );
   try {
     if (extension.toLowerCase() === 'svg') {
-      const svg = fs.readFileSync(inputFilePath, 'utf8');
-      await convertFile(svg, { outputFilePath });
+      await convertFile(inputFilePath, { outputFilePath });
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
