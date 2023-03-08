@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import { convertFile } from 'convert-svg-to-png';
+import * as exec from '@actions/exec';
 import { randomUUID } from 'crypto';
 import { XMLParser } from 'fast-xml-parser';
 import fs from 'fs';
@@ -23,6 +23,7 @@ const runImageDiffPlugin = async (
   core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
+  await exec.getExecOutput('npm', ['i', '-g', 'convert-svg-to-png']);
 
   if (!isFileExist(taskId, 'image', taskConfig.image)) {
     return;
@@ -147,7 +148,15 @@ export const getNormalizedImage = async (
       const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
         .split(' ')
         .map((value: string) => parseInt(value, 10));
-      await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
+      await exec.getExecOutput('convert-svg-to-png', [
+        '--filename',
+        outputFilePath,
+        '--width',
+        String(svgWidth),
+        '--height',
+        String(svgHeight)
+      ]);
+      // await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
