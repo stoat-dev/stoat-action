@@ -75,7 +75,14 @@ export interface ImageDiffPlugin {
     [k: string]: unknown;
   };
   image: string;
-  baseline: string;
+  /**
+   * The baseline image. The value is a file path in the repository or in the build output. When this field is undefined, the baseline image is the same image defined by the "image" field in the baseline branch.
+   */
+  baseline?: string;
+  /**
+   * The baseline branch. The value is a branch name in the repository.
+   */
+  baseline_branch?: string;
   [k: string]: unknown;
 }
 /**
