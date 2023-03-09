@@ -89415,7 +89415,7 @@ var jsYaml = {
 
 
 ;// CONCATENATED MODULE: ../types/src/schemas/stoatConfigSchema.json
-const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"},"metric":{"$ref":"#/definitions/metric_plugin_map"},"chart":{"$ref":"#/definitions/chart_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"},"auto_hosting":{"$ref":"#/definitions/auto_hosting_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image","baseline"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string"},"baseline":{"type":"string"}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"scope_identifier":{"type":"string","description":"A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>\\". When this field is not empty, the persistent field is \\"plugins.workflow_dispatch.<task-id>.<scope-identifier>\\".","default":"","examples":["${{ inputs.<input-parameter-name> }}","${inputs.<input-parameter-name>}","deployment.${{ inputs.env }}","deployment.${inputs.env}"]}}},"metric_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/metric_plugin"}},"metric_plugin":{"type":"object","required":["filename"],"properties":{"metadata":{"type":"object","additionalProperties":true},"filename":{"type":"string","description":"The input file including the metric value. The expected formats are: json or jsonl. The file should be in JSON with these keys: \\"value\\" (required, number), \\"tag\\" (optional, string), and \\"tags\\" (optional, string array). The \\"tag\\" or \\"tags\\" are used to groups metric data points in the chart. This file will be consumed by the Stoat action as inputs for the metric task."}}},"metric_entry":{"type":"object","description":"Schema of the input file for the metric task.","required":["value"],"properties":{"value":{"type":"number"},"tag":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"chart_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/chart_plugin"}},"chart_plugin":{"type":"object","required":["title","tags"],"properties":{"metadata":{"type":"object","additionalProperties":true},"title":{"type":"string"},"y_title":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}},"auto_hosting_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean","description":"When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.","default":true},"show_in_comment":{"type":"boolean","description":"Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.","default":false},"auto_upload":{"type":"boolean","description":"Whether to automatically upload the detected artifacts to the Stoat server for hosting.","default":false}}}}}');
+const stoatConfigSchema_namespaceObject = JSON.parse('{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","required":["version"],"additionalProperties":true,"properties":{"version":{"type":"integer"},"enabled":{"type":"boolean"},"comment_template_file":{"type":"string"},"plugins":{"type":"object","properties":{"static_hosting":{"$ref":"#/definitions/static_hosting_plugin_map"},"json":{"$ref":"#/definitions/json_plugin_map"},"image_diff":{"$ref":"#/definitions/image_diff_plugin_map"},"workflow_dispatch":{"$ref":"#/definitions/workflow_dispatch_plugin_map"},"metric":{"$ref":"#/definitions/metric_plugin_map"},"chart":{"$ref":"#/definitions/chart_plugin_map"},"job_runtime":{"$ref":"#/definitions/job_runtime_plugin"},"auto_hosting":{"$ref":"#/definitions/auto_hosting_plugin"}}}},"definitions":{"static_hosting_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/static_hosting_plugin"}},"static_hosting_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"},"file_viewer":{"type":"boolean"}}},"json_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/json_plugin"}},"json_plugin":{"type":"object","required":["path"],"properties":{"metadata":{"type":"object","additionalProperties":true},"path":{"type":"string"}}},"image_diff_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/image_diff_plugin"}},"image_diff_plugin":{"type":"object","required":["image"],"properties":{"metadata":{"type":"object","additionalProperties":true},"image":{"type":"string","examples":["docs/static/img/examples/jest-logo.svg"]},"baseline":{"type":"string","description":"The baseline image. The value is a file path in the repository or in the build output. When this field is undefined, the baseline image is the same image defined by the \\"image\\" field in the baseline branch.","examples":["docs/static/img/examples/jest-logo.svg"]},"baseline_branch":{"type":"string","description":"The baseline branch. The value is a branch name in the repository.","examples":["main","production"]}}},"workflow_dispatch_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/workflow_dispatch_plugin"}},"workflow_dispatch_plugin":{"type":"object","required":["filename"],"properties":{"filename":{"type":"string"},"scope_identifier":{"type":"string","description":"A workflow can be triggered for different purposes or scopes (e.g. a deployment workflow for different environments). Set this field to tell Stoat how to identify the purpose or scope of each workflow. Usually the workflow run scope is set by one of the workflow inputs. You can specify the input parameter with the GitHub inputs context syntax: ${{ inputs.<input-parameter-name> }}, or JavaScript template literal syntax ${inputs.<input-parameter-name}. The default value is empty, and all workflow related information will be persisted under \\"plugins.workflow_dispatch.<task-id>\\". When this field is not empty, the persistent field is \\"plugins.workflow_dispatch.<task-id>.<scope-identifier>\\".","default":"","examples":["${{ inputs.<input-parameter-name> }}","${inputs.<input-parameter-name>}","deployment.${{ inputs.env }}","deployment.${inputs.env}"]}}},"metric_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/metric_plugin"}},"metric_plugin":{"type":"object","required":["filename"],"properties":{"metadata":{"type":"object","additionalProperties":true},"filename":{"type":"string","description":"The input file including the metric value. The expected formats are: json or jsonl. The file should be in JSON with these keys: \\"value\\" (required, number), \\"tag\\" (optional, string), and \\"tags\\" (optional, string array). The \\"tag\\" or \\"tags\\" are used to groups metric data points in the chart. This file will be consumed by the Stoat action as inputs for the metric task."}}},"metric_entry":{"type":"object","description":"Schema of the input file for the metric task.","required":["value"],"properties":{"value":{"type":"number"},"tag":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"chart_plugin_map":{"type":"object","additionalProperties":{"$ref":"#/definitions/chart_plugin"}},"chart_plugin":{"type":"object","required":["title","tags"],"properties":{"metadata":{"type":"object","additionalProperties":true},"title":{"type":"string"},"y_title":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}}},"job_runtime_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean"},"tracking":{"type":"boolean"},"chart":{"type":"object","additionalProperties":true,"properties":{"width":{"type":"integer"},"height":{"type":"integer"}}}}},"auto_hosting_plugin":{"type":"object","required":["enabled"],"properties":{"enabled":{"type":"boolean","description":"When enabled, the Stoat action will automatically detect build artifacts that can be hosted, and log the suggestions in the action.","default":true},"show_in_comment":{"type":"boolean","description":"Whether to show the suggested artifacts to host in the rendered comment. This feature has not been implemented yet.","default":false},"auto_upload":{"type":"boolean","description":"Whether to automatically upload the detected artifacts to the Stoat server for hosting.","default":false}}}}}');
 ;// CONCATENATED MODULE: ./src/configHelpers.ts
 var configHelpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -89831,14 +89831,20 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
     const currentDirectory = process.cwd();
     core.info(`[${taskId}] Current directory: ${currentDirectory}`);
-    yield exec.getExecOutput('npm', ['i', '-g', 'convert-svg-to-png']);
+    if (taskConfig.baseline === undefined && taskConfig.baseline_branch === undefined) {
+        core.info(`[${taskId}] Neither baseline or baseline_branch is specified. Skip...`);
+        return;
+    }
     if (!isFileExist(taskId, 'image', taskConfig.image)) {
+        core.info(`[${taskId}] Image file ${taskConfig.image} does not exist. Skip...`);
         return;
     }
-    // TODO: when baseline is undefined, default to the path on main branch
-    if (!isFileExist(taskId, 'baseline', taskConfig.baseline)) {
+    const baselineFile = yield getBaselineFile(taskId, taskConfig);
+    if (baselineFile === undefined) {
+        core.info(`[${taskId}] Baseline file ${baselineFile} does not exist. Skip...`);
         return;
     }
+    yield exec.exec('npm', ['i', '-g', 'convert-svg-to-png']);
     // read image
     const uuid = (0,external_crypto_.randomUUID)();
     const { png: imagePng, pngPath: imagePath } = yield getNormalizedImage(taskId, 'IMAGE', taskConfig.image, currentDirectory, uuid);
@@ -89848,7 +89854,7 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     const { width, height } = imagePng;
     core.info(`Image size: ${width} x ${height}`);
     // read baseline and resize
-    const { png: baselinePng, pngPath: baselinePath } = yield getNormalizedImage(taskId, 'BASELINE', taskConfig.baseline, currentDirectory, uuid, width, height);
+    const { png: baselinePng, pngPath: baselinePath } = yield getNormalizedImage(taskId, 'BASELINE', baselineFile, currentDirectory, uuid, width, height);
     if (baselinePng === undefined) {
         return;
     }
@@ -89875,7 +89881,7 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
     yield uploadPath(signedUrl, fields, baselinePath, objectPath);
     core.info(`[${taskId}] Uploaded ${diffPath} to ${objectPath}...`);
     yield uploadPath(signedUrl, fields, diffPath, objectPath);
-    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { sha: ghSha, image_url: `${hostingUrl}/${(0,external_path_.basename)(imagePath)}`, baseline_url: `${hostingUrl}/${(0,external_path_.basename)(baselinePath)}`, diff_url: `${hostingUrl}/${(0,external_path_.basename)(diffPath)}` });
+    const renderedPlugin = Object.assign(Object.assign({}, taskConfig), { baseline: taskConfig.baseline || taskConfig.image, sha: ghSha, image_url: `${hostingUrl}/${(0,external_path_.basename)(imagePath)}`, baseline_url: `${hostingUrl}/${(0,external_path_.basename)(baselinePath)}`, diff_url: `${hostingUrl}/${(0,external_path_.basename)(diffPath)}` });
     // submit partial config
     const requestBody = {
         ghOwner: owner,
@@ -89911,21 +89917,7 @@ const getNormalizedImage = (taskId, fileType, inputFilePath, currentDirectory, u
     core.info(`[${taskId}] Converting ${fileType} ${inputFilePath} to ${outputFilePath}...`);
     try {
         if (extension.toLowerCase() === 'svg') {
-            const svg = external_fs_default().readFileSync(inputFilePath, 'utf8');
-            const svgParser = new fxp.XMLParser({ ignoreAttributes: false });
-            const svgObject = svgParser.parse(svg);
-            const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
-                .split(' ')
-                .map((value) => parseInt(value, 10));
-            yield exec.getExecOutput('convert-svg-to-png', [
-                '--width',
-                String(svgWidth),
-                '--height',
-                String(svgHeight),
-                inputFilePath
-            ]);
-            const outputPngPath = inputFilePath.replace('.svg', '.png');
-            external_fs_default().renameSync(outputPngPath, outputFilePath);
+            yield convertSvgToPng(inputFilePath, outputFilePath);
         }
         else {
             const baselineFile = yield dist_default().read(inputFilePath);
@@ -89949,6 +89941,45 @@ const getNormalizedImage = (taskId, fileType, inputFilePath, currentDirectory, u
         png: png.PNG.sync.read(external_fs_default().readFileSync(outputFilePath)),
         pngPath: outputFilePath
     };
+});
+/**
+ * Convert SVG to PNG and save it to the target path.
+ */
+const convertSvgToPng = (inputSvgPath, targetPngPath) => imageDiff_plugin_awaiter(void 0, void 0, void 0, function* () {
+    const svg = external_fs_default().readFileSync(inputSvgPath, 'utf8');
+    const svgParser = new fxp.XMLParser({ ignoreAttributes: false });
+    const svgObject = svgParser.parse(svg);
+    const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
+        .split(' ')
+        .map((value) => parseInt(value, 10));
+    yield exec.getExecOutput('convert-svg-to-png', [
+        '--width',
+        String(svgWidth),
+        '--height',
+        String(svgHeight),
+        inputSvgPath
+    ]);
+    const outputPngPath = inputSvgPath.replace('.svg', '.png');
+    external_fs_default().renameSync(outputPngPath, targetPngPath);
+});
+const getBaselineFile = (taskId, taskConfig) => imageDiff_plugin_awaiter(void 0, void 0, void 0, function* () {
+    if (taskConfig.baseline === undefined) {
+        core.info(`[${taskId}] Baseline is undefined, will default to image: ${taskConfig.image}`);
+    }
+    const baselinePath = taskConfig.baseline || taskConfig.image;
+    // when baseline branch is undefined, use the file from the current branch
+    if (taskConfig.baseline_branch === undefined) {
+        if (!isFileExist(taskId, 'baseline', baselinePath)) {
+            return undefined;
+        }
+        else {
+            return baselinePath;
+        }
+    }
+    // when baseline branch is defined, get the file from the baseline branch
+    const outputFile = `${(0,external_crypto_.randomUUID)()}-${(0,external_path_.basename)(baselinePath)}.${(0,external_path_.extname)(baselinePath)}`;
+    core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
+    yield exec.exec('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`, '>', outputFile]);
 });
 /* harmony default export */ const imageDiff_plugin = (runImageDiffPlugin);
 

@@ -5,7 +5,7 @@ import { XMLParser } from 'fast-xml-parser';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
-import { basename } from 'path';
+import { basename, extname } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG, PNGWithMetadata } from 'pngjs';
 
@@ -23,15 +23,23 @@ const runImageDiffPlugin = async (
   core.info(`[${taskId}] Running image diff plugin (stoat config ${stoatConfigFileId})`);
   const currentDirectory = process.cwd();
   core.info(`[${taskId}] Current directory: ${currentDirectory}`);
-  await exec.getExecOutput('npm', ['i', '-g', 'convert-svg-to-png']);
+
+  if (taskConfig.baseline === undefined && taskConfig.baseline_branch === undefined) {
+    core.info(`[${taskId}] Neither baseline or baseline_branch is specified. Skip...`);
+    return;
+  }
 
   if (!isFileExist(taskId, 'image', taskConfig.image)) {
+    core.info(`[${taskId}] Image file ${taskConfig.image} does not exist. Skip...`);
     return;
   }
-  // TODO: when baseline is undefined, default to the path on main branch
-  if (!isFileExist(taskId, 'baseline', taskConfig.baseline)) {
+  const baselineFile = await getBaselineFile(taskId, taskConfig);
+  if (baselineFile === undefined) {
+    core.info(`[${taskId}] Baseline file ${baselineFile} does not exist. Skip...`);
     return;
   }
+
+  await exec.exec('npm', ['i', '-g', 'convert-svg-to-png']);
 
   // read image
   const uuid = randomUUID();
@@ -52,7 +60,7 @@ const runImageDiffPlugin = async (
   const { png: baselinePng, pngPath: baselinePath } = await getNormalizedImage(
     taskId,
     'BASELINE',
-    taskConfig.baseline,
+    baselineFile,
     currentDirectory,
     uuid,
     width,
@@ -91,6 +99,7 @@ const runImageDiffPlugin = async (
 
   const renderedPlugin: ImageDiffPluginRendered = {
     ...taskConfig,
+    baseline: taskConfig.baseline || taskConfig.image,
     sha: ghSha,
     image_url: `${hostingUrl}/${basename(imagePath)}`,
     baseline_url: `${hostingUrl}/${basename(baselinePath)}`,
@@ -142,21 +151,7 @@ export const getNormalizedImage = async (
   core.info(`[${taskId}] Converting ${fileType} ${inputFilePath} to ${outputFilePath}...`);
   try {
     if (extension.toLowerCase() === 'svg') {
-      const svg = fs.readFileSync(inputFilePath, 'utf8');
-      const svgParser = new XMLParser({ ignoreAttributes: false });
-      const svgObject = svgParser.parse(svg);
-      const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
-        .split(' ')
-        .map((value: string) => parseInt(value, 10));
-      await exec.getExecOutput('convert-svg-to-png', [
-        '--width',
-        String(svgWidth),
-        '--height',
-        String(svgHeight),
-        inputFilePath
-      ]);
-      const outputPngPath = inputFilePath.replace('.svg', '.png');
-      fs.renameSync(outputPngPath, outputFilePath);
+      await convertSvgToPng(inputFilePath, outputFilePath);
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
@@ -177,6 +172,48 @@ export const getNormalizedImage = async (
     png: PNG.sync.read(fs.readFileSync(outputFilePath)),
     pngPath: outputFilePath
   };
+};
+
+/**
+ * Convert SVG to PNG and save it to the target path.
+ */
+export const convertSvgToPng = async (inputSvgPath: string, targetPngPath: string) => {
+  const svg = fs.readFileSync(inputSvgPath, 'utf8');
+  const svgParser = new XMLParser({ ignoreAttributes: false });
+  const svgObject = svgParser.parse(svg);
+  const [, , svgWidth, svgHeight] = String(svgObject.svg['@_viewBox'])
+    .split(' ')
+    .map((value: string) => parseInt(value, 10));
+  await exec.getExecOutput('convert-svg-to-png', [
+    '--width',
+    String(svgWidth),
+    '--height',
+    String(svgHeight),
+    inputSvgPath
+  ]);
+  const outputPngPath = inputSvgPath.replace('.svg', '.png');
+  fs.renameSync(outputPngPath, targetPngPath);
+};
+
+export const getBaselineFile = async (taskId: string, taskConfig: ImageDiffPlugin): Promise<string | undefined> => {
+  if (taskConfig.baseline === undefined) {
+    core.info(`[${taskId}] Baseline is undefined, will default to image: ${taskConfig.image}`);
+  }
+  const baselinePath = taskConfig.baseline || taskConfig.image;
+
+  // when baseline branch is undefined, use the file from the current branch
+  if (taskConfig.baseline_branch === undefined) {
+    if (!isFileExist(taskId, 'baseline', baselinePath)) {
+      return undefined;
+    } else {
+      return baselinePath;
+    }
+  }
+
+  // when baseline branch is defined, get the file from the baseline branch
+  const outputFile = `${randomUUID()}-${basename(baselinePath)}.${extname(baselinePath)}`;
+  core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
+  await exec.exec('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`, '>', outputFile]);
 };
 
 export default runImageDiffPlugin;
