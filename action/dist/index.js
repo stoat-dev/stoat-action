@@ -89923,7 +89923,8 @@ const getNormalizedImage = (taskId, fileType, inputFilePath, currentDirectory, u
                 '--width',
                 String(svgWidth),
                 '--height',
-                String(svgHeight)
+                String(svgHeight),
+                inputFilePath
             ]);
             // await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
         }

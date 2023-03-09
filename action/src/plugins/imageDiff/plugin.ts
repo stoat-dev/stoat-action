@@ -154,7 +154,8 @@ export const getNormalizedImage = async (
         '--width',
         String(svgWidth),
         '--height',
-        String(svgHeight)
+        String(svgHeight),
+        inputFilePath
       ]);
       // await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
     } else {
