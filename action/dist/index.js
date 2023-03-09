@@ -89989,7 +89989,9 @@ const getBaselineFile = (taskId, taskConfig) => imageDiff_plugin_awaiter(void 0,
     const [filename, extension] = (0,external_path_.basename)(baselinePath).split('.');
     const outputFile = `${(0,external_crypto_.randomUUID)()}-${filename}.${extension}`;
     core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
-    const { stdout } = yield exec.getExecOutput('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`]);
+    const { stdout } = yield exec.getExecOutput('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`], {
+        silent: true
+    });
     external_fs_default().writeFileSync(outputFile, stdout);
 });
 /* harmony default export */ const imageDiff_plugin = (runImageDiffPlugin);

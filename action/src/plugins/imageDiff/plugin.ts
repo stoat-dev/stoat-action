@@ -222,7 +222,9 @@ export const getBaselineFile = async (taskId: string, taskConfig: ImageDiffPlugi
   const [filename, extension] = basename(baselinePath).split('.');
   const outputFile = `${randomUUID()}-${filename}.${extension}`;
   core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
-  const { stdout } = await exec.getExecOutput('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`]);
+  const { stdout } = await exec.getExecOutput('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`], {
+    silent: true
+  });
   fs.writeFileSync(outputFile, stdout);
 };
 
