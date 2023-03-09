@@ -89918,15 +89918,14 @@ const getNormalizedImage = (taskId, fileType, inputFilePath, currentDirectory, u
                 .split(' ')
                 .map((value) => parseInt(value, 10));
             yield exec.getExecOutput('convert-svg-to-png', [
-                '--filename',
-                outputFilePath,
                 '--width',
                 String(svgWidth),
                 '--height',
                 String(svgHeight),
                 inputFilePath
             ]);
-            // await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
+            const outputPngPath = `${currentDirectory}/${filename}.png`;
+            external_fs_default().renameSync(outputFilePath, outputPngPath);
         }
         else {
             const baselineFile = yield dist_default().read(inputFilePath);

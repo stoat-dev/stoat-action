@@ -149,15 +149,14 @@ export const getNormalizedImage = async (
         .split(' ')
         .map((value: string) => parseInt(value, 10));
       await exec.getExecOutput('convert-svg-to-png', [
-        '--filename',
-        outputFilePath,
         '--width',
         String(svgWidth),
         '--height',
         String(svgHeight),
         inputFilePath
       ]);
-      // await convertFile(inputFilePath, { outputFilePath, width: svgWidth, height: svgHeight });
+      const outputPngPath = `${currentDirectory}/${filename}.png`;
+      fs.renameSync(outputFilePath, outputPngPath);
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
