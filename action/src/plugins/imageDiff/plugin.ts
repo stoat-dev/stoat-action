@@ -225,9 +225,8 @@ export const getBaselineFile = async (taskId: string, taskConfig: ImageDiffPlugi
   const { stdout } = await exec.getExecOutput('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`], {
     silent: true
   });
-  // TODO: remove this
-  core.info(`[${taskId}] stdout: ${stdout}`);
   fs.writeFileSync(outputFile, stdout);
+  return outputFile;
 };
 
 export default runImageDiffPlugin;
