@@ -5,7 +5,7 @@ import { XMLParser } from 'fast-xml-parser';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
-import { basename, dirname } from 'path';
+import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG, PNGWithMetadata } from 'pngjs';
 
@@ -155,7 +155,7 @@ export const getNormalizedImage = async (
         String(svgHeight),
         inputFilePath
       ]);
-      const outputPngPath = `${currentDirectory}/${dirname(inputFilePath)}.png`;
+      const outputPngPath = inputFilePath.replace('.svg', '.png');
       fs.renameSync(outputFilePath, outputPngPath);
     } else {
       const baselineFile = await Jimp.read(inputFilePath);

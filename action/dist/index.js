@@ -89924,7 +89924,7 @@ const getNormalizedImage = (taskId, fileType, inputFilePath, currentDirectory, u
                 String(svgHeight),
                 inputFilePath
             ]);
-            const outputPngPath = `${currentDirectory}/${(0,external_path_.dirname)(inputFilePath)}.png`;
+            const outputPngPath = inputFilePath.replace('.svg', '.png');
             external_fs_default().renameSync(outputFilePath, outputPngPath);
         }
         else {
