@@ -212,6 +212,9 @@
         "baseline": {
           "type": "string"
         },
+        "baseline_branch": {
+          "type": "string"
+        },
         "image_url": {
           "type": "string"
         },

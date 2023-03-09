@@ -12,7 +12,7 @@ export type DevServerCheck = false | string;
 export const STOAT_ORG = 'stoat-dev';
 export const STOAT_REPO = 'stoat';
 export const STOAT_ACTION_REPO = 'stoat-action';
-export const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
+export const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO, 'd2'];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';

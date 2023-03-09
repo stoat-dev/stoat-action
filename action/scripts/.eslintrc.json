@@ -1,0 +1,16 @@
+{
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 9,
+        "sourceType": "module",
+        "project": ["../tsconfig.json", "../tsconfig.script.json"]
+      },
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": "off",
+        "no-console": "off"
+      }
+    }
+  ]
+}

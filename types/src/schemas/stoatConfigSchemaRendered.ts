@@ -130,6 +130,7 @@ export interface ImageDiffPluginRendered {
   };
   image: string;
   baseline: string;
+  baseline_branch?: string;
   image_url: string;
   baseline_url: string;
   diff_url: string;

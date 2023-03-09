@@ -93,17 +93,32 @@
     },
     "image_diff_plugin": {
       "type": "object",
-      "required": ["image", "baseline"],
+      "required": ["image"],
       "properties": {
         "metadata": {
           "type": "object",
           "additionalProperties": true
         },
         "image": {
-          "type": "string"
+          "type": "string",
+          "examples": [
+            "docs/static/img/examples/jest-logo.svg"
+          ]
         },
         "baseline": {
-          "type": "string"
+          "type": "string",
+          "description": "The baseline image. The value is a file path in the repository or in the build output. When this field is undefined, the baseline image is the same image defined by the \"image\" field in the baseline branch.",
+          "examples": [
+            "docs/static/img/examples/jest-logo.svg"
+          ]
+        },
+        "baseline_branch": {
+          "type": "string",
+          "description": "The baseline branch. The value is a branch name in the repository.",
+          "examples": [
+            "main",
+            "production"
+          ]
         }
       }
     },
