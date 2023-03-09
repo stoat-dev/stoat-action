@@ -30,7 +30,7 @@ plugins:
       metadata:
         name: Logo
       image: docs/static/img/examples/docusaurus-logo.svg
-      baseline: docs/static/img/examples/docusaurus-logo.svg
+      baseline_branch: main
   metric:
     action_runner_memory:
       filename: action_runner_memory.jsonl
