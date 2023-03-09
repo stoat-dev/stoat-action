@@ -156,7 +156,7 @@ export const getNormalizedImage = async (
         inputFilePath
       ]);
       const outputPngPath = inputFilePath.replace('.svg', '.png');
-      fs.renameSync(outputFilePath, outputPngPath);
+      fs.renameSync(outputPngPath, outputFilePath);
     } else {
       const baselineFile = await Jimp.read(inputFilePath);
       if (width !== undefined && height !== undefined) {
