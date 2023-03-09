@@ -5,7 +5,7 @@ import { XMLParser } from 'fast-xml-parser';
 import fs from 'fs';
 import Jimp from 'jimp';
 import _ from 'lodash';
-import { basename, extname } from 'path';
+import { basename } from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG, PNGWithMetadata } from 'pngjs';
 
@@ -27,6 +27,14 @@ const runImageDiffPlugin = async (
   if (taskConfig.baseline === undefined && taskConfig.baseline_branch === undefined) {
     core.info(`[${taskId}] Neither baseline or baseline_branch is specified. Skip...`);
     return;
+  }
+  if (taskConfig.baseline_branch) {
+    try {
+      await exec.exec('git', ['fetch', 'origin', `${taskConfig.baseline_branch}:${taskConfig.baseline_branch}`]);
+    } catch (e) {
+      core.error(`[${taskId}] Error fetching baseline branch ${taskConfig.baseline_branch}: ${e}`);
+      return;
+    }
   }
 
   if (!isFileExist(taskId, 'image', taskConfig.image)) {
@@ -211,7 +219,8 @@ export const getBaselineFile = async (taskId: string, taskConfig: ImageDiffPlugi
   }
 
   // when baseline branch is defined, get the file from the baseline branch
-  const outputFile = `${randomUUID()}-${basename(baselinePath)}.${extname(baselinePath)}`;
+  const [filename, extension] = basename(baselinePath).split('.');
+  const outputFile = `${randomUUID()}-${filename}.${extension}`;
   core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
   await exec.exec('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`, '>', outputFile]);
 };

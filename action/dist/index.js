@@ -89835,6 +89835,15 @@ const runImageDiffPlugin = (taskId, taskConfig, { ghToken, ghRepository: { repo,
         core.info(`[${taskId}] Neither baseline or baseline_branch is specified. Skip...`);
         return;
     }
+    if (taskConfig.baseline_branch) {
+        try {
+            yield exec.exec('git', ['fetch', 'origin', `${taskConfig.baseline_branch}:${taskConfig.baseline_branch}`]);
+        }
+        catch (e) {
+            core.error(`[${taskId}] Error fetching baseline branch ${taskConfig.baseline_branch}: ${e}`);
+            return;
+        }
+    }
     if (!isFileExist(taskId, 'image', taskConfig.image)) {
         core.info(`[${taskId}] Image file ${taskConfig.image} does not exist. Skip...`);
         return;
@@ -89977,7 +89986,8 @@ const getBaselineFile = (taskId, taskConfig) => imageDiff_plugin_awaiter(void 0,
         }
     }
     // when baseline branch is defined, get the file from the baseline branch
-    const outputFile = `${(0,external_crypto_.randomUUID)()}-${(0,external_path_.basename)(baselinePath)}.${(0,external_path_.extname)(baselinePath)}`;
+    const [filename, extension] = (0,external_path_.basename)(baselinePath).split('.');
+    const outputFile = `${(0,external_crypto_.randomUUID)()}-${filename}.${extension}`;
     core.info(`[${taskId}] Getting baseline file from ${taskConfig.baseline_branch}:${baselinePath} to ${outputFile}...`);
     yield exec.exec('git', ['show', `${taskConfig.baseline_branch}:${baselinePath}`, '>', outputFile]);
 });
