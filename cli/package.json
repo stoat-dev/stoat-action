@@ -51,7 +51,7 @@
     "inquirer": "^9.1.4",
     "latest-version": "^7.0.0",
     "marked": "^4.2.12",
-    "open": "^8.4.0",
+    "open": "^9.1.0",
     "path": "^0.12.7",
     "portfinder": "^1.0.32"
   },
