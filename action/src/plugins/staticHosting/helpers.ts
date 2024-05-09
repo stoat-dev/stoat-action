@@ -170,7 +170,6 @@ export const uploadFileWithSignedUrl = async (
 };
 
 const injectAnnotationPlugin = (localFilePath: string) => {
-  core.info(`-- Checking file: ${localFilePath}`);
   if (!localFilePath.toLowerCase().endsWith('.html')) {
     return;
   }
@@ -187,7 +186,7 @@ const injectAnnotationPlugin = (localFilePath: string) => {
     );
 
     fs.writeFileSync(localFilePath, updatedFileContent, 'utf8');
-    core.info(`-- Added annotation plugin into ${localFilePath}`);
+    core.debug(`-- Added annotation plugin into ${localFilePath}`);
   } catch (error) {
     core.warning(`-- Failed to add annotation plugin into ${localFilePath}: ${error}`);
   }
