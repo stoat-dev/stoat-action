@@ -87655,7 +87655,7 @@ const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRu
         throw new Error(`Path is neither a file or directory: ${dirPath}`);
     }
     if (dirStats.isFile()) {
-        injectAnnotationPlugin(localPathToUpload);
+        injectAnnotationPlugin(dirPath);
         const objectKey = external_path_.posix.join(objectPrefix, (0,external_path_.basename)(localPathToUpload));
         yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
         return;

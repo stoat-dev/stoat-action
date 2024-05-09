@@ -210,7 +210,7 @@ export const uploadPath = async (
   }
 
   if (dirStats.isFile()) {
-    injectAnnotationPlugin(localPathToUpload);
+    injectAnnotationPlugin(dirPath);
     const objectKey = posix.join(objectPrefix, basename(localPathToUpload));
     await uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
     return;
