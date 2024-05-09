@@ -19,6 +19,7 @@ import { getMatrixId, getMatrixVariantString } from '../../matrixHelpers';
 import { getApiUrlBase } from '../../stoatApiHelpers';
 import { GithubActionRun } from '../../types';
 import { submitPartialConfig } from '../helpers';
+import { AnnotationPluginScriptId, AnnotationPluginScriptUrl } from './constants';
 
 export const processPath = async (
   taskId: string,
@@ -168,8 +169,31 @@ export const uploadFileWithSignedUrl = async (
   }
 };
 
+const injectAnnotationPlugin = (localFilePath: string) => {
+  if (!localFilePath.toLowerCase().endsWith('.html')) {
+    return;
+  }
+
+  try {
+    const fileContent = fs.readFileSync(localFilePath, 'utf8');
+    if (!/<\/head>/i.test(fileContent) || fileContent.includes(AnnotationPluginScriptId)) {
+      return;
+    }
+
+    const updatedFileContent = fileContent.replace(
+      /<\/head>/i,
+      `<script id="${AnnotationPluginScriptId}" src="${AnnotationPluginScriptUrl}" async></script></head>`
+    );
+
+    fs.writeFileSync(localFilePath, updatedFileContent, 'utf8');
+    core.debug(`-- Added annotation plugin into ${localFilePath}`);
+  } catch (error) {
+    core.warning(`-- Failed to add annotation plugin into ${localFilePath}: ${error}`);
+  }
+};
+
 // Reference:
-// https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
+// https://github.com/elysiumphase/s3-lambo/blob/887271de6cb6416b9ab8aeab6e3e7ebd8a298069/src/index.js#L238
 export const uploadPath = async (
   signedUrl: string,
   fields: Record<string, string>,
@@ -186,6 +210,7 @@ export const uploadPath = async (
   }
 
   if (dirStats.isFile()) {
+    injectAnnotationPlugin(dirPath);
     const objectKey = posix.join(objectPrefix, basename(localPathToUpload));
     await uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
     return;
@@ -207,6 +232,7 @@ export const uploadPath = async (
         const objectKey = posix.join(objectPrefix, filename);
 
         if (fileStats.isFile()) {
+          injectAnnotationPlugin(absoluteLocalPath);
           await uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
         } else if (fileStats.isDirectory()) {
           await uploadPath(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);

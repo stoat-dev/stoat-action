@@ -87503,6 +87503,10 @@ const submitPartialConfig = (taskId, requestBody) => helpers_awaiter(void 0, voi
     core.info(`[${taskId}] Created partial config ${partialConfigId}`);
 });
 
+;// CONCATENATED MODULE: ./src/plugins/staticHosting/constants.ts
+const AnnotationPluginScriptUrl = 'https://cdn.jsdelivr.net/npm/@annotatejs/web@0/dist/index.umd.js';
+const AnnotationPluginScriptId = 'annotatejs-web-script';
+
 ;// CONCATENATED MODULE: ./src/plugins/staticHosting/helpers.ts
 var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -87519,6 +87523,7 @@ var staticHosting_helpers_awaiter = (undefined && undefined.__awaiter) || functi
 
 
 // eslint-disable-next-line import/no-unresolved
+
 
 
 
@@ -87623,8 +87628,25 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
         ++retry;
     }
 });
+const injectAnnotationPlugin = (localFilePath) => {
+    if (!localFilePath.toLowerCase().endsWith('.html')) {
+        return;
+    }
+    try {
+        const fileContent = external_fs_default().readFileSync(localFilePath, 'utf8');
+        if (!/<\/head>/i.test(fileContent) || fileContent.includes(AnnotationPluginScriptId)) {
+            return;
+        }
+        const updatedFileContent = fileContent.replace(/<\/head>/i, `<script id="${AnnotationPluginScriptId}" src="${AnnotationPluginScriptUrl}" async></script></head>`);
+        external_fs_default().writeFileSync(localFilePath, updatedFileContent, 'utf8');
+        core.debug(`-- Added annotation plugin into ${localFilePath}`);
+    }
+    catch (error) {
+        core.warning(`-- Failed to add annotation plugin into ${localFilePath}: ${error}`);
+    }
+};
 // Reference:
-// https://github.com/elysiumphase/s3-lambo/blob/master/lib/index.js#L255
+// https://github.com/elysiumphase/s3-lambo/blob/887271de6cb6416b9ab8aeab6e3e7ebd8a298069/src/index.js#L238
 const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRun = false) => staticHosting_helpers_awaiter(void 0, void 0, void 0, function* () {
     const dirPath = (0,external_path_.resolve)(localPathToUpload);
     const dirStats = yield external_fs_default().promises.stat(dirPath);
@@ -87633,6 +87655,7 @@ const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRu
         throw new Error(`Path is neither a file or directory: ${dirPath}`);
     }
     if (dirStats.isFile()) {
+        injectAnnotationPlugin(dirPath);
         const objectKey = external_path_.posix.join(objectPrefix, (0,external_path_.basename)(localPathToUpload));
         yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
         return;
@@ -87648,6 +87671,7 @@ const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRu
             const fileStats = yield external_fs_default().promises.stat(absoluteLocalPath);
             const objectKey = external_path_.posix.join(objectPrefix, filename);
             if (fileStats.isFile()) {
+                injectAnnotationPlugin(absoluteLocalPath);
                 yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
             }
             else if (fileStats.isDirectory()) {
@@ -88176,7 +88200,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     const pathToUpload = (0,external_path_.resolve)(taskConfig.path);
     core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
     if (!external_fs_default().existsSync(pathToUpload)) {
-        core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
+        core.debug(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
         return;
     }
     if (pathToUpload === currentDirectory) {
