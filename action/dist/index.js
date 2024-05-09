@@ -87672,7 +87672,7 @@ const uploadPath = (signedUrl, fields, localPathToUpload, targetDirectory, dryRu
             const fileStats = yield external_fs_default().promises.stat(absoluteLocalPath);
             const objectKey = external_path_.posix.join(objectPrefix, filename);
             if (fileStats.isFile()) {
-                injectAnnotationPlugin(localPathToUpload);
+                injectAnnotationPlugin(absoluteLocalPath);
                 yield uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
             }
             else if (fileStats.isDirectory()) {
