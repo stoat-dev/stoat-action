@@ -169,19 +169,27 @@ export const uploadFileWithSignedUrl = async (
   }
 };
 
-const injectAnnotationPlugin = async (localFilePath: string) => {
+const injectAnnotationPlugin = (localFilePath: string) => {
   if (!localFilePath.toLowerCase().endsWith('.html')) {
     return;
   }
-  const fileContent = fs.readFileSync(localFilePath, 'utf8');
-  if (!fileContent.includes('<body>') || fileContent.includes(AnnotationPluginScriptId)) {
-    return;
+
+  try {
+    const fileContent = fs.readFileSync(localFilePath, 'utf8');
+    if (!/<\/head>/i.test(fileContent) || fileContent.includes(AnnotationPluginScriptId)) {
+      return;
+    }
+
+    const updatedFileContent = fileContent.replace(
+      /<\/head>/i,
+      `<script id="${AnnotationPluginScriptId}" src="${AnnotationPluginScriptUrl}" async></script></head>`
+    );
+
+    fs.writeFileSync(localFilePath, updatedFileContent, 'utf8');
+    core.info(`-- Added annotation plugin into ${localFilePath}`);
+  } catch (error) {
+    core.warning(`-- Failed to add annotation plugin into ${localFilePath}: ${error}`);
   }
-  const updatedFileContent = fileContent.replace(
-    '<body>',
-    `<body><script id="${AnnotationPluginScriptId}" src="${AnnotationPluginScriptUrl}" async></script>`
-  );
-  fs.writeFileSync(localFilePath, updatedFileContent, 'utf8');
 };
 
 // Reference:
@@ -202,7 +210,7 @@ export const uploadPath = async (
   }
 
   if (dirStats.isFile()) {
-    await injectAnnotationPlugin(localPathToUpload);
+    injectAnnotationPlugin(localPathToUpload);
     const objectKey = posix.join(objectPrefix, basename(localPathToUpload));
     await uploadFileWithSignedUrl(signedUrl, fields, objectKey, dirPath, dryRun);
     return;
@@ -224,7 +232,7 @@ export const uploadPath = async (
         const objectKey = posix.join(objectPrefix, filename);
 
         if (fileStats.isFile()) {
-          await injectAnnotationPlugin(localPathToUpload);
+          injectAnnotationPlugin(localPathToUpload);
           await uploadFileWithSignedUrl(signedUrl, fields, objectKey, absoluteLocalPath, dryRun);
         } else if (fileStats.isDirectory()) {
           await uploadPath(signedUrl, fields, absoluteLocalPath, objectKey, dryRun);
