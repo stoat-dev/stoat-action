@@ -87504,7 +87504,7 @@ const submitPartialConfig = (taskId, requestBody) => helpers_awaiter(void 0, voi
 });
 
 ;// CONCATENATED MODULE: ./src/plugins/staticHosting/constants.ts
-const AnnotationPluginScriptUrl = 'https://cdn.jsdelivr.net/npm/@annotatejs/web/dist/index.umd.js';
+const AnnotationPluginScriptUrl = 'https://cdn.jsdelivr.net/npm/@annotatejs/web@0/dist/index.umd.js';
 const AnnotationPluginScriptId = 'annotatejs-web-script';
 
 ;// CONCATENATED MODULE: ./src/plugins/staticHosting/helpers.ts
