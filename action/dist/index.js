@@ -87629,7 +87629,6 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     }
 });
 const injectAnnotationPlugin = (localFilePath) => {
-    core.info(`-- Checking file: ${localFilePath}`);
     if (!localFilePath.toLowerCase().endsWith('.html')) {
         return;
     }
@@ -87640,7 +87639,7 @@ const injectAnnotationPlugin = (localFilePath) => {
         }
         const updatedFileContent = fileContent.replace(/<\/head>/i, `<script id="${AnnotationPluginScriptId}" src="${AnnotationPluginScriptUrl}" async></script></head>`);
         external_fs_default().writeFileSync(localFilePath, updatedFileContent, 'utf8');
-        core.info(`-- Added annotation plugin into ${localFilePath}`);
+        core.debug(`-- Added annotation plugin into ${localFilePath}`);
     }
     catch (error) {
         core.warning(`-- Failed to add annotation plugin into ${localFilePath}: ${error}`);
@@ -88201,7 +88200,7 @@ const runStaticHostingPlugin = (taskId, taskConfig, { ghToken, ghRepository: { r
     const pathToUpload = (0,external_path_.resolve)(taskConfig.path);
     core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
     if (!external_fs_default().existsSync(pathToUpload)) {
-        core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
+        core.debug(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
         return;
     }
     if (pathToUpload === currentDirectory) {
