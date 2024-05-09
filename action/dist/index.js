@@ -87629,6 +87629,7 @@ const uploadFileWithSignedUrl = (signedUrl, fields, objectKey, localFilePath, dr
     }
 });
 const injectAnnotationPlugin = (localFilePath) => {
+    core.info(`-- Checking file: ${localFilePath}`);
     if (!localFilePath.toLowerCase().endsWith('.html')) {
         return;
     }

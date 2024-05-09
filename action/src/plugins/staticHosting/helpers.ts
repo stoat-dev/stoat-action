@@ -170,6 +170,7 @@ export const uploadFileWithSignedUrl = async (
 };
 
 const injectAnnotationPlugin = (localFilePath: string) => {
+  core.info(`-- Checking file: ${localFilePath}`);
   if (!localFilePath.toLowerCase().endsWith('.html')) {
     return;
   }
