@@ -29,7 +29,7 @@ const runStaticHostingPlugin = async (
   core.info(`[${taskId}] Path to upload: ${pathToUpload}`);
 
   if (!fs.existsSync(pathToUpload)) {
-    core.warning(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
+    core.debug(`[${taskId}] Path to upload does not exist; it may be built in a different action.`);
     return;
   }
   if (pathToUpload === currentDirectory) {
