@@ -30,10 +30,10 @@
   },
   "homepage": "https://github.com/stoat-dev/stoat-action#readme",
   "devDependencies": {
-    "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
-    "json-schema-to-typescript": "^11.0.3",
-    "typescript": "^4.9.5",
-    "typescript-coverage-report": "^0.7.0",
-    "utility-types": "^3.10.0"
+    "@octokit/plugin-rest-endpoint-methods": "^13.2.1",
+    "json-schema-to-typescript": "^14.0.4",
+    "typescript": "^5.4.5",
+    "typescript-coverage-report": "^1.0.0",
+    "utility-types": "^3.11.0"
   }
 }
