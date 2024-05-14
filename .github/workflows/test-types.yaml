@@ -60,8 +60,6 @@ jobs:
             git diff
             exit 1
           fi
-      - name: Generate ts coverage report
-        run: yarn ts-coverage
       - name: Run stoat action
         uses: ./
         if: always()
