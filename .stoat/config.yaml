@@ -41,3 +41,8 @@ plugins:
         - Used
         - Free
         - Buff/Cache
+    action_package_size_chart:
+      title: Package Size
+      y_title: Size (bytes)
+      tags:
+        - Byte Size
