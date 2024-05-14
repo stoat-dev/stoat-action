@@ -45,7 +45,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/types/node_modules
-          key: ${{ runner.os }}-node-19-types-${{ hashFiles('types/yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-types-${{ hashFiles('types/yarn.lock') }}
       - name: Install dependencies
         run: |
           yarn install --frozen-lockfile
