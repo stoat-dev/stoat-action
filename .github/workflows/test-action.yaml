@@ -55,6 +55,10 @@ jobs:
             git diff
             exit 1
           fi
+      - name: Emit package size
+        run: |
+          echo "Writing to action_package_size.json..."
+          echo "{ \"value\": $(du -sk dist | awk '{print $1 * 1024}'), \"tag\": \"Byte Size\" }" | tee action_package_size.json
       - name: Emit runner memory
         working-directory: ${{ github.workspace }}
         run: |
