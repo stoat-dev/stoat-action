@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
       - name: Setup cache
         uses: actions/cache@v3
         with:
@@ -36,7 +36,7 @@ jobs:
             ${{ github.workspace }}/types/node_modules
             ${{ github.workspace }}/action/node_modules
             ${{ github.workspace }}/cli/node_modules
-          key: ${{ runner.os }}-node-16-cli-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}-${{ hashFiles('cli/yarn.lock') }}
+          key: ${{ runner.os }}-node-18-cli-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}-${{ hashFiles('cli/yarn.lock') }}
       - name: Install types dependencies
         working-directory: types
         run: |
