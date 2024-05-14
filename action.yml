@@ -24,5 +24,5 @@ inputs:
     default: ${{ toJSON(matrix) }}
     description: Matrix of the current run
 runs:
-  using: 'node18'
+  using: 'node20'
   main: 'action/dist/index.js'
