@@ -30,14 +30,14 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - name: Setup cache
         uses: actions/cache@v3
         with:
           path: |
             ${{ github.workspace }}/types/node_modules
             ${{ github.workspace }}/action/node_modules
-          key: ${{ runner.os }}-node-18-action-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
+          key: ${{ runner.os }}-node-20-action-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
       - name: Install types dependencies
         working-directory: types
         run: |
