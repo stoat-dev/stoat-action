@@ -31,7 +31,7 @@ plugins:
     action_runner_memory:
       filename: action_runner_memory.jsonl
     action_package_size:
-      filename: action_package_size.json
+      filename: action/action_package_size.json
   chart:
     action_runner_memory_chart:
       title: Runner Memory Usage
