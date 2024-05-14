@@ -26,18 +26,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: 20
       - name: Setup cache
         uses: actions/cache@v3
         with:
           path: |
             ${{ github.workspace }}/types/node_modules
             ${{ github.workspace }}/action/node_modules
-          key: ${{ runner.os }}-node-16-action-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
+          key: ${{ runner.os }}-node-20-action-${{ hashFiles('types/yarn.lock') }}-${{ hashFiles('action/yarn.lock') }}
       - name: Install types dependencies
         working-directory: types
         run: |
@@ -55,6 +55,10 @@ jobs:
             git diff
             exit 1
           fi
+      - name: Emit package size
+        run: |
+          echo "Writing to action_package_size.json..."
+          echo "{ \"value\": $(du -sk dist | awk '{print $1 * 1024}'), \"tag\": \"Byte Size\" }" | tee action_package_size.json
       - name: Emit runner memory
         working-directory: ${{ github.workspace }}
         run: |

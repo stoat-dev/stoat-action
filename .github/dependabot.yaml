@@ -4,16 +4,28 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: npm
     directory: action
     schedule:
       interval: monthly
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: npm
     directory: cli
     schedule:
       interval: monthly
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "chalk"
         # chalk 5.x is pure esm and does not work with tests
@@ -23,6 +35,10 @@ updates:
     directory: docs
     schedule:
       interval: monthly
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "@mdx-js/react"
         # currently only v1 is supported
@@ -33,3 +49,7 @@ updates:
     directory: types
     schedule:
       interval: monthly
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"

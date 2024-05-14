@@ -26,19 +26,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Setup cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/docs/node_modules
-          key: ${{ runner.os }}-node-16-${{ hashFiles('docs/yarn.lock') }}
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: docs
 
       - name: Install dependencies
         run: yarn install

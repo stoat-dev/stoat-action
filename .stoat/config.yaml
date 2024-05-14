@@ -17,10 +17,6 @@ plugins:
       metadata:
         name: CLI Test Coverage
       path: cli/coverage/lcov-report
-    types_ts_coverage:
-      metadata:
-        name: Types TS Coverage
-      path: types/coverage-ts
     docs:
       metadata:
         name: Documentation
@@ -34,6 +30,8 @@ plugins:
   metric:
     action_runner_memory:
       filename: action_runner_memory.jsonl
+    action_package_size:
+      filename: action/action_package_size.json
   chart:
     action_runner_memory_chart:
       title: Runner Memory Usage
@@ -43,3 +41,8 @@ plugins:
         - Used
         - Free
         - Buff/Cache
+    action_package_size_chart:
+      title: Package Size
+      y_title: Size (bytes)
+      tags:
+        - Byte Size
