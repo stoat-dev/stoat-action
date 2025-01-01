@@ -30,7 +30,7 @@
   "homepage": "https://github.com/stoat-dev/stoat-action#readme",
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^13.2.1",
-    "json-schema-to-typescript": "^14.0.4",
+    "json-schema-to-typescript": "^15.0.3",
     "typescript": "^5.4.5",
     "utility-types": "^3.11.0"
   }
