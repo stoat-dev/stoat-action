@@ -48,12 +48,14 @@ jobs:
       - name: Install cli dependencies
         run: |
           yarn install --frozen-lockfile
+      - name: Check code
+        run: |
+          yarn lint
+          yarn format-check
       - name: Build and test stoat cli
         run: |
           yarn build
           yarn test
-      - name: Check format
-        run: yarn format-check
       - name: Run stoat action
         uses: ./
         if: always()
