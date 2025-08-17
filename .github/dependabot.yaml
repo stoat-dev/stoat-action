@@ -8,6 +8,9 @@ updates:
       all-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [ ">=9.0.0" ]
 
   - package-ecosystem: npm
     directory: action
@@ -17,6 +20,9 @@ updates:
       all-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [ ">=9.0.0" ]
 
   - package-ecosystem: npm
     directory: cli
@@ -30,6 +36,10 @@ updates:
       - dependency-name: "chalk"
         # chalk 5.x is pure esm and does not work with tests
         versions: [ "5.x" ]
+      - dependency-name: "eslint"
+        versions: [ ">=9.0.0" ]
+      - dependency-name: "inquirer"
+        versions: [ ">=10.0.0" ]
 
   - package-ecosystem: npm
     directory: docs
@@ -44,6 +54,8 @@ updates:
         # currently only v1 is supported
         # https://docusaurus.io/docs/markdown-features/react
         versions: [ "2.x" ]
+      - dependency-name: "eslint"
+        versions: [ ">=9.0.0" ]
 
   - package-ecosystem: npm
     directory: types
@@ -53,3 +65,6 @@ updates:
       all-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [ ">=9.0.0" ]
