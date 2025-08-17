@@ -65,7 +65,7 @@
     "@types/node": "^22.15.3",
     "@vercel/ncc": "^0.38.1",
     "esbuild": "^0.25.3",
-    "eslint": "^9.2.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-github": "^6.0.0",
     "eslint-plugin-jest": "^28.5.0",
