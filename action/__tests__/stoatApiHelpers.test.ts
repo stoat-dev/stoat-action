@@ -21,11 +21,11 @@ const mockCore = core as jest.Mocked<typeof core>;
 
 describe('getDevServerBase', () => {
   it('returns the correct dev server base', () => {
-    expect(getDevServerBase('token1')).toEqual('https://stoat-git-token1-stoat-dev.vercel.app');
+    expect(getDevServerBase('token1')).toEqual('https://stoat-git-token1-liren.vercel.app');
     expect(getDevServerBase('token1/token2_token3$token4')).toEqual(
-      'https://stoat-git-token1-token2-token3-token4-stoat-dev.vercel.app'
+      'https://stoat-git-token1-token2-token3-token4-liren.vercel.app'
     );
-    expect(getDevServerBase('a/b-c-0.0.0')).toEqual('https://stoat-git-a-b-c-000-stoat-dev.vercel.app');
+    expect(getDevServerBase('a/b-c-0.0.0')).toEqual('https://stoat-git-a-b-c-000-liren.vercel.app');
   });
 
   it('returns the prod server if the subdomain is too long', () => {
@@ -64,7 +64,7 @@ describe('await getApiUrlBase', () => {
 
       it('returns dev server', async () => {
         expect(await getApiUrlBase(STOAT_ORG, STOAT_REPO)).toEqual(
-          'https://stoat-git-developer-dev-workflow-stoat-dev.vercel.app'
+          'https://stoat-git-developer-dev-workflow-liren.vercel.app'
         );
       });
 
@@ -165,7 +165,7 @@ describe('waitForStoatDevServer', () => {
           repoSha,
           1
         )
-      ).toEqual('https://stoat-git-dev-feature1-stoat-dev.vercel.app');
+      ).toEqual('https://stoat-git-dev-feature1-liren.vercel.app');
 
       const infos = mockCore.info.mock.calls;
       expect(infos[0][0]).toContain('Waiting for dev server');
