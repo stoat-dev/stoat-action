@@ -48,7 +48,7 @@
     "deepmerge-ts": "^7.0.3",
     "express": "^5.1.0",
     "handlebars": "^4.7.8",
-    "inquirer": "^12.6.0",
+    "inquirer": "^9.3.7",
     "latest-version": "^9.0.0",
     "marked": "^15.0.11",
     "open": "^10.1.0",
