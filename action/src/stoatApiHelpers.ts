@@ -14,12 +14,13 @@ export const STOAT_REPO = 'stoat';
 export const STOAT_ACTION_REPO = 'stoat-action';
 export const INTERNAL_REPOS = [STOAT_REPO, STOAT_ACTION_REPO];
 export const INTERNAL_REPO_DEFAULT_BRANCH = 'main';
+export const VERCEL_ORG = 'liren';
 
 export const PROD_API_URL_BASE = 'https://www.stoat.dev';
 
 export const getDevServerBase = (branchName: string): string => {
   const branchToken = branchName.replace(/\./g, '').replace(/[^-a-zA-Z0-9]/g, '-');
-  const subdomain = `stoat-git-${branchToken}-stoat-dev`;
+  const subdomain = `stoat-git-${branchToken}-${VERCEL_ORG}`;
   if (subdomain.length > 63) {
     core.warning(`Subdomain "${subdomain}" is too long. Fall back to ${PROD_API_URL_BASE}.`);
     return PROD_API_URL_BASE;
