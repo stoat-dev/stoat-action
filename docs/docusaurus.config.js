@@ -152,7 +152,17 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme
       }
-    })
+    }),
+
+  plugins: [
+    [
+      'vercel-analytics',
+      {
+        debug: false,
+        mode: 'auto',
+      },
+    ],
+  ]
 };
 
 // Uses VERCEL_ENV instead of NODE_ENV, so we can exclude previews from analytics collection.
